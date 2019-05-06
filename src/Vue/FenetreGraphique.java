@@ -1,32 +1,9 @@
 package Vue;
-/*
- * Morpion pédagogique
 
- * Copyright (C) 2016 Guillaume Huard
 
- * Ce programme est libre, vous pouvez le redistribuer et/ou le
- * modifier selon les termes de la Licence Publique Générale GNU publiée par la
- * Free Software Foundation (version 2 ou bien toute autre version ultérieure
- * choisie par vous).
-
- * Ce programme est distribué car potentiellement utile, mais SANS
- * AUCUNE GARANTIE, ni explicite ni implicite, y compris les garanties de
- * commercialisation ou d'adaptation dans un but spécifique. Reportez-vous à la
- * Licence Publique Générale GNU pour plus de détails.
-
- * Vous devez avoir reçu une copie de la Licence Publique Générale
- * GNU en même temps que ce programme ; si ce n'est pas le cas, écrivez à la Free
- * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307,
- * États-Unis.
-
- * Contact: Guillaume.Huard@imag.fr
- *          Laboratoire LIG
- *          700 avenue centrale
- *          Domaine universitaire
- *          38401 Saint Martin d'Hères
- */
-
+import Modele.Plateau;
 import Modele.Jeu;
+
 import Patterns.Observateur;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -54,17 +31,20 @@ import javafx.stage.WindowEvent;
 
 public class FenetreGraphique implements Observateur {
 	Jeu jeu;
+	Plateau plateau;
 	Scene scene;
 	Canvas canvas;
-        BoutonAnnuler annuler;
-        BoutonRefaire refaire;
-        ToggleButton IA;
+    BoutonAnnuler annuler;
+    BoutonRefaire refaire;
+    ToggleButton IA;
 	double largeurCase, hauteurCase;
-        ChoiceBox niveau;
-        String niv = "Easy";
+	ChoiceBox niveau;
+    String niv = "Easy";
+
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
 		jeu = j;
-		primaryStage.setTitle("Gaufre");
+		plateau = jeu.plateau;
+		primaryStage.setTitle("BlockUs");
 
 		canvas = new Canvas();
 		Pane vue = new Pane(canvas);
@@ -75,14 +55,14 @@ public class FenetreGraphique implements Observateur {
                
 
         
-                Label titre = new Label("Gaufre");
+                Label titre = new Label("BlockUs");
                 titre.setMaxHeight(Double.MAX_VALUE);
                 titre.setAlignment(Pos.TOP_CENTER);
                 boiteTexte.getChildren().add(titre);
                 VBox.setVgrow(titre, Priority.ALWAYS);
                 
                 IA = new ToggleButton("IA");
-		IA.setFocusTraversable(false);
+		        IA.setFocusTraversable(false);
                 boiteTexte.getChildren().add(IA);
                 
                 niveau = new ChoiceBox(FXCollections.observableArrayList(
@@ -101,7 +81,7 @@ public class FenetreGraphique implements Observateur {
         		AnnulerRefaire.setAlignment(Pos.CENTER);
         		boiteTexte.getChildren().add(AnnulerRefaire);
                 
-                Label copyright = new Label("Copyright G. Huard, 2018");
+                Label copyright = new Label("Groupe 7");
                 copyright.setMaxHeight(Double.MAX_VALUE);
                 copyright.setAlignment(Pos.BOTTOM_LEFT);
                 boiteTexte.getChildren().add(copyright);
@@ -164,7 +144,7 @@ public class FenetreGraphique implements Observateur {
 	}
         
 
-        public String ecouteurNiveau(){
+	public String ecouteurNiveau(){
                 niveau.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue observable, String oldValue, String newValue) {
@@ -175,8 +155,8 @@ public class FenetreGraphique implements Observateur {
         }
 	@Override
 	public void miseAJour() {
-            double lignes = jeu.hauteur();
-            double colonnes = jeu.largeur();
+            double lignes = plateau.taille();
+            double colonnes = plateau.taille();
             largeurCase = largeur() / colonnes;
             hauteurCase = hauteur() / lignes;
             GraphicsContext g = canvas.getGraphicsContext2D();
@@ -184,7 +164,7 @@ public class FenetreGraphique implements Observateur {
             // Grille
             for (int i=0; i<lignes;i++) {
                 for (int j=0; j<colonnes;j++) {
-                    g.setFill(Color.DARKORANGE);
+                    g.setFill(Color.LIGHTGRAY);
                     g.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 
                 }
@@ -199,11 +179,15 @@ public class FenetreGraphique implements Observateur {
             // Coups
             for (int i=0; i<lignes; i++)
                 for (int j=0; j<colonnes; j++)
-                    switch (jeu.valeur(i, j)) {
-                        case -1:
+                    switch (plateau.valeur(i, j)) {
+                        case 0:
                             break;
                         case 1:
-                            g.setFill(Color.WHITE);
+                            g.setFill(Color.DARKOLIVEGREEN);
+                            g.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
+                            break;
+                        case 2:
+                            g.setFill(Color.DARKSLATEBLUE);
                             g.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
                             break;
                     }
