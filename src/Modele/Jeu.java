@@ -22,9 +22,9 @@ public class Jeu extends Observable {
 		for(int i=l;i<piece.taille+l;i++) {
 			for (int j = c; j < piece.taille+c; j++) {
 				if((i>=plateau.p.length || j>=plateau.p.length) && (piece.carres[i-l][j-c])){
-					return false;
-				} else if ((i<plateau.p.length && j<plateau.p.length) && (plateau.valeur(i, j) != 0)){
-					return false;
+					return false; // Cas où la pièce dépasse du plateau
+				} else if ((i<plateau.p.length && j<plateau.p.length) && (plateau.valeur(i, j) != 0) && ((piece.carres[i-l][j-c]))){
+					return false; // Cas où la pièce est en collision avec une autre pièce du plateau
 				}
 			}
 		}
@@ -37,13 +37,13 @@ public class Jeu extends Observable {
 			}
 		}
 
-		for(int i=0;i<plateau.p.length;i++) {
+		/*for(int i=0;i<plateau.p.length;i++) {
 			for (int j = 0; j < plateau.p.length; j++) {
 				System.out.print(plateau.valeur(i, j));
 			}
 			System.out.println();
 		}
-
+*/
 		updateJoueurCour();
 		metAJour();
 
@@ -57,7 +57,7 @@ public class Jeu extends Observable {
 
 
     public void refaire() {
-		plateau.p = new int[6][6];
+		plateau.p = new int[8][8];
 		enCours = true;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
@@ -67,7 +67,7 @@ public class Jeu extends Observable {
    }
 
    public void updateJoueurCour(){
-		joueurCourant = ((joueurCourant+1) %4);
+		joueurCourant = ((joueurCourant) %4)+1;
    }
 
 }
