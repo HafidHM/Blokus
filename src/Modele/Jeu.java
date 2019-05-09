@@ -1,13 +1,20 @@
 package Modele;
 
 import Patterns.Observable;
+import Global.Configuration;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Properties;
 
 public class Jeu extends Observable {
 	boolean enCours;
 	public int joueurCourant; // Mis en public pour pouvoir y acceder depuis JoueurIA
 	boolean [][] pieceJoueurs = new boolean[4][21]; // 4 joueurs max et 21 pièces au total
 	public Plateau plateau;
-			
+	ArrayList<Piece> pieces;
+
 	public Jeu(int n) {
 		plateau = new Plateau(n);
 		enCours = true;
@@ -15,6 +22,10 @@ public class Jeu extends Observable {
 			for (int j = 0; j < plateau.p[0].length; j++)
 				plateau.newVal(i, j, 0);
 		joueurCourant = 1;
+
+		this.pieces = new ArrayList<>();
+		initialiserPieces();
+
 	}
 
 	public boolean jouer(int l, int c, Piece piece) {
@@ -55,7 +66,6 @@ public class Jeu extends Observable {
 		return enCours;
 	}
 
-
     public void refaire() {
 		plateau.p = new int[8][8];
 		enCours = true;
@@ -70,4 +80,53 @@ public class Jeu extends Observable {
 		joueurCourant = ((joueurCourant) %4)+1;
    }
 
+   /*public void initPieces(){
+	   FileInputStream in;
+
+	   String fichier = Configuration.instance().lis("FichierPieces");
+	   in = Configuration.charge(fichier);
+
+	   if (in == null) {
+		   System.err.println("ERREUR : impossible de trouver le fichier de niveaux nommé " + fichier);
+		   System.exit(1);
+	   } else {
+		   l = new LecteurPiece(in);
+	   }
+
+	   for(int i=0;i<4;i++) {
+		   Arrays.fill(pieceJoueurs[i], Boolean.TRUE);
+	   }
+
+
+   }*/
+
+   public Piece choixPiece(int num){
+		Piece piece = pieces.get(num);
+		return piece;
+   }
+
+	public void initialiserPieces() {
+		Piece p = new Piece(5);
+		p.ajout(true, 0, 0);
+		p.ajout(true, 0, 1);
+		p.ajout(true, 0, 2);
+		p.ajout(true, 0, 3);
+		p.num = 1;
+		pieces.add(p);
+
+		p = new Piece(5);
+		p.ajout(true, 0, 1);
+		p.ajout(true, 1, 1);
+		p.ajout(true, 2, 0);
+		p.ajout(true, 2, 1);
+		p.ajout(true, 2, 2);
+		p.num = 2;
+		pieces.add(p);
+		p = new Piece(5);
+		p.ajout(true, 0, 0);
+		p.ajout(true, 0, 1);
+		p.ajout(true, 1, 1);
+		p.num = 3;
+		pieces.add(p);
+	}
 }
