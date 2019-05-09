@@ -1,19 +1,17 @@
 package Vue;
 
 import Modele.Jeu;
-import Vue.App;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Game extends Application{
 	private App app;
 	Jeu jeu;
-	
 	public void onLaunch() {
 		
 		app.setTitle("Test Game");
-		app.setWidth(800);
-		app.setHeight(600);
+		app.setWidth(700);
+		app.setHeight(620);
 		
 		app.regView("Menu", new ViewMenu(jeu));
 		app.regView("Aide", new ViewAide(jeu));
@@ -32,8 +30,9 @@ public class Game extends Application{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		jeu = new Jeu(20,20);
+		jeu = new Jeu(23);
 		app = new App(jeu,primaryStage);
+		
 		
 		app.onLaunch = this::onLaunch;
 		app.onFinish = this::onFinish;
