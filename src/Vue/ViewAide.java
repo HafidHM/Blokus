@@ -1,13 +1,12 @@
 package Vue;
-import static blokus.Framework.*;
+import static blokus.Framework.app;
 
 import Modele.Jeu;
-import Modele.Plateau;
 import javafx.scene.control.Button;
 
 public class ViewAide extends View{
-	public ViewAide(Jeu j, Plateau p) {
-		super(j, p);
+	public ViewAide(Jeu j) {
+		super(j);
 	}
 
 	private Button retourBtn;
