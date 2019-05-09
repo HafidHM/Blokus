@@ -1,7 +1,9 @@
-package blokus.Vue;
+package Vue;
 
 import java.util.HashMap;
 
+import Modele.Jeu;
+import Patterns.Observateur;
 import blokus.Framework;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -15,9 +17,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class App{
-	double largeurCase, hauteurCase;
-	
+public class App implements Observateur{
+
+	Jeu jeu;
 	private final Stage stage;
 	private final Scene scene;
 	private final Pane root;
@@ -28,7 +30,8 @@ public class App{
 	OnFinish onFinish;
 	OnExit onExit;
 	
-	public App(Stage stage) {
+	public App(Jeu j, Stage stage) {
+		this.jeu = j;
 		this.stage = stage;
 		root = new StackPane();
 		scene = new Scene(root);
@@ -38,7 +41,7 @@ public class App{
 		currentView = new SimpleObjectProperty<View>();
 		initFramework();
 		initApp();
-		
+		jeu.ajouteObservateur(this);
 
 	}
 	private final void initFramework() {
@@ -170,6 +173,12 @@ public class App{
 	
 	public static interface OnExit{
 		boolean handle();
+	}
+
+	@Override
+	public void miseAJour() {
+		
+		
 	}
 
 	
