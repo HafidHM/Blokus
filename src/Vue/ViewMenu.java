@@ -2,13 +2,14 @@ package Vue;
 import static blokus.Framework.*;
 
 import Modele.Jeu;
+import Modele.Plateau;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 public class ViewMenu extends View{
-	public ViewMenu(Jeu j) {
-		super(j);
+	public ViewMenu(Jeu j, Plateau p) {
+		super(j,p);
 	}
 
 	private Button jouerBtn;
