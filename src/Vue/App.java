@@ -3,6 +3,7 @@ package Vue;
 import java.util.HashMap;
 
 import Modele.Jeu;
+import Modele.Plateau;
 import Patterns.Observateur;
 import blokus.Framework;
 import javafx.application.Platform;
@@ -12,6 +13,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -20,10 +22,11 @@ import javafx.stage.WindowEvent;
 public class App implements Observateur{
 
 	Jeu jeu;
+	Plateau plateau;
 	private final Stage stage;
 	private final Scene scene;
-	private final Pane root;
-	
+	private final Pane pane;
+	private final Canvas canvas;
 	private final HashMap<String,View> viewMap;
 	private final ObjectProperty<View> currentView;
 	OnLaunch onLaunch;
@@ -32,16 +35,17 @@ public class App implements Observateur{
 	
 	public App(Jeu j, Stage stage) {
 		this.jeu = j;
+		plateau = jeu.plateau;
 		this.stage = stage;
-		root = new StackPane();
-		scene = new Scene(root);
+		canvas = new Canvas();
+		pane = new StackPane();
+		scene = new Scene(pane);
 		stage.setScene(scene);
 		
 		viewMap = new HashMap<>();
 		currentView = new SimpleObjectProperty<View>();
 		initFramework();
 		initApp();
-		jeu.ajouteObservateur(this);
 
 	}
 	private final void initFramework() {
@@ -58,18 +62,20 @@ public class App implements Observateur{
 		currentView.addListener((o,ov,nv)->{
 			if(ov != null) {
 				ov.onLeave();
-				root.getChildren().remove(ov.getPane());
+				pane.getChildren().remove(ov.getPane());
 			}
 			if(nv != null) {
-				root.getChildren().add(nv.getPane());
+				pane.getChildren().add(nv.getPane());
 				nv.onEnter();
 			}
 		});
 		
 		
+		
+		
 	}
 	
-	
+
 	public Stage getStage() {
 		return stage;
 	}
@@ -89,28 +95,36 @@ public class App implements Observateur{
 		return stage.titleProperty();
 	}
 	
+	public double largeurCase() {
+		return getWidth() / plateau.taille() ;
+	}
+
+	public double hauteurCase() {
+		return getHeight()/plateau.taille();
+	}
+	
 	public double getWidth() {
-		return root.getMinWidth();
+		return pane.getMinWidth();
 	}
 	
 	public void setWidth(double width) {
-		root.setMinWidth(width);
+		pane.setMinWidth(width);
 	}
 	
 	public DoubleProperty widthProperty() {
-		return root.minWidthProperty();
+		return pane.minWidthProperty();
 	}
 	
 	public double getHeight() {
-		return root.getMinHeight();
+		return pane.getMinHeight();
 	}
 	
 	public void setHeight(double height) {
-		root.setMinHeight(height);
+		pane.setMinHeight(height);
 	}
 	
 	public DoubleProperty HeightProperty() {
-		return root.minHeightProperty();
+		return pane.minHeightProperty();
 	}
 	
 	public View getView(String name) {
