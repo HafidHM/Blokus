@@ -48,7 +48,7 @@ public class FenetreGraphique implements Observateur {
 
 		canvas = new Canvas();
 		Pane vue = new Pane(canvas);
-		vue.setPrefSize(650, 400);
+		vue.setPrefSize(900, 800);
 
                 VBox boiteTexte = new VBox();
                 boiteTexte.setAlignment(Pos.CENTER);
@@ -175,7 +175,6 @@ public class FenetreGraphique implements Observateur {
             for (int i=1; i<colonnes+1;i++) {
                 g.strokeLine(i*largeurCase, 0, i*largeurCase, hauteur());
             }
-            g.strokeOval(0*largeurCase, 0*hauteurCase, largeurCase, hauteurCase);
             // Coups
             for (int i=0; i<lignes; i++)
                 for (int j=0; j<colonnes; j++)
@@ -188,6 +187,18 @@ public class FenetreGraphique implements Observateur {
                             break;
                         case 2:
                             g.setFill(Color.DARKSLATEBLUE);
+                            g.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
+                            break;
+                        case 3:
+                            g.setFill(Color.YELLOW);
+                            g.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
+                            break;
+                        case 4:
+                            g.setFill(Color.INDIANRED);
+                            g.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
+                            break;
+                        case 8:
+                            g.setFill(Color.LIGHTGREEN);
                             g.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
                             break;
                     }
