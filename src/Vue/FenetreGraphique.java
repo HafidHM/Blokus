@@ -1,9 +1,8 @@
 package Vue;
 
 
-import Modele.Plateau;
 import Modele.Jeu;
-
+import Modele.Plateau;
 import Patterns.Observateur;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,18 +13,15 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -38,7 +34,7 @@ public class FenetreGraphique implements Observateur {
     BoutonRefaire refaire;
     ToggleButton IA;
 	double largeurCase, hauteurCase;
-	ChoiceBox niveau;
+	ChoiceBox<String> niveau;
     String niv = "Easy";
 
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
@@ -65,7 +61,7 @@ public class FenetreGraphique implements Observateur {
 		        IA.setFocusTraversable(false);
                 boiteTexte.getChildren().add(IA);
                 
-                niveau = new ChoiceBox(FXCollections.observableArrayList(
+                niveau = new ChoiceBox<String>(FXCollections.observableArrayList(
     "Easy", "Medium", "Hard"));
                 niveau.getSelectionModel().selectFirst();
                 
@@ -109,7 +105,7 @@ public class FenetreGraphique implements Observateur {
                 
                 niveau.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
                     @Override
-                    public void changed(ObservableValue observable, String oldValue, String newValue) {
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                         niv = newValue;
                     }
                 });
@@ -147,7 +143,7 @@ public class FenetreGraphique implements Observateur {
 	public String ecouteurNiveau(){
                 niveau.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
                     @Override
-                    public void changed(ObservableValue observable, String oldValue, String newValue) {
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                         niv = newValue;
                     }
                 });
