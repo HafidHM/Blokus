@@ -1,7 +1,5 @@
 package Controleur;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import Modele.Jeu;
 
@@ -17,47 +15,59 @@ class JoueurIA extends Joueur {
 	@Override
 	boolean tempsEcoule() {
 		int i, j;
+		int bound;
 
-		i = r.nextInt(plateau.hauteur());
-		j = r.nextInt(plateau.largeur());
-		while (!plateau.libre(i, j)) {
-			i = r.nextInt(plateau.hauteur());
-			j = r.nextInt(plateau.largeur());
+		int [] ianj = plateau.coord.get(r.nextInt( plateau.coord.size()));
+
+		i = ianj[0];
+		j = ianj[1];
+
+		plateau.plateau.availableCases(((plateau.joueurCourant) %4)+1, plateau.coord, plateau.noPiecesPosées());
+
+		if((bound = plateau.piecesJ[plateau.joueurCourant-1].size()) != 0){
+			num = r.nextInt(bound);
+
+			while(!plateau.jouer(i, j, plateau.choixPiece(num))) {
+				num = r.nextInt(bound);
+
+			}
+		} else {
+			return false;
 		}
-		plateau.jouer(i, j);
+
+		plateau.piecesJ[plateau.joueurCourant - 1].remove(num);
+		plateau.updateJoueurCour();
+
+
 		return true;
 	}
 
 	boolean tempsEcouleNonPerdant(){
 		int i,j;
-		i = r.nextInt(plateau.hauteur());
-		j = r.nextInt(plateau.largeur());
-		while (!plateau.libre(i, j) || (plateau.coupPoison(i,j) && plateau.nonPerdrePossible()) ){
-			i = r.nextInt(plateau.hauteur());
-			j = r.nextInt(plateau.largeur());
-		}
-		plateau.jouer(i, j);
+		i = r.nextInt(plateau.plateau.taille());
+		j = r.nextInt(plateau.plateau.taille());
+		/*while (!plateau.libre(i, j) || (plateau.coupPoison(i,j) && plateau.nonPerdrePossible()) ){
+			i = r.nextInt(plateau.taille());
+			j = r.nextInt(plateau.taille());
+		}*/
+		//plateau.jouer(i, j, piece);
 		return true;
 	}
 
 	boolean tempsEcouleMinimax(){
 		int iandj [] = new int [2];
 
-		int[][] p =  plateau.plateau;
-		nextStep(iandj, p);
+		int[][] p =  plateau.plateau.p;
+		//nextStep(iandj, p);
 
 		System.out.println("Chosen next step : " + iandj[0] + " " + iandj[1]);
 
-		plateau.jouer(iandj[0], iandj[1]);
+		//plateau.jouer(iandj[0], iandj[1], piece);
 
 		return true;
 
 	}
-
-
-
-
-
+/*
 	void nextStep(int[] iandj, int[][] p){
 
 		int Profondeur = MAXPROF;
@@ -69,7 +79,7 @@ class JoueurIA extends Joueur {
 		iandj[0] = values[1];
 		iandj[1] = values[2];
 
-	}  // TODO
+	}
 
 	int [] Minimax(int[][] p, int profondeur, int player){
 
@@ -126,8 +136,8 @@ class JoueurIA extends Joueur {
 			return Steps;
 		}
 
-		for(int i=0; i<plateau.hauteur();i++){
-			for(int j=0; j<plateau.largeur();j++){
+		for(int i=0; i<plateau.taille();i++){
+			for(int j=0; j<plateau.taille();j++){
 				if((p[i][j] == -1) && (!plateau.coupPoison(i, j))){
 					Steps.add(new int[] {i, j});
 				}
@@ -139,10 +149,10 @@ class JoueurIA extends Joueur {
 	}
 
 	int [][] nextConfig(int[][] p, int [] iandj, int OPlayer) {
-		int[][] Config = new int[plateau.hauteur()][plateau.largeur()];
+		int[][] Config = new int[plateau.taille()][plateau.taille()];
 
-		for (int i = 0 ;i<plateau.hauteur();i++){
-			for(int j =0;j<plateau.largeur();j++){
+		for (int i = 0 ;i<plateau.taille();i++){
+			for(int j =0;j<plateau.taille();j++){
 				if(!plateau.coupPoison(i, j)) {
 					if ((i == iandj[0] && j == iandj[1]) && p[i][j] != 1) {
 						if (OPlayer == 0) {
@@ -173,7 +183,7 @@ class JoueurIA extends Joueur {
 
 
 
-	} // TODO // DONE
+	}
 
 	int evaluation(int [][] p, int player){
 		int score = 0;
@@ -189,7 +199,7 @@ class JoueurIA extends Joueur {
 		}
 
 		return score;
-	} // TODO // DONE
+	}
 
 	int OtherPlayer(int player){
 		if(player == 0){
@@ -197,12 +207,12 @@ class JoueurIA extends Joueur {
 		} else {
 			return 0;
 		}
-	} // TODO // DONE
+	}
 
 	boolean end(int[][] p) {
 		return ((p[0][1] != -1) && (p[1][0] != -1));
 
-	} // TODO // DONE
-
+	}
+*/
 
 }
