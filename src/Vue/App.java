@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import Modele.Jeu;
 import Modele.Plateau;
+import Modele.PlateauPiece;
 import Patterns.Observateur;
 import blokus.Framework;
 import javafx.application.Platform;
@@ -12,8 +13,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -23,10 +24,11 @@ public class App implements Observateur{
 
 	Jeu jeu;
 	Plateau plateau;
+	PlateauPiece plateauPiece;
 	private final Stage stage;
 	private final Scene scene;
 	private final Pane pane;
-	private final Canvas canvas;
+	private final Group root;
 	private final HashMap<String,View> viewMap;
 	private final ObjectProperty<View> currentView;
 	OnLaunch onLaunch;
@@ -36,9 +38,10 @@ public class App implements Observateur{
 	public App(Jeu j, Stage stage) {
 		this.jeu = j;
 		plateau = jeu.plateau;
+		plateauPiece = jeu.plateauPiece;
 		this.stage = stage;
-		canvas = new Canvas();
-		pane = new StackPane();
+		root = new Group();
+		pane = new StackPane(root);
 		scene = new Scene(pane);
 		stage.setScene(scene);
 		
@@ -69,8 +72,6 @@ public class App implements Observateur{
 				nv.onEnter();
 			}
 		});
-		
-		
 		
 		
 	}
@@ -162,6 +163,27 @@ public class App implements Observateur{
 		}
 		stage.requestFocus();
 		stage.show();
+		
+		
+		/*stage.widthProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				currentView.get().redimension();
+				System.out.println("largeur = " + stage.getWidth());
+				System.out.println("hauteur = " + stage.getHeight());
+			}
+		});
+		
+		stage.heightProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				currentView.get().redimension();
+				System.out.println("largeur = " + stage.getWidth());
+				System.out.println("hauteur = " + stage.getHeight());
+			}
+		});*/
 	}
 	
 	public void finish() {
