@@ -11,7 +11,7 @@ public class Game extends Application{
 		
 		app.setTitle("Test Game");
 		app.setWidth(700);
-		app.setHeight(620);
+		app.setHeight(700);
 		
 		app.regView("Menu", new ViewMenu(jeu));
 		app.regView("Aide", new ViewAide(jeu));
