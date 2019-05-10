@@ -6,7 +6,7 @@ import Vue.ViewJouer;
 public class ControleurMediateur {
 	Jeu jeu;
 	ViewJouer vjouer;
-	JoueurHumain[] joueurs;
+	Joueur[] joueurs;
     boolean jeuAutomatique;
 	int joueurCourant;
 	final int lenteurAttente = 50;
@@ -15,13 +15,19 @@ public class ControleurMediateur {
 	public ControleurMediateur(Jeu j, ViewJouer v) {
 		jeu = j;
 		vjouer = v;
-        jeuAutomatique = false;
-		joueurs = new JoueurHumain[2];
-        joueurs[0] = new JoueurHumain(0, jeu);
-		if (jeuAutomatique)
-			joueurs[1] = new JoueurIA(1, jeu);
-		else
-			joueurs[1] = new JoueurHumain(1, jeu);   
+		jeuAutomatique = false;
+		joueurs = new Joueur[4];
+		joueurs[0] = new JoueurHumain(1, jeu);
+		niv = "Easy";
+		if (jeuAutomatique) {
+			joueurs[1] = new JoueurIA(2, jeu);
+			joueurs[2] = new JoueurIA(3, jeu);
+			joueurs[3] = new JoueurIA(4, jeu);
+		} else {
+			joueurs[1] = new JoueurHumain(2, jeu);
+			joueurs[2] = new JoueurHumain(3, jeu);
+			joueurs[3] = new JoueurHumain(4, jeu);
+		}
 	}
 
 	public void redimensionnement() {
@@ -31,7 +37,7 @@ public class ControleurMediateur {
 	public void clicSouris(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCase());
 		int c = (int) (x / vjouer.largeurCase());
-		
+
 		if (joueurs[joueurCourant].jeu(l, c))
 			changeJoueur();
 	}
@@ -41,18 +47,18 @@ public class ControleurMediateur {
 		decompte = lenteurAttente;
 	}
 
-       /* public boolean choisirNiveau(String niveau){
-            if(!niv.equals(niveau)){
-                System.out.println("Vous avez choisit " + niveau);
-                niv=niveau;
-            } 
-            switch(niveau){
-                case "Easy":return joueurs[joueurCourant].tempsEcoule();
-                case "Medium":return joueurs[joueurCourant].tempsEcouleNonPertant();
-                case "Hard": return joueurs[joueurCourant].tempsEcouleMinimax();
-                default:return false;
-            }
-        }*/
+	public boolean choisirNiveau(String niveau){
+		if(!niv.equals(niveau)){
+			System.out.println("Vous avez choisit " + niveau);
+			niv=niveau;
+		}
+		switch(niveau){
+			case "Easy":return joueurs[joueurCourant].tempsEcoule();
+			//case "Medium":return joueurs[joueurCourant].tempsEcouleNonPerdant();
+			//case "Hard":return joueurs[joueurCourant].tempsEcouleMinimax();
+			default:return false;
+		}
+	}
         public void basculeIA(boolean value) {
         	jeuAutomatique = value;
         	System.out.println("jeuautomatique " + jeuAutomatique);
@@ -62,7 +68,7 @@ public class ControleurMediateur {
             else
             	joueurs[1] = new JoueurHumain(1, jeu);
         }
-        
+
         public void tictac() {
 			if (jeu.enCours()) {
 				if (decompte == 0) {
@@ -72,13 +78,13 @@ public class ControleurMediateur {
 				} else {
 						//System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
 						decompte = lenteurAttente;
-	                                        
+
 				}
 			} else {
 					decompte--;
-				}          
+				}
 		}
-            
+
 	}
-        
+
 
