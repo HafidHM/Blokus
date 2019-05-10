@@ -1,22 +1,20 @@
 package Modele;
 
-import Patterns.Observable;
-import Global.Configuration;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
+
+import Patterns.Observable;
 
 public class Jeu extends Observable {
 	boolean enCours;
 	public int joueurCourant; // Mis en public pour pouvoir y acceder depuis JoueurIA
 	boolean [][] pieceJoueurs = new boolean[4][21]; // 4 joueurs max et 21 pièces au total
 	public Plateau plateau;
+	public PlateauPiece plateauPiece;
 	ArrayList<Piece> pieces;
 
 	public Jeu(int n) {
 		plateau = new Plateau(n);
+		plateauPiece = new PlateauPiece();
 		enCours = true;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
@@ -25,6 +23,8 @@ public class Jeu extends Observable {
 
 		this.pieces = new ArrayList<>();
 		initialiserPieces();
+		plateauPiece.initPlateauPiece();
+		
 
 	}
 
@@ -57,7 +57,7 @@ public class Jeu extends Observable {
 */
 		updateJoueurCour();
 		metAJour();
-
+		
 		return true;
 
 	}
