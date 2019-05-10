@@ -4,7 +4,7 @@ public interface PlateauInterface {
 
     public int taille();
 
-    public boolean libre(int i, int j);
+    public boolean jouable(int i, int j);
 
     public int valeur(int i, int j);
 
