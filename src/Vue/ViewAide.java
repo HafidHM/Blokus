@@ -17,12 +17,18 @@ public class ViewAide extends View{
 		retourBtn.setOnAction((event)->{
 			app.gotoView("Menu");
 		});
-		getChildren().add(retourBtn);
+		getPane().setCenter(retourBtn);
 	}
 
 	@Override
 	public void miseAJour() {
 		
 	}
+
+	/*@Override
+	public void redimension() {
+		// TODO Auto-generated method stub
+		
+	}*/
 	
 }
