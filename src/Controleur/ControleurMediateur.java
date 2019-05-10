@@ -22,19 +22,18 @@ public class ControleurMediateur {
 			joueurs[1] = new JoueurIA(2, jeu);
 		else
 			joueurs[1] = new JoueurHumain(2, jeu);
-			niv = f.ecouteurNiveau();
 			joueurs[2] = new JoueurHumain(3, jeu);
 			joueurs[3] = new JoueurHumain(4, jeu);
 	}
 
-	public void redimensionnement() {
-		f.miseAJour();
+public void redimensionnement() {
+		vjouer.miseAJour();
 	}
 
 	public void clicSouris(double x, double y) {
-		int l = (int) (y / f.hauteurCase());
-		int c = (int) (x / f.largeurCase());
-
+		int l = (int) (y / vjouer.hauteurCase());
+		int c = (int) (x / vjouer.largeurCase());
+		
 		if (joueurs[joueurCourant].jeu(l, c))
 			changeJoueur();
 	}
@@ -60,7 +59,7 @@ public class ControleurMediateur {
     public void basculeIA(boolean value) {
 		jeuAutomatique = value;
 		System.out.println("jeuautomatique " + jeuAutomatique);
-		f.changeBoutonIA(value);
+		//f.changeBoutonIA(value);
                 if (jeuAutomatique)
 			joueurs[1] = new JoueurIA(1, jeu);
 		else
@@ -70,7 +69,8 @@ public class ControleurMediateur {
 	public void tictac() {
 		if (jeu.enCours()) {
 			if (decompte == 0) {
-				if (choisirNiveau(f.ecouteurNiveau())) {
+				//if (choisirNiveau(f.ecouteurNiveau())) {
+				if(joueurs[joueurCourant].tempsEcoule()){
 					changeJoueur();
 				} else {
 					System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
