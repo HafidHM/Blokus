@@ -1,40 +1,55 @@
 package Modele;
 
-import java.util.ArrayList;
-
 import Patterns.Observable;
 
-public class Jeu extends Observable {
+import java.io.Serializable;
+import java.util.ArrayList;
+
+
+public class Jeu extends Observable implements Serializable {
 	boolean enCours;
 	public int joueurCourant; // Mis en public pour pouvoir y acceder depuis JoueurIA
-	boolean [][] pieceJoueurs = new boolean[4][21]; // 4 joueurs max et 21 pièces au total
+	public ArrayList<Piece> []piecesJ;
 	public Plateau plateau;
-	public PlateauPiece plateauPiece;
 	ArrayList<Piece> pieces;
+	public ArrayList<int []> coord;
+	public PlateauPiece plateauPiece;
+
 
 	public Jeu(int n) {
 		plateau = new Plateau(n);
-		plateauPiece = new PlateauPiece();
 		enCours = true;
-		for (int i = 0; i < plateau.p.length; i++)
-			for (int j = 0; j < plateau.p[0].length; j++)
+		for (int i = 0; i < plateau.taille(); i++)
+			for (int j = 0; j < plateau.taille(); j++)
+
 				plateau.newVal(i, j, 0);
+
+		plateau.newVal(plateau.taille()-1,0, 8);
+
 		joueurCourant = 1;
 
-		this.pieces = new ArrayList<>();
+		plateauPiece = new PlateauPiece();
+
+		pieces = new ArrayList<>();
+		piecesJ = new ArrayList[4]; // TODO ???
+		coord = new ArrayList<>();
 		initialiserPieces();
-		plateauPiece.initPlateauPiece();
-		
+		initPiecesJoueurs();
 
 	}
 
 	public boolean jouer(int l, int c, Piece piece) {
+/*
+		if(plateau.valeur(l, c) != 8){ // Le joueur ne peut jouer que sur des cases vertes
+			return false;
+		}*/
 
 		for(int i=l;i<piece.taille+l;i++) {
 			for (int j = c; j < piece.taille+c; j++) {
 				if((i>=plateau.p.length || j>=plateau.p.length) && (piece.carres[i-l][j-c])){
 					return false; // Cas où la pièce dépasse du plateau
-				} else if ((i<plateau.p.length && j<plateau.p.length) && (plateau.valeur(i, j) != 0) && ((piece.carres[i-l][j-c]))){
+				} else if ((i<plateau.p.length && j<plateau.p.length) && ((plateau.valeur(i, j) != 0) &&
+						(plateau.valeur(i, j) != 8)) && ((piece.carres[i-l][j-c]))){
 					return false; // Cas où la pièce est en collision avec une autre pièce du plateau
 				}
 			}
@@ -48,16 +63,8 @@ public class Jeu extends Observable {
 			}
 		}
 
-		/*for(int i=0;i<plateau.p.length;i++) {
-			for (int j = 0; j < plateau.p.length; j++) {
-				System.out.print(plateau.valeur(i, j));
-			}
-			System.out.println();
-		}
-*/
-		updateJoueurCour();
 		metAJour();
-		
+
 		return true;
 
 	}
@@ -66,67 +73,48 @@ public class Jeu extends Observable {
 		return enCours;
 	}
 
-    public void refaire() {
-		plateau.p = new int[8][8];
+	public void refaire() {
+		plateau.p = new int[23][23];
 		enCours = true;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
 				plateau.newVal(i, j, 0);
 		joueurCourant = 1;
-        metAJour();
-   }
+		metAJour();
+	}
 
-   public void updateJoueurCour(){
+	public void updateJoueurCour(){
 		joueurCourant = ((joueurCourant) %4)+1;
-   }
-
-   /*public void initPieces(){
-	   FileInputStream in;
-
-	   String fichier = Configuration.instance().lis("FichierPieces");
-	   in = Configuration.charge(fichier);
-
-	   if (in == null) {
-		   System.err.println("ERREUR : impossible de trouver le fichier de niveaux nommé " + fichier);
-		   System.exit(1);
-	   } else {
-		   l = new LecteurPiece(in);
-	   }
-
-	   for(int i=0;i<4;i++) {
-		   Arrays.fill(pieceJoueurs[i], Boolean.TRUE);
-	   }
-
-
-   }*/
-
-   public Piece choixPiece(int num){
-		Piece piece = pieces.get(num);
-		return piece;
-   }
+	}
 
 	public void initialiserPieces() {
 		Piece p = new Piece(5);
-		p.ajout(true, 0, 0);
-		p.ajout(true, 0, 1);
-		p.ajout(true, 0, 2);
-		p.ajout(true, 0, 3);
-		p.num = 1;
-		pieces.add(p);
+		for(int i=0;i<21;i++) {
 
-		p = new Piece(5);
-		p.ajout(true, 0, 1);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 2, 0);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.num = 2;
-		pieces.add(p);
-		p = new Piece(5);
-		p.ajout(true, 0, 0);
-		p.ajout(true, 0, 1);
-		p.ajout(true, 1, 1);
-		p.num = 3;
-		pieces.add(p);
+			p.ajout(true, 0, 0);
+
+			p.num = i;
+			pieces.add(p);
+		}
+
 	}
+
+	public void initPiecesJoueurs() {
+		for (int i = 0; i < 4; i++) {
+			piecesJ[i] = new ArrayList<>();
+			piecesJ[i].addAll(pieces);
+		}
+
+
+	}
+
+	public Piece choixPiece(int num){
+		return piecesJ[joueurCourant-1].get(num);
+
+	}
+
+	public boolean noPiecesPosées(){
+		return piecesJ[((joueurCourant) %4)].size() == pieces.size();
+	}
+
 }
