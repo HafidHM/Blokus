@@ -33,7 +33,7 @@ public class ViewMenu extends View{
 		VBox box = new VBox(jouerBtn,aideBtn,quitBtn);
 		box.setAlignment(Pos.CENTER);//居中对齐
 		box.setSpacing(20);
-		getChildren().add(box);
+		getPane().setCenter(box);
 		
 	}
 
@@ -41,4 +41,10 @@ public class ViewMenu extends View{
 	public void miseAJour() {
 		
 	}
+
+	/*@Override
+	public void redimension() {
+		// TODO Auto-generated method stub
+		
+	}*/
 }
