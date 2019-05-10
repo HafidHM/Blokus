@@ -17,22 +17,24 @@ class JoueurHumain extends Joueur {
 	@Override
 	boolean jeu(int i, int j) {
 
-		if (plateau.plateau.libre(i, j)) {
-			int num = r.nextInt(3);
-			//plateau.plateau.availableCases(plateau.joueurCourant);
+		if (plateau.plateau.jouable(i, j)) {
+			int bound, num;
+			if((bound = plateau.piecesJ[plateau.joueurCourant-1].size()) != 0){
+				num = r.nextInt(bound);
+			} else {
+				return false;
+			}
+			plateau.plateau.availableCases(((plateau.joueurCourant) %4)+1, plateau.coord, plateau.noPiecesPosées());
 
-			/*try {
-				Scanner keyboard = new Scanner(System.in);
-				System.out.println("Entrez un entier");
-				while(num < 1 || num > 21) {
-					num = keyboard.nextInt();
-				}
-			} catch (InputMismatchException e){
-				System.err.println("Entrez un entier !!!");
-			}*/
-			plateau.jouer(i, j, plateau.choixPiece(num));
+			// Joueur ???
+			if(plateau.jouer(i, j, plateau.choixPiece(num))){
+				plateau.piecesJ[plateau.joueurCourant-1].remove(num);
+				plateau.updateJoueurCour();
+				return true;
+			}else {
+				return false;
+			}
 
-			return true;
 		} else {
 			return false;
 		}
