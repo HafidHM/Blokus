@@ -1,22 +1,21 @@
 package Controleur;
 
 import Modele.Jeu;
-import Vue.FenetreGraphique;
+import Vue.ViewJouer;
 
 public class ControleurMediateur {
 	Jeu jeu;
-	FenetreGraphique f;
+    ViewJouer vjouer;
 	Joueur[] joueurs;
 	boolean jeuAutomatique;
 	int joueurCourant;
 	final int lenteurAttente = 50;
 	int decompte;
 	String niv;
-	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
+	public ControleurMediateur(Jeu j, ViewJouer v) {
 		jeu = j;
-		f = fen;
+		vjouer = v;
 		jeuAutomatique = false;
-		f.changeBoutonIA(jeuAutomatique);
 		joueurs = new Joueur[4];
 		joueurs[0] = new JoueurHumain(1, jeu);
 		if (jeuAutomatique)
