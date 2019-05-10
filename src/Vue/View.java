@@ -3,29 +3,41 @@ package Vue;
 
 import Modele.Jeu;
 import Modele.Plateau;
+import Modele.PlateauPiece;
 import Patterns.Observateur;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 
 public abstract class View implements Observateur {
 	
 	double largeurCase, hauteurCase;
-	private final AnchorPane pane;
+	double largeurCasePiece, hauteurCasePiece;
+	private final BorderPane pane;
 	//private final StackPane pane;
 	Jeu jeu;
 	Plateau plateau;
+	PlateauPiece plateauPiece;
 	public View(Jeu j) {
 		jeu = j;
 		plateau = jeu.plateau;
-		pane = new AnchorPane();
+		plateauPiece = jeu.plateauPiece;
+		pane = new BorderPane();
 		//pane = new StackPane();
 	}
 	
-	public AnchorPane getPane() {
+	public BorderPane getPane() {
 		return pane;
 	}
 
+	public double getWidth() {
+		return pane.getWidth();
+	}
+	
+	public double getHeight() {
+		return pane.getHeight();
+	}
+	
 	/*public StackPane getPane() {
 			return pane;
 	}*/
@@ -35,6 +47,7 @@ public abstract class View implements Observateur {
 		return pane.getChildren();
 	}
 	
+	//public abstract void redimension();
 	
 	public abstract void onLaunch();
 	
@@ -51,5 +64,7 @@ public abstract class View implements Observateur {
 	public void onFinish() {
 		
 	}
+
+
 }
 
