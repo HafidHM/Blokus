@@ -14,6 +14,8 @@ public class Jeu extends Observable implements Serializable {
 	ArrayList<Piece> pieces;
 	public ArrayList<int []> coord;
 	public PlateauPiece plateauPiece;
+	LecteurPiece l;
+	String fichierPieces = "resources/Pieces/pieces.txt";
 
 
 	public Jeu(int n) {
@@ -35,6 +37,10 @@ public class Jeu extends Observable implements Serializable {
 		coord = new ArrayList<>();
 		initialiserPieces();
 		initPiecesJoueurs();
+		
+		FileInputStream in = null;
+		in = Configuration.charge(fichierPieces);
+		l = new LecteurPiece(in);
 
 	}
 
