@@ -87,13 +87,18 @@ public class Historique<E> implements HistoriqueInterface<E>  {
     
     
  
-    Jeu copy(Jeu aux,Jeu jeu) {     //// Y a un probleme dans cette fonction parceque vous avez changer la strecture et je sais pas comment vous avez fait pour le plateau
+    Jeu copy(Jeu aux,Jeu jeu) {    
 			for(int i=0; i<20; i++) {
 				for(int j=0; j<20; j++ ) {
 					aux.enCours = jeu.enCours;
 					aux.joueurCourant = jeu.joueurCourant;
-					aux.libre = jeu.libre;   // X
-					aux.plateau[i][j] = jeu.plateau[i][j]; // X
+					aux .piecesJ= jeu.piecesJ;
+					aux.plateau= jeu.plateau;
+					aux.pieces = jeu.pieces;
+					aux.coord = jeu.coord;
+					aux.plateauPiece= jeu.plateauPiece;
+					aux.l = jeu.l;
+					aux.fichierPieces= jeu.fichierPieces;
 				}
 			}
 		return aux;
