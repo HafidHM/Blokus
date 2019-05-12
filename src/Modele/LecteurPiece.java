@@ -12,12 +12,12 @@ public class LecteurPiece {
 	
 	public LecteurPiece(FileInputStream in) {
 		s = new Scanner(in);
-		pieces = new ArrayList <Piece>();
-		nbrPieces = 0;
-		chargePieces();
+		 pieces = new ArrayList <Piece>();
+		 nbrPieces = 0;
+		 chargePieces();
 	}
 	
-	public String lisLigne() { // Lecteur de lignes du SOKOBAN // TODO
+	public String lisLigne() {
 		if (s.hasNextLine()) {
 			String ligne;
 			ligne = s.nextLine();
@@ -78,7 +78,7 @@ public class LecteurPiece {
 						piece.ajout(false,i, j);
 						break;
 					default:
-						System.err.println("Caractère inconnu : " + c);
+						System.err.println("CaractÃ¨re inconnu : " + c);
 					}
 				}
 				ligne = lisLigne();
