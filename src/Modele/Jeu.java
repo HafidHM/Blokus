@@ -1,9 +1,10 @@
 package Modele;
 
 import Patterns.Observable;
-
+import Global.Configuration;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.io.FileInputStream;
 
 
 public class Jeu extends Observable implements Serializable {
