@@ -15,6 +15,18 @@ public class PlateauAffiche {
 	        }
 	 }
 	 
+	 public void AffichePlateau() {
+		 System.out.println("Afficher PlateauAffiche");
+		 for(int i =0;i<p.length;i++) {
+	        	for(int j = 0;j<p[0].length;j++) {
+	        		if(p[i][j]==false)
+	        			System.out.print("0");
+	        		else
+	        			System.out.print("1");
+	        	}
+	        	System.out.println();
+	     }
+	 }
 	 public void PlacerPiece(Piece piece) {
 		 for (int i = 0; i < 5; i++) {
              for (int j = 0; j < 5; j++) {
@@ -50,7 +62,7 @@ public class PlateauAffiche {
 	                carres[i][j] = p[i][5- j - 1];
 	            }
 	      }
-	      setPiece(carres);
+	       setPiece(carres);
 }
 
 }
