@@ -4,10 +4,10 @@ package Modele;
 import javafx.scene.paint.Color;
 
 public class Piece implements PieceInterface  {
-	boolean [][] carres;
+	public boolean [][] carres;
 	Color color;
 	int num;
-	int  taille;
+	public int  taille;
 
 	
 	public Piece(int taille) {
@@ -26,6 +26,18 @@ public class Piece implements PieceInterface  {
 		this.carres = carres;
 	}
 	
+	public void AffichePiece() {
+		System.out.println("Afficher Piece");
+		 for(int i =0;i<taille;i++) {
+	        	for(int j = 0;j<taille;j++) {
+	        		if(carres[i][j]==false)
+	        			System.out.print("0");
+	        		else
+	        			System.out.print("1");
+	        	}
+	        	System.out.println();
+	        }
+	 }
 	
 	@Override
 	public void retationGauche() {
