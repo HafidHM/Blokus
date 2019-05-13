@@ -21,7 +21,10 @@ public class ViewJouer extends View {
 	public ViewJouer(Jeu j) {
 		super(j);
 	}
-
+	double largeurCase, hauteurCase;
+	double largeurCasePiece, hauteurCasePiece;
+	double largeurCaseAffiche, hauteurCaseAffiche;
+	
 	private Button quitBtn;
 	private Button miroirBtn;
 	private Button inversBtn;
@@ -50,7 +53,17 @@ public class ViewJouer extends View {
 			app.exit();
 		}); 
         miroirBtn = new Button("Miroir");
+        miroirBtn.setOnAction((event)->{
+        	jeu.plateauAffiche.Miroir();
+        	jeu.choixPiece(jeu.pieceCourant).Miroir();
+        	miseAJour();
+        });
         inversBtn = new Button("Inverser");
+        inversBtn.setOnAction((event)->{
+        	jeu.plateauAffiche.retationGauche();
+        	jeu.choixPiece(jeu.pieceCourant).retationGauche();
+        	miseAJour();
+        });
         HBox actionBtn = new HBox();
         actionBtn.getChildren().addAll(miroirBtn,inversBtn);
         actionBtn.setSpacing(20);
@@ -87,12 +100,19 @@ public class ViewJouer extends View {
         canPlateau.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
+				c.initAffiche();
 				c.clicSouris(e.getX(), e.getY());
 				System.out.println("X = " + e.getX() + " " + " Y = " + e.getY());
 			}
 		});
         
+        canPiece.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
+			@Override
+			public void handle(MouseEvent e) {
+				c.selectPiece(e.getX(), e.getY());
+			}
+		});
         new AnimationTimer() {
 			@Override
 			public void handle(long now) {
@@ -188,6 +208,8 @@ public class ViewJouer extends View {
 	            
 	
 	            //canAffiche
+	            largeurCaseAffiche = largeurAffiche() / 5;
+	            hauteurCaseAffiche = hauteurAffiche() / 5;
 	            GraphicsContext gAffiche = canAffiche.getGraphicsContext2D();
 	            gAffiche.clearRect(0, 0, largeurPlateau(), hauteurPlateau());
 	            
@@ -195,6 +217,26 @@ public class ViewJouer extends View {
 	            gAffiche.strokeLine(0, 0, largeurAffiche(), 0);
 	            gAffiche.strokeLine(largeurAffiche(), 0, largeurAffiche(), hauteurAffiche());
 	            gAffiche.strokeLine(0, hauteurAffiche(), largeurAffiche(), hauteurAffiche());
+	            
+	            /*for (int i=0; i<6;i++) {
+	                gAffiche.strokeLine(0, i*hauteurCaseAffiche, largeurAffiche(), i*hauteurCaseAffiche);
+	            }
+	            for (int i=0; i<6;i++) {
+	                gAffiche.strokeLine(i*largeurCaseAffiche, 0, i*largeurCaseAffiche, hauteurAffiche());
+	            }*/
+	            
+	            for (int i=0; i<5; i++) {
+	                for (int j=0; j<5; j++) {
+	                   if(plateauAffiche.valeur(i, j)) {
+	                	   	gAffiche.setFill(Color.RED);
+	                	   	gAffiche.fillRect(j*largeurCaseAffiche, i*hauteurCaseAffiche, largeurCaseAffiche, hauteurCaseAffiche);
+	                	   	gAffiche.strokeLine(j*largeurCaseAffiche, i*hauteurCaseAffiche, (j+1)*largeurCaseAffiche, i*hauteurCaseAffiche);
+	                	   	gAffiche.strokeLine(j*largeurCaseAffiche, i*hauteurCaseAffiche, j*largeurCaseAffiche, (i+1)*hauteurCaseAffiche);
+	                	   	gAffiche.strokeLine(j*largeurCaseAffiche, (i+1)*hauteurCaseAffiche, (j+1)*largeurCaseAffiche, (i+1)*hauteurCaseAffiche);
+	                	   	gAffiche.strokeLine((j+1)*largeurCaseAffiche, i*hauteurCaseAffiche, (j+1)*largeurCaseAffiche, (i+1)*hauteurCaseAffiche);
+	                   }
+	                }
+	            }
 	}
 
 	/*@Override
@@ -240,14 +282,27 @@ public class ViewJouer extends View {
 	}
 
 	public double largeurCase() {
-		
 		return largeurCase;
 	}
 
 	public double hauteurCase() {
-		
 		return hauteurCase;
 	}
 
+	public double largeurCasePiece() {
+		return largeurCasePiece;
+	}
+
+	public double hauteurCasePiece() {
+		return hauteurCasePiece;
+	}
+	
+	public double largeurCaseAffiche() {
+		return largeurCaseAffiche;
+	}
+
+	public double hauteurCaseAffiche() {
+		return hauteurCaseAffiche;
+	}
 	
 }
