@@ -16,6 +16,8 @@ public class Jeu extends Observable implements Serializable {
 	public PlateauPiece plateauPiece;
 	public PlateauAffiche plateauAffiche;
 	public int pieceCourant;
+	public int PosPieceL;
+	public int PosPieceC;
 
 
 	public Jeu(int n) {
@@ -71,6 +73,14 @@ public class Jeu extends Observable implements Serializable {
 
 	}
 
+	public void setPieceL(int num) {
+		PosPieceL = num;
+	}
+	
+	public void setPieceC(int num) {
+		PosPieceC = num;
+	}
+	
 	public boolean enCours() {
 		return enCours;
 	}
