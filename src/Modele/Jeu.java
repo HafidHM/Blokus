@@ -114,50 +114,43 @@ public class Jeu extends Observable implements Serializable {
 		Piece p = new Piece(5);
 
 		p.ajout(true, 2, 2);
-		p.num = 1;
+		p.num = 0;
 		pieces.add(p);
 
 		p = new Piece(5);
 		p.ajout(true, 2, 1);
+		p.ajout(true, 2, 2);
+		p.num = 1;
+		pieces.add(p);
+
+		p = new Piece(5);
+		p.ajout(true, 1, 1);
+		p.ajout(true, 1, 2);
 		p.ajout(true, 2, 2);
 		p.num = 2;
 		pieces.add(p);
 
 		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 2);
-		p.num = 3;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 2);
-		p.num = 3;
-		pieces.add(p);
-
-		p = new Piece(5);
 		p.ajout(true, 2, 1);
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
+		p.num = 3;
+		pieces.add(p);
+
+		p = new Piece(5);
+		p.ajout(true, 1, 1);
+		p.ajout(true, 1, 2);
+		p.ajout(true, 2, 1);
+		p.ajout(true, 2, 2);
 		p.num = 4;
 		pieces.add(p);
 
 		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.num = 5;
-		pieces.add(p);
-
-		p = new Piece(5);
 		p.ajout(true, 1, 2);
 		p.ajout(true, 2, 3);
 		p.ajout(true, 2, 1);
 		p.ajout(true, 2, 2);
-		p.num = 6;
+		p.num = 5;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -165,7 +158,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 1);
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
-		p.num = 7;
+		p.num = 6;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -173,7 +166,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
 		p.ajout(true, 1, 3);
-		p.num = 8;
+		p.num = 7;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -181,7 +174,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 1, 3);
 		p.ajout(true, 2, 1);
 		p.ajout(true, 2, 2);
-		p.num = 9;
+		p.num = 8;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -190,7 +183,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
 		p.ajout(true, 2, 4);
-		p.num = 10;
+		p.num = 9;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -199,7 +192,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 3, 2);
 		p.ajout(true, 3, 1);
 		p.ajout(true, 3, 3);
-		p.num = 11;
+		p.num = 10;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -208,7 +201,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 3, 1);
 		p.ajout(true, 3, 2);
 		p.ajout(true, 3, 3);
-		p.num = 12;
+		p.num = 11;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -217,7 +210,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 1, 2);
 		p.ajout(true, 1, 3);
 		p.ajout(true, 1, 4);
-		p.num = 13;
+		p.num = 12;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -226,7 +219,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
 		p.ajout(true, 1, 3);
-		p.num = 14;
+		p.num = 13;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -235,7 +228,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 3, 2);
 		p.ajout(true, 4, 2);
-		p.num = 15;
+		p.num = 14;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -244,7 +237,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 3, 1);
 		p.ajout(true, 3, 2);
-		p.num = 16;
+		p.num = 15;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -253,7 +246,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 1, 2);
 		p.ajout(true, 1,3);
-		p.num = 17;
+		p.num = 16;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -262,7 +255,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 1);
 		p.ajout(true, 3, 1);
 		p.ajout(true, 3,2);
-		p.num = 18;
+		p.num = 17;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -271,7 +264,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
 		p.ajout(true, 1, 3);
-		p.num = 19;
+		p.num = 18;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -280,7 +273,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
 		p.ajout(true, 3, 2);
-		p.num = 20;
+		p.num = 19;
 		pieces.add(p);
 
 		p = new Piece(5);
@@ -289,7 +282,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 2);
 		p.ajout(true, 2, 3);
 		p.ajout(true, 2, 4);
-		p.num = 21;
+		p.num = 20;
 		pieces.add(p);
 
 
