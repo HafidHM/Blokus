@@ -1,14 +1,20 @@
 package Controleur;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import Modele.Jeu;
+import Modele.Piece;
+import Modele.Plateau;
+import Modele.Position;
+import javafx.geometry.Pos;
 
 class JoueurIA extends Joueur {
 	Random r;
 	int MAXPROF = 5;
 
-	JoueurIA(int n, Jeu p) {
-		super(n, p);
+	JoueurIA(int n, Jeu j) {
+		super(n, j);
 		r = new Random();
 	}
 
@@ -16,18 +22,24 @@ class JoueurIA extends Joueur {
 	boolean tempsEcoule() {
 		int i, j;
 		int bound;
+		Position pos;
 
-		int [] ianj = plateau.coord.get(r.nextInt( plateau.coord.size()));
+		if(jeu.coord.size()>0) {
+			pos = jeu.coord.get(r.nextInt(jeu.coord.size()));
+		}else{
+			return false;
+		}
 
-		i = ianj[0];
-		j = ianj[1];
+		i = pos.l;
+		j = pos.c;
 
-		plateau.plateau.availableCases(((plateau.joueurCourant) %4)+1, plateau.coord, plateau.noPiecesPosées());
 
-		if((bound = plateau.piecesJ[plateau.joueurCourant-1].size()) != 0){
+		jeu.plateau.availableCases(((jeu.joueurCourant) %4)+1, jeu.coord, jeu.noPiecesPosées());
+
+		if((bound = jeu.piecesJ[jeu.joueurCourant-1].size()) != 0){
 			num = r.nextInt(bound);
 
-			while(!plateau.jouer(i, j, plateau.choixPiece(num))) {
+			while(!jeu.jouer(i, j, jeu.choixPiece(num))) {
 				num = r.nextInt(bound);
 
 			}
@@ -35,29 +47,71 @@ class JoueurIA extends Joueur {
 			return false;
 		}
 
-		plateau.piecesJ[plateau.joueurCourant - 1].remove(num);
-		plateau.updateJoueurCour();
+
+		jeu.piecesJ[jeu.joueurCourant - 1].remove(num);
+		jeu.updateJoueurCour();
 
 
 		return true;
 	}
 
 	boolean tempsEcouleNonPerdant(){
-		int i,j;
-		i = r.nextInt(plateau.plateau.taille());
-		j = r.nextInt(plateau.plateau.taille());
-		/*while (!plateau.libre(i, j) || (plateau.coupPoison(i,j) && plateau.nonPerdrePossible()) ){
-			i = r.nextInt(plateau.taille());
-			j = r.nextInt(plateau.taille());
-		}*/
-		//plateau.jouer(i, j, piece);
+		int i, j;
+		int bound;
+		Position pos;
+
+		if(jeu.coord.size()>0) {
+			pos = closestToMiddle();
+		}else{
+			return false;
+		}
+
+		i = pos.l;
+		j = pos.c;
+
+
+		jeu.plateau.availableCases(((jeu.joueurCourant) %4)+1, jeu.coord, jeu.noPiecesPosées());
+
+		if((bound = jeu.piecesJ[jeu.joueurCourant-1].size()) != 0){
+			num = r.nextInt(bound);
+
+			while(!jeu.jouer(i, j, jeu.choixPiece(num))) {
+				num = r.nextInt(bound);
+
+			}
+		} else {
+			return false;
+		}
+
+
+		jeu.piecesJ[jeu.joueurCourant - 1].remove(num);
+		jeu.updateJoueurCour();
 		return true;
+	}
+
+	Position closestToMiddle(){
+		Position closest = new Position(0, 0);
+
+		for(Position pos : jeu.coord){
+			if((pos.l > closest.l) && (pos.l <= jeu.plateau.taille()) ||  ((pos.c > closest.c)  && (pos.c <= jeu.plateau.taille()))){
+				closest = pos;
+			} else if((pos.l > closest.l) && (pos.l <= jeu.plateau.taille()) || ((pos.c < closest.c)  && (pos.c >= jeu.plateau.taille()))){
+				closest = pos;
+			} else if((pos.l < closest.l) && (pos.l >= jeu.plateau.taille()) || ((pos.c < closest.c)  && (pos.c >= jeu.plateau.taille()))){
+				closest = pos;
+			} else if((pos.l < closest.l) && (pos.l >= jeu.plateau.taille()) || ((pos.c > closest.c)  && (pos.c <= jeu.plateau.taille()))){
+				closest = pos;
+			}
+		}
+
+		return closest;
+
 	}
 
 	boolean tempsEcouleMinimax(){
 		int iandj [] = new int [2];
 
-		int[][] p =  plateau.plateau.p;
+		int[][] p =  jeu.plateau.p;
 		//nextStep(iandj, p);
 
 		System.out.println("Chosen next step : " + iandj[0] + " " + iandj[1]);
