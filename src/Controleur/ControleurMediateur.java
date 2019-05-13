@@ -52,6 +52,15 @@ public class ControleurMediateur {
 		vjouer.miseAJour();
 
 	}
+	
+	public void PieceAffiche(double x, double y) {
+		int l = (int) (y / vjouer.hauteurCaseAffiche());
+		int c = (int) (x / vjouer.largeurCaseAffiche());
+		System.out.println("l = " + l);
+		System.out.println("c = " + c);
+		jeu.setPieceL(l);
+		jeu.setPieceC(c);
+	}
 
 	public void initAffiche() {
 		jeu.plateauAffiche.initPlateauAffiche();
