@@ -56,12 +56,14 @@ public class ViewJouer extends View {
         miroirBtn.setOnAction((event)->{
         	jeu.plateauAffiche.Miroir();
         	jeu.choixPiece(jeu.pieceCourant).Miroir();
+        	jeu.choixPiece(jeu.pieceCourant).AffichePiece();
         	miseAJour();
         });
         inversBtn = new Button("Inverser");
         inversBtn.setOnAction((event)->{
         	jeu.plateauAffiche.retationGauche();
         	jeu.choixPiece(jeu.pieceCourant).retationGauche();
+        	jeu.choixPiece(jeu.pieceCourant).AffichePiece();
         	miseAJour();
         });
         HBox actionBtn = new HBox();
@@ -181,7 +183,6 @@ public class ViewJouer extends View {
 	            
 	            GraphicsContext gPiece = canPiece.getGraphicsContext2D();
 	            gPiece.clearRect(0, 0, largeurPiece(), hauteurPiece());
-	            System.out.println("larPiece = " + largeurPiece());
 	            gPiece.strokeLine(0, 0, 0, hauteurPiece());
 	            gPiece.strokeLine(0, 0, largeurPiece(), 0);
 	            gPiece.strokeLine(largeurPiece(), 0, largeurPiece(), hauteurPiece());
@@ -192,10 +193,10 @@ public class ViewJouer extends View {
 	            for (int i=0; i<24;i++) {
 	                gPiece.strokeLine(i*largeurCasePiece, 0, i*largeurCasePiece, hauteurPiece());
 	            }*/
-	            System.out.println("(3,15) = " + plateauPiece.valeur(3, 15));
+	            
 	            for (int i=0; i<12; i++) {
 	                for (int j=0; j<23; j++) {
-	                   if(plateauPiece.valeur(i, j)!=0) {
+	                   if(plateauPiece.valeur(i, j)>=0) {
 	                	   	gPiece.setFill(Color.RED);
 	                	   	gPiece.fillRect(j*largeurCasePiece, i*hauteurCasePiece, largeurCasePiece, hauteurCasePiece);
 	                	   	gPiece.strokeLine(j*largeurCasePiece, i*hauteurCasePiece, (j+1)*largeurCasePiece, i*hauteurCasePiece);
