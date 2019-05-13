@@ -1,5 +1,7 @@
 package Modele;
 
+import javafx.geometry.Pos;
+
 import java.util.ArrayList;
 
 public class Plateau implements PlateauInterface {
@@ -27,28 +29,28 @@ public class Plateau implements PlateauInterface {
     }
 
     // Marque les cases où une pièce peut être posée. // TODO // INCOMPLET : CAS OU LA PIECE EST A 1 DU BORD
-    public void availableCases(int player, ArrayList<int []> coord, boolean noPieces){
+    public void availableCases(int player, ArrayList<Position> coord, boolean noPieces){
 
         if (!noPieces) {
 
-            for (int[] iandj : coord) { // On enlève toutes les cases disponibles du joueur précédent
-                p[iandj[0]][iandj[1]] = 0;
+            for (Position pos : coord) { // On enlève toutes les cases disponibles du joueur précédent
+                p[pos.l][pos.c] = 0;
 
             }
             coord.clear();
 
-            for (int i = 1; i < taille() - 1; i++) {
-                for (int j = 1; j < taille() - 1; j++) {
+            for (int i = 0; i < taille(); i++) {
+                for (int j = 0; j < taille(); j++) {
                     if (placeNearby(i, j, player)) {
                         p[i][j] = 8;
-                        int[] c = {i, j};
-                        coord.add(c);
+                        Position pos = new Position(i, j);
+                        coord.add(pos);
                     }
                 }
             }
 
         } else {
-            int[] c = new int[2];
+            Position pos;
             switch (player){
                 case 1:
                     p[taille()-1][taille()-1] = 0;
@@ -58,60 +60,56 @@ public class Plateau implements PlateauInterface {
                     p[taille()-1][0] = 0;
                     p[0][0] = 8;
 
-                    c[0] = 0;
-                    c[1] = 0;
-                    coord.add(c);
+                    pos = new Position(0, 0);
+                    coord.add(pos);
                     break;
                 case 3:
                     coord.clear();
                     p[0][0] = 0;
                     p[0][taille()-1] = 8;
 
-                    c[0] = 0;
-                    c[1] = taille()-1;
-                    coord.add(c);
+                    pos = new Position(0, taille()-1);
+                    coord.add(pos);
                     break;
                 case 4:
                     coord.clear();
                     p[0][taille()-1] = 0;
                     p[taille()-1][taille()-1] = 8;
 
-                    c[0] = taille()-1;
-                    c[1] = taille()-1;
-                    coord.add(c);
+                    pos = new Position(taille()-1, taille()-1);
+                    coord.add(pos);
                     break;
             }
         }
 
     }
 
-    // Cherche une case de pièce sur les angles
     public boolean placeNearby(int i, int j, int player) {
-        if (p[i][j] != 0 ) {
+        if (p[i][j]!=0)
             return false;
-
-        } else if (!caseNearby(i, j, player)){
-            if((p[i+1][j+1] == player) || (p[i+1][j-1] == player) || (p[i-1][j+1] == player) || (p[i-1][j-1] == player)){
-                return true;
-            }
+        else if(caseNearby(i,j,player))
+            return false;
+        else{
+            boolean res=false;
+            if(!(horsBord(new Position(i+1,j+1)))) res=res||p[i+1][j+1] == player;
+            if(!(horsBord(new Position(i+1,j-1)))) res=res||p[i+1][j-1] == player;
+            if(!(horsBord(new Position(i-1,j+1)))) res=res||p[i-1][j+1] == player;
+            if(!(horsBord(new Position(i-1,j-1)))) res=res||p[i-1][j-1] == player;
+            return res;
         }
-
-        return false;
+    }
+    public boolean caseNearby(int i, int j, int player){
+        boolean res = false;
+        if(!horsBord(new Position(i+1,j))) res = res || (p[i+1][j] == player);
+        if(!horsBord(new Position(i-1,j))) res = res || (p[i-1][j] == player);
+        if(!horsBord(new Position(i,j+1))) res = res || (p[i][j+1] == player);
+        if(!horsBord(new Position(i,j-1))) res = res || (p[i][j-1] == player);
+        return res;
     }
 
-    // Cherche si il y a une case libre "connectée" a une case de pièce.
-    public boolean caseNearby(int i, int j, int player){
+    public boolean horsBord(Position p){
 
-        if ((p[i+1][j] == player)  ||
-                (p[i-1][j] == player) ||
-                (p[i][j+1] == player) ||
-                (p[i][j-1] == player)) {
-            return true;
-        } else {
-            return false;
-        }
-
-
+        return p.l<0 || p.l>=taille() || p.c<0 || p.c>=taille();
     }
 
 }
