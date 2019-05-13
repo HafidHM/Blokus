@@ -17,7 +17,7 @@ public class Plateau implements PlateauInterface {
     }
 
     public boolean jouable(int i, int j) {
-        return valeur(i, j) == 8;
+        return valeur(i, j) == 8 ||  valeur(i, j) == 0;
     }
 
     public int valeur(int i, int j) {
@@ -34,7 +34,7 @@ public class Plateau implements PlateauInterface {
         if (!noPieces) {
 
             for (Position pos : coord) { // On enlève toutes les cases disponibles du joueur précédent
-                p[pos.l][pos.c] = 0;
+                p[pos.l][pos.c] = -1;
 
             }
             coord.clear();
@@ -52,28 +52,28 @@ public class Plateau implements PlateauInterface {
         } else {
             Position pos;
             switch (player){
-                case 1:
-                    p[taille()-1][taille()-1] = 0;
+                case 0:
+                    p[taille()-1][taille()-1] = -1;
                     break;
-                case 2:
+                case 1:
                     coord.clear();
-                    p[taille()-1][0] = 0;
+                    p[taille()-1][0] = -1;
                     p[0][0] = 8;
 
                     pos = new Position(0, 0);
                     coord.add(pos);
                     break;
-                case 3:
+                case 2:
                     coord.clear();
-                    p[0][0] = 0;
+                    p[0][0] = -1;
                     p[0][taille()-1] = 8;
 
                     pos = new Position(0, taille()-1);
                     coord.add(pos);
                     break;
-                case 4:
+                case 3:
                     coord.clear();
-                    p[0][taille()-1] = 0;
+                    p[0][taille()-1] = -1;
                     p[taille()-1][taille()-1] = 8;
 
                     pos = new Position(taille()-1, taille()-1);
@@ -85,7 +85,7 @@ public class Plateau implements PlateauInterface {
     }
 
     public boolean placeNearby(int i, int j, int player) {
-        if (p[i][j]!=0)
+        if (p[i][j]!=-1)
             return false;
         else if(caseNearby(i,j,player))
             return false;
