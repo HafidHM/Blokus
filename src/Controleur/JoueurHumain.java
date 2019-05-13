@@ -19,16 +19,16 @@ class JoueurHumain extends Joueur {
 
 		if (jeu.plateau.jouable(i, j)) {
 			int bound, num;
-			if((bound = jeu.piecesJ[jeu.joueurCourant-1].size()) != 0){
+			if((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0){
 				num = r.nextInt(bound);
 			} else {
 				return false;
 			}
-			jeu.plateau.availableCases(((jeu.joueurCourant) %4)+1, jeu.coord, jeu.noPiecesPosées());
+			jeu.plateau.availableCases(((jeu.joueurCourant+1) %4), jeu.coord, jeu.noPiecesPosées());
 
 			// Joueur ???
 			if(jeu.jouer(i, j, jeu.choixPiece(num))){
-				jeu.piecesJ[jeu.joueurCourant-1].remove(num);
+				jeu.piecesJ[jeu.joueurCourant].remove(num);
 				jeu.updateJoueurCour();
 				return true;
 			}else {
