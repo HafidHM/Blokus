@@ -2,13 +2,16 @@ package Controleur;
 
 import Modele.Jeu;
 
+import java.util.ArrayList;
+
+
 abstract class Joueur {
-	Jeu plateau;
+	Jeu jeu;
 	int num;
 
-	Joueur(int n, Jeu p) {
+	Joueur(int n, Jeu j) {
 		num = n;
-		plateau = p;
+		jeu = j;
 	}
 
 	int num() {
