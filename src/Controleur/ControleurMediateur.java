@@ -46,11 +46,11 @@ public class ControleurMediateur {
 	public void selectPiece(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCasePiece());
 		int c = (int) (x / vjouer.largeurCasePiece());
-		
+
 		jeu.plateauAffiche.PlacerPiece(jeu.choixPiece(jeu.plateauPiece.valeur(l,c)));
-		System.out.println("valeur est " +jeu.plateauPiece.valeur(l,c));
 		jeu.setSelected(jeu.plateauPiece.valeur(l,c));
 		vjouer.miseAJour();
+
 	}
 
 	public void initAffiche() {
