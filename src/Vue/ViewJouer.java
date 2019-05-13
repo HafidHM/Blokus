@@ -52,6 +52,7 @@ public class ViewJouer extends View {
         quitBtn.setOnAction((event)->{
 			app.exit();
 		}); 
+        
         miroirBtn = new Button("Miroir");
         miroirBtn.setOnAction((event)->{
         	jeu.plateauAffiche.Miroir();
@@ -59,6 +60,7 @@ public class ViewJouer extends View {
         	jeu.choixPiece(jeu.pieceCourant).AffichePiece();
         	miseAJour();
         });
+        
         inversBtn = new Button("Inverser");
         inversBtn.setOnAction((event)->{
         	jeu.plateauAffiche.retationGauche();
@@ -66,6 +68,7 @@ public class ViewJouer extends View {
         	jeu.choixPiece(jeu.pieceCourant).AffichePiece();
         	miseAJour();
         });
+        
         HBox actionBtn = new HBox();
         actionBtn.getChildren().addAll(miroirBtn,inversBtn);
         actionBtn.setSpacing(20);
@@ -113,6 +116,14 @@ public class ViewJouer extends View {
 			@Override
 			public void handle(MouseEvent e) {
 				c.selectPiece(e.getX(), e.getY());
+			}
+		});
+        
+        canAffiche.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				c.PieceAffiche(e.getX(), e.getY());
 			}
 		});
         new AnimationTimer() {
