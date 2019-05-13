@@ -15,7 +15,7 @@ public class Jeu extends Observable implements Serializable {
 	public ArrayList<Position> coord;
 	public PlateauPiece plateauPiece;
 	public PlateauAffiche plateauAffiche;
-
+	public int pieceCourant;
 
 
 	public Jeu(int n) {
@@ -294,7 +294,9 @@ public class Jeu extends Observable implements Serializable {
 
 
 	}
-
+	public void setSelected(int num) {
+		pieceCourant = num;
+	}
 	public void initPiecesJoueurs() {
 		for (int i = 0; i < 4; i++) {
 			piecesJ[i] = new ArrayList<>();
