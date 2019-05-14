@@ -1,4 +1,4 @@
-package Modele;
+package Controleur.Modele;
 
 
 import javafx.scene.paint.Color;
