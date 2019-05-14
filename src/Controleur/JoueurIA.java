@@ -1,13 +1,8 @@
 package Controleur;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import Modele.Jeu;
-import Modele.Piece;
-import Modele.Plateau;
-import Modele.Position;
-import javafx.geometry.Pos;
+import Controleur.Modele.Jeu;
+import Controleur.Modele.Position;
 
 class JoueurIA extends Joueur {
 	Random r;
@@ -18,7 +13,7 @@ class JoueurIA extends Joueur {
 		r = new Random();
 	}
 
-	@Override
+	@Override/*
 	boolean tempsEcoule() {
 		int i, j;
 		int bound;
@@ -53,7 +48,7 @@ class JoueurIA extends Joueur {
 
 
 		return true;
-	}
+}
 
 	boolean tempsEcouleNonPerdant(){
 		int i, j;
@@ -107,7 +102,7 @@ class JoueurIA extends Joueur {
 		return closest;
 
 	}
-
+*/
 	boolean tempsEcouleMinimax(){
 		int iandj [] = new int [2];
 
