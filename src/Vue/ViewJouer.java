@@ -2,7 +2,7 @@ package Vue;
 import static blokus.Framework.app;
 
 import Controleur.ControleurMediateur;
-import Controleur.Modele.Jeu;
+import Modele.Jeu;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
