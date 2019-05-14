@@ -1,8 +1,8 @@
 package Controleur;
 
 import java.util.Random;
-import Controleur.Modele.Jeu;
-import Controleur.Modele.Position;
+import Modele.Jeu;
+import Modele.Position;
 
 class JoueurIA extends Joueur {
 	Random r;
