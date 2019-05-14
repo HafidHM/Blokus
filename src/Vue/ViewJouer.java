@@ -2,7 +2,7 @@ package Vue;
 import static blokus.Framework.app;
 
 import Controleur.ControleurMediateur;
-import Modele.Jeu;
+import Controleur.Modele.Jeu;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -164,21 +164,21 @@ public class ViewJouer extends View {
 	            for (int i=0; i<lignes; i++)
 	                for (int j=0; j<colonnes; j++)
 	                    switch (plateau.valeur(i, j)) {
-	                        case 0:
+	                        case -1:
 	                            break;
-	                        case 1:
+	                        case 0:
 	                            gPlateau.setFill(Color.DARKOLIVEGREEN);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
-	                        case 2:
+	                        case 1:
 	                            gPlateau.setFill(Color.DARKSLATEBLUE);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
-	                        case 3:
+	                        case 2:
 	                            gPlateau.setFill(Color.YELLOW);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
-	                        case 4:
+	                        case 3:
 	                            gPlateau.setFill(Color.INDIANRED);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
