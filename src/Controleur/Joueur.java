@@ -1,8 +1,8 @@
 package Controleur;
 
-import Modele.Jeu;
-
-import java.util.ArrayList;
+import Controleur.Modele.Jeu;
+import Controleur.Modele.Piece;
+import Controleur.Modele.Position;
 
 
 abstract class Joueur {
@@ -26,7 +26,7 @@ abstract class Joueur {
 	}
 	boolean tempsEcouleMinimax() {return false;}
 
-	boolean jeu(int i, int j) {
+	boolean jeu(Position posPlateau, Position posPiece, Piece p) {
 		return false;
 	}
 
