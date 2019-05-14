@@ -65,11 +65,11 @@ public class Jeu extends Observable implements Serializable {
 		enCours = true;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
-				plateau.newVal(i, j, 0);
+				plateau.newVal(i, j, -1);
 
 		plateau.newVal(plateau.taille()-1,0, 8);
 
-		joueurCourant = 1;
+		joueurCourant = 0;
 
 		pieces = new ArrayList<>();
 		piecesJ = new ArrayList[4]; // TODO ???

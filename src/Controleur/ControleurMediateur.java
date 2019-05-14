@@ -9,15 +9,15 @@ public class ControleurMediateur {
 	Jeu jeu;
 	ViewJouer vjouer;
 	Joueur[] joueurs;
-    boolean jeuAutomatique;
+	boolean jeuAutomatique;
 	int joueurCourant;
 	final int lenteurAttente = 50;
 	int decompte;
-    String niv;
+	String niv;
 	public ControleurMediateur(Jeu j, ViewJouer v) {
 		jeu = j;
 		vjouer = v;
-        jeuAutomatique = false;
+		jeuAutomatique = false;
 		joueurs = new Joueur[4];
 		joueurs[0] = new JoueurHumain(0, jeu);
 		niv = "Easy";
@@ -43,7 +43,7 @@ public class ControleurMediateur {
 		if (joueurs[joueurCourant].jeu(posPlateau,posPiece,p))
 			changeJoueur();
 	}
-	
+
 	public void selectPiece(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCasePiece());
 		int c = (int) (x / vjouer.largeurCasePiece());
@@ -107,7 +107,8 @@ public class ControleurMediateur {
 					decompte--;
 			}
 		}
-            
 	}
-        
+
+}
+
 
