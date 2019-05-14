@@ -1,4 +1,4 @@
-package Modele;
+package Controleur.Modele;
 
 public class PlateauPiece {
 	public int[][] p;
@@ -6,7 +6,6 @@ public class PlateauPiece {
 	public PlateauPiece(){
         p = new int[12][23];
     }
-
     public void initPlateauPiece() {
         for(int i =0;i<p.length;i++) {
         	for(int j = 0;j<p[0].length;j++) {
@@ -125,9 +124,7 @@ public class PlateauPiece {
         
         
     }
-    
     public int valeur(int i, int j) {
         return p[i][j];
     }
-
 }
