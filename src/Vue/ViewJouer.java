@@ -52,18 +52,23 @@ public class ViewJouer extends View {
         quitBtn.setOnAction((event)->{
 			app.exit();
 		}); 
+        
         miroirBtn = new Button("Miroir");
         miroirBtn.setOnAction((event)->{
         	jeu.plateauAffiche.Miroir();
         	jeu.choixPiece(jeu.pieceCourant).Miroir();
+        	jeu.choixPiece(jeu.pieceCourant).AffichePiece();
         	miseAJour();
         });
+        
         inversBtn = new Button("Inverser");
         inversBtn.setOnAction((event)->{
         	jeu.plateauAffiche.retationGauche();
         	jeu.choixPiece(jeu.pieceCourant).retationGauche();
+        	jeu.choixPiece(jeu.pieceCourant).AffichePiece();
         	miseAJour();
         });
+        
         HBox actionBtn = new HBox();
         actionBtn.getChildren().addAll(miroirBtn,inversBtn);
         actionBtn.setSpacing(20);
@@ -113,6 +118,14 @@ public class ViewJouer extends View {
 				c.selectPiece(e.getX(), e.getY());
 			}
 		});
+        
+        canAffiche.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				c.PieceAffiche(e.getX(), e.getY());
+			}
+		});
         new AnimationTimer() {
 			@Override
 			public void handle(long now) {
@@ -151,21 +164,21 @@ public class ViewJouer extends View {
 	            for (int i=0; i<lignes; i++)
 	                for (int j=0; j<colonnes; j++)
 	                    switch (plateau.valeur(i, j)) {
-	                        case 0:
+	                        case -1:
 	                            break;
-	                        case 1:
+	                        case 0:
 	                            gPlateau.setFill(Color.DARKOLIVEGREEN);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
-	                        case 2:
+	                        case 1:
 	                            gPlateau.setFill(Color.DARKSLATEBLUE);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
-	                        case 3:
+	                        case 2:
 	                            gPlateau.setFill(Color.YELLOW);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
-	                        case 4:
+	                        case 3:
 	                            gPlateau.setFill(Color.INDIANRED);
 	                            gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
 	                            break;
@@ -181,7 +194,6 @@ public class ViewJouer extends View {
 	            
 	            GraphicsContext gPiece = canPiece.getGraphicsContext2D();
 	            gPiece.clearRect(0, 0, largeurPiece(), hauteurPiece());
-	            System.out.println("larPiece = " + largeurPiece());
 	            gPiece.strokeLine(0, 0, 0, hauteurPiece());
 	            gPiece.strokeLine(0, 0, largeurPiece(), 0);
 	            gPiece.strokeLine(largeurPiece(), 0, largeurPiece(), hauteurPiece());
@@ -192,10 +204,10 @@ public class ViewJouer extends View {
 	            for (int i=0; i<24;i++) {
 	                gPiece.strokeLine(i*largeurCasePiece, 0, i*largeurCasePiece, hauteurPiece());
 	            }*/
-	            System.out.println("(3,15) = " + plateauPiece.valeur(3, 15));
+	            
 	            for (int i=0; i<12; i++) {
 	                for (int j=0; j<23; j++) {
-	                   if(plateauPiece.valeur(i, j)!=0) {
+	                   if(plateauPiece.valeur(i, j)>=0) {
 	                	   	gPiece.setFill(Color.RED);
 	                	   	gPiece.fillRect(j*largeurCasePiece, i*hauteurCasePiece, largeurCasePiece, hauteurCasePiece);
 	                	   	gPiece.strokeLine(j*largeurCasePiece, i*hauteurCasePiece, (j+1)*largeurCasePiece, i*hauteurCasePiece);
