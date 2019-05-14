@@ -1,4 +1,4 @@
-package Controleur.Modele;
+package Modele;
 
 public class PlateauAffiche {
 	boolean[][] p;
