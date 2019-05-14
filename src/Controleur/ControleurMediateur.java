@@ -1,6 +1,8 @@
 package Controleur;
 
-import Modele.Jeu;
+import Controleur.Modele.Jeu;
+import Controleur.Modele.Piece;
+import Controleur.Modele.Position;
 import Vue.ViewJouer;
 
 public class ControleurMediateur {
@@ -28,29 +30,26 @@ public class ControleurMediateur {
 			joueurs[2] = new JoueurHumain(2, jeu);
 			joueurs[3] = new JoueurHumain(3, jeu);
 		}
-  
 	}
-
 	public void redimensionnement() {
 		vjouer.miseAJour();
 	}
-
 	public void clicSouris(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCase());
 		int c = (int) (x / vjouer.largeurCase());
-		
-		if (joueurs[joueurCourant].jeu(l, c))
+		Position posPlateau = new Position(l,c);
+		Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
+		Piece p = jeu.choixPiece(jeu.pieceCourant);
+		if (joueurs[joueurCourant].jeu(posPlateau,posPiece,p))
 			changeJoueur();
 	}
 	
 	public void selectPiece(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCasePiece());
 		int c = (int) (x / vjouer.largeurCasePiece());
-
 		jeu.plateauAffiche.PlacerPiece(jeu.choixPiece(jeu.plateauPiece.valeur(l,c)));
 		jeu.setSelected(jeu.plateauPiece.valeur(l,c));
 		vjouer.miseAJour();
-
 	}
 	
 	public void PieceAffiche(double x, double y) {
@@ -66,8 +65,6 @@ public class ControleurMediateur {
 		jeu.plateauAffiche.initPlateauAffiche();
 		vjouer.miseAJour();
 	}
-	
-
 	void changeJoueur() {
 		joueurCourant = (joueurCourant + 1) % joueurs.length;
 		decompte = lenteurAttente;
@@ -104,11 +101,11 @@ public class ControleurMediateur {
 				} else {
 						//System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
 						decompte = lenteurAttente;
-	                                        
 				}
-			} else {
+			}
+			else{
 					decompte--;
-				}          
+			}
 		}
             
 	}
