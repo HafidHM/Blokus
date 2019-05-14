@@ -1,4 +1,4 @@
-package Controleur.Modele;
+package Modele;
 
 import java.util.ArrayList;
 
