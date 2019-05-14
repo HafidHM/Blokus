@@ -70,45 +70,43 @@ public class ControleurMediateur {
 		decompte = lenteurAttente;
 	}
 
-       /* public boolean choisirNiveau(String niveau){
-            if(!niv.equals(niveau)){
-                System.out.println("Vous avez choisit " + niveau);
-                niv=niveau;
-            } 
-            switch(niveau){
-                case "Easy":return joueurs[joueurCourant].tempsEcoule();
-                case "Medium":return joueurs[joueurCourant].tempsEcouleNonPertant();
-                case "Hard": return joueurs[joueurCourant].tempsEcouleMinimax();
-                default:return false;
-            }
-        }*/
-        public void basculeIA(boolean value) {
-        	jeuAutomatique = value;
-        	System.out.println("jeuautomatique " + jeuAutomatique);
-        	//f.changeBoutonIA(value);
-            if (jeuAutomatique)
-            	joueurs[1] = new JoueurIA(1, jeu);
-            else
-            	joueurs[1] = new JoueurHumain(1, jeu);
-        }
-        
-        public void tictac() {
-			if (jeu.enCours()) {
-				if (decompte == 0) {
-					//if (choisirNiveau(f.ecouteurNiveau())) {
-					if(joueurs[joueurCourant].tempsEcoule())
-						changeJoueur();
-				} else {
-						//System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
-						decompte = lenteurAttente;
-				}
-			}
-			else{
-					decompte--;
+	/* public boolean choisirNiveau(String niveau){
+		if(!niv.equals(niveau)){
+			System.out.println("Vous avez choisit " + niveau);
+			niv=niveau;
+		} 
+		switch(niveau){
+			case "Easy":return joueurs[joueurCourant].tempsEcoule();
+			case "Medium":return joueurs[joueurCourant].tempsEcouleNonPertant();
+			case "Hard": return joueurs[joueurCourant].tempsEcouleMinimax();
+			default:return false;
+		}
+	}*/
+	public void basculeIA(boolean value) {
+		jeuAutomatique = value;
+		System.out.println("jeuautomatique " + jeuAutomatique);
+		//f.changeBoutonIA(value);
+		if (jeuAutomatique)
+			joueurs[1] = new JoueurIA(1, jeu);
+		else
+			joueurs[1] = new JoueurHumain(1, jeu);
+	}
+	
+	public void tictac() {
+		if (jeu.enCours()) {
+			if (decompte == 0) {
+				//if (choisirNiveau(f.ecouteurNiveau())) {
+				if(joueurs[joueurCourant].tempsEcoule())
+					changeJoueur();
+			} else {
+					//System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
+					decompte = lenteurAttente;
 			}
 		}
+		else{
+				decompte--;
+		}
 	}
-
 }
 
 
