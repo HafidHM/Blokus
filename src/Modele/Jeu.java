@@ -11,16 +11,20 @@ public class Jeu extends Observable implements Serializable {
 	public Plateau plateau;
 	ArrayList<Piece> pieces;
 	public ArrayList<Position> coord;
-	public PlateauPiece plateauPiece;
-	public PlateauAffiche plateauAffiche;
-	public int pieceCourant;
+	public Plateau[] plateauPiece;
+	public Plateau plateauAffiche;
+	public Piece pieceCourant;
 	public int PosPieceL;
 	public int PosPieceC;
 
 	public Jeu(int n) {
-		plateau = new Plateau(n);
-		plateauPiece = new PlateauPiece();
-		plateauAffiche = new PlateauAffiche();
+		plateau = new Plateau(n,n);
+		plateauPiece = new Plateau[4];
+		for (int i = 0; i < 4; i++) {
+			plateauPiece[i] = new Plateau(12, 23);
+			plateauPiece[i].initPlateauPiece();
+		}
+		plateauAffiche = new Plateau(5,5);
 		enCours = true;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
@@ -32,7 +36,7 @@ public class Jeu extends Observable implements Serializable {
 		coord = new ArrayList<>();
 		initialiserPieces();
 		initPiecesJoueurs();
-		plateauPiece.initPlateauPiece();
+		
 		plateauAffiche.initPlateauAffiche();
 	}
 	public void jouer(Position posPlateau, Position posPiece, Piece p){
@@ -55,7 +59,14 @@ public class Jeu extends Observable implements Serializable {
 		PosPieceC = num;
 	}
 	public void setSelected(int num) {
-		pieceCourant = num;
+		pieceCourant = new Piece(5);
+		for(int i=0;i<5;i++) {
+			for(int j=0;j<5;j++) {
+				if(pieces.get(num).carres[i][j])
+					pieceCourant.ajout(true, i, j);
+			}
+		}
+		pieceCourant.num = pieces.get(num).num;
 	}
 	public boolean enCours() {
 		return enCours;
@@ -65,11 +76,11 @@ public class Jeu extends Observable implements Serializable {
 		enCours = true;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
-				plateau.newVal(i, j, -1);
+				plateau.newVal(i, j, 0);
 
 		plateau.newVal(plateau.taille()-1,0, 8);
 
-		joueurCourant = 0;
+		joueurCourant = 1;
 
 		pieces = new ArrayList<>();
 		piecesJ = new ArrayList[4]; // TODO ???
@@ -265,9 +276,7 @@ public class Jeu extends Observable implements Serializable {
 
 
 	}
-	public Piece choixPiece(int num){
-		return pieces.get(num);
-	}
+
 	public boolean noPiecesPosées(){
    		return piecesJ[((joueurCourant+1) %4)].size() == pieces.size();
 	}
