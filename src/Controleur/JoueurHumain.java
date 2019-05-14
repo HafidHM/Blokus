@@ -1,7 +1,7 @@
 package Controleur;
-import Controleur.Modele.Jeu;
-import Controleur.Modele.Piece;
-import Controleur.Modele.Position;
+import Modele.Jeu;
+import Modele.Piece;
+import Modele.Position;
 
 class JoueurHumain extends Joueur {
 	JoueurHumain(int n, Jeu p) {
