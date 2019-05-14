@@ -1,43 +1,19 @@
 package Controleur;
-
-import Modele.Jeu;
-import Modele.Piece;
-
-import java.util.InputMismatchException;
-import java.util.Random;
-import java.util.Scanner;
+import Controleur.Modele.Jeu;
+import Controleur.Modele.Piece;
+import Controleur.Modele.Position;
 
 class JoueurHumain extends Joueur {
-	Random r;
 	JoueurHumain(int n, Jeu p) {
 		super(n, p);
-		r = new Random();
 	}
-
-	@Override
-	boolean jeu(int i, int j) {
-
-		if (jeu.plateau.jouable(i, j)) {
-			int bound, num;
-			if((bound = jeu.piecesJ[jeu.joueurCourant-1].size()) != 0){
-				num = r.nextInt(bound);
-			} else {
-				return false;
-			}
-			jeu.plateau.availableCases(((jeu.joueurCourant) %4)+1, jeu.coord, jeu.noPiecesPosées());
-
-			// Joueur ???
-			if(jeu.jouer(i, j, jeu.choixPiece(num))){
-				jeu.piecesJ[jeu.joueurCourant-1].remove(num);
-				jeu.updateJoueurCour();
-				return true;
-			}else {
-				return false;
-			}
-
+	boolean jeu(Position posPlateau,Position posPiece,Piece choix) {
+		if (jeu.placerPossible(posPlateau,posPiece,choix)) {
+			jeu.jouer(posPlateau,posPiece,choix);
+			jeu.piecesJ[jeu.joueurCourant].remove(choix.getNum());
+			return true;
 		} else {
 			return false;
 		}
 	}
-
 }
