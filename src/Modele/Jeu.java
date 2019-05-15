@@ -280,17 +280,23 @@ public class Jeu extends Observable implements Serializable {
 	public boolean noPiecesPosées(){
    		return piecesJ[((joueurCourant+1) %4)].size() == pieces.size();
 	}
-	public boolean libre(Position posPlateau, Position posPiece, Piece p) {
+    public boolean libre(Position posPlateau, Position posPiece, Piece p) {
 		boolean lib = true;
 		boolean dans = false;
 		int debutI = posPlateau.l-posPiece.l;
 		int debutJ = posPlateau.c-posPiece.c;
 		for(int i=0;i<p.taille;i++){
 			for(int j=0;j<p.taille;j++){
-				if (p.carres[i][j] && !(plateau.p[debutI+i][debutJ+j]==-1|| plateau.p[debutI+i][debutJ+j]==8))
-					lib = false;
-				if(p.carres[i][j] && plateau.p[debutI+i][debutJ+j]==8)
-					dans = true;
+				if (p.carres[i][j]) {
+					if(plateau.horsBord(new Position(debutI+i,debutJ+j)))
+						return false;
+					else {
+						if(!(plateau.p[debutI+i][debutJ+j]==-1|| plateau.p[debutI+i][debutJ+j]==8))
+							lib = false;
+						if(plateau.p[debutI+i][debutJ+j]==8)
+							dans = true;
+					}
+				}
 			}
 		}
 		return lib && dans;
