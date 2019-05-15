@@ -4,20 +4,23 @@ import Modele.Jeu;
 import Modele.Piece;
 import Modele.Position;
 import Vue.ViewJouer;
+import Vue.ViewParametre;
 
 public class ControleurMediateur {
 	Jeu jeu;
 	ViewJouer vjouer;
-	Joueur[] joueurs;
+	ViewParametre vPara;
+	public Joueur[] joueurs;
     boolean jeuAutomatique;
 	int joueurCourant;
 	final int lenteurAttente = 50;
 	int decompte;
     String niv;
-	public ControleurMediateur(Jeu j, ViewJouer v) {
+	public ControleurMediateur(Jeu j, ViewJouer vj, ViewParametre vp) {
 		jeu = j;
-		vjouer = v;
-        jeuAutomatique = false;
+		vjouer = vj;
+		vPara = vp;
+        jeuAutomatique = true;
 		joueurs = new Joueur[4];
 		joueurs[0] = new JoueurHumain(0, jeu);
 		niv = "Easy";
@@ -31,6 +34,17 @@ public class ControleurMediateur {
 			joueurs[3] = new JoueurHumain(3, jeu);
 		}
 	}
+	
+	public void setHumain(int order) {
+		joueurs[order] = new JoueurHumain(order, jeu); 
+		System.out.println("joueur " + order + " est humain");
+	}
+	
+	public void setIA(int order) {
+		joueurs[order] = new JoueurIA(order, jeu); 
+		System.out.println("joueur " + order + " est IA");
+	}
+	
 	public void redimensionnement() {
 		vjouer.miseAJour();
 	}
@@ -101,19 +115,20 @@ public class ControleurMediateur {
         public void tictac() {
 			if (jeu.enCours()) {
 				if (decompte == 0) {
-					//if (choisirNiveau(f.ecouteurNiveau())) {
-					if(joueurs[joueurCourant].tempsEcoule())
+					System.out.println("joueur courant " + joueurCourant);
+					System.out.println("joueurs[joueurCourant].tempsEcoule()" + joueurs[joueurCourant].tempsEcoule());
+					if(joueurs[joueurCourant].tempsEcoule()) 
 						changeJoueur();
-				} else {
-						//System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
+					else {
+						System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
 						decompte = lenteurAttente;
+					}
+				}
+				else{
+					decompte--;
 				}
 			}
-			else{
-					decompte--;
-			}
-		}
-            
+        }    
 	}
         
 
