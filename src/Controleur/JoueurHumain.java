@@ -3,8 +3,8 @@ import Modele.Jeu;
 import Modele.Piece;
 import Modele.Position;
 
-class JoueurHumain extends Joueur {
-	JoueurHumain(int n, Jeu p) {
+public class JoueurHumain extends Joueur {
+	public JoueurHumain(int n, Jeu p) {
 		super(n, p);
 	}
 	boolean jeu(Position posPlateau,Position posPiece,Piece choix) {
@@ -16,4 +16,6 @@ class JoueurHumain extends Joueur {
 			return false;
 		}
 	}
+	
+	
 }
