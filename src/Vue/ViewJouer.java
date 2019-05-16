@@ -22,6 +22,7 @@ public class ViewJouer extends View {
 	public ViewJouer(Jeu j) {
 		super(j);
 	}
+
 	double largeurCase, hauteurCase;
 	double largeurCasePiece, hauteurCasePiece;
 	double largeurCaseAffiche, hauteurCaseAffiche;
@@ -49,7 +50,8 @@ public class ViewJouer extends View {
 	
 	@Override
 	public void onLaunch() {	
-		ControleurMediateur c = new ControleurMediateur(jeu,this);
+		ViewParametre vp = (ViewParametre) app.getView("Parametre");
+		ControleurMediateur c = new ControleurMediateur(jeu,this,vp);
 		canPlateau = new Canvas(450, 400);
 		panePlateau = new AnchorPane(canPlateau);
 		panePlateau.setPrefSize(450, 400);
@@ -134,9 +136,16 @@ public class ViewJouer extends View {
         canPlateau.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				c.initAffiche();
-				c.clicSouris(e.getX(), e.getY());
-				System.out.println("X = " + e.getX() + " " + " Y = " + e.getY());
+				try {
+					c.initAffiche();
+					c.clicSouris(e.getX(), e.getY());
+					System.out.println("X = " + e.getX() + " " + " Y = " + e.getY());
+					jeu.pieceCourant = null;
+				}catch(ArrayIndexOutOfBoundsException exception) {
+					System.out.println("select une piece!");
+				}catch(NullPointerException exception) {
+					System.out.println("select une piece!");
+				}
 			}
 		});
         
@@ -155,6 +164,7 @@ public class ViewJouer extends View {
 				c.PieceAffiche(e.getX(), e.getY());
 			}
 		});
+        
         new AnimationTimer() {
 			@Override
 			public void handle(long now) {
