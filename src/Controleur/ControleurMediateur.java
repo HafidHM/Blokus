@@ -95,7 +95,7 @@ public class ControleurMediateur {
 				if (decompte == 0) {
 					//System.out.println("joueur courant " + joueurCourant);
 					if((b = vpara.joueurs[joueurCourant].tempsEcoule())) {
-						System.out.println("joueur " + joueurCourant + b);
+						System.out.println("joueur " + joueurCourant + " " + b);
 						vjouer.joueurCourant = jeu.joueurCourant;
 						vjouer.miseAJour();
 						changeJoueur();
