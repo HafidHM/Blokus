@@ -2,17 +2,67 @@ package Controleur;
 
 import java.util.Random;
 import Modele.Jeu;
+import Modele.Piece;
 import Modele.Position;
 
-class JoueurIA extends Joueur {
+public class JoueurIA extends Joueur {
 	Random r;
 	int MAXPROF = 5;
 
-	JoueurIA(int n, Jeu j) {
+	public JoueurIA(int n, Jeu j) {
 		super(n, j);
 		r = new Random();
+		System.out.println("IA " + n);
+	}
+	@Override
+	boolean tempsEcoule() {
+		int bound;
+		Position posPlateau;
+		System.out.println("coord " + jeu.coord.size());
+		if(jeu.coord.size()>0) {
+			posPlateau = jeu.coord.get(r.nextInt(jeu.coord.size()));
+		}else{
+			return false;
+		}
+		System.out.println("bound " + jeu.piecesJ[jeu.joueurCourant].size());
+		if((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0) {
+			num = r.nextInt(bound);
+			//num = 3;
+
+			Piece choix = jeu.choixPiece(num);
+			System.out.println("piece est " + num);
+			Position posPiece = getPosPiece(posPlateau, choix);
+
+			System.out.println("placepossible " + jeu.placerPossible(posPlateau, posPiece, choix));
+			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
+				jeu.jouer(posPlateau, posPiece, choix);
+				jeu.piecesJ[jeu.joueurCourant].remove(choix.getNum());
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
+	Position getPosPiece(Position posPl, Piece p){
+		Position pos = new Position(0,0);
+
+		for(int i=0; i<p.taille; i++){
+			for(int j=0; j<p.taille; j++){
+				pos = new Position(i,j);
+				if(p.carres[i][j] == true){
+					if(jeu.placerPossible(posPl, pos, p)) {
+						return pos;
+					}
+				}
+
+			}
+		}
+
+		return pos;
+	}
 	@Override/*
 	boolean tempsEcoule() {
 		int i, j;
@@ -34,7 +84,7 @@ class JoueurIA extends Joueur {
 		if((bound = jeu.piecesJ[jeu.joueurCourant-1].size()) != 0){
 			num = r.nextInt(bound);
 
-			while(!jeu.jouer(i, j, jeu.choixPiece(num))) {
+			while(!jeu.jouer(i, j, jeu.pieceCourant)) {
 				num = r.nextInt(bound);
 
 			}
