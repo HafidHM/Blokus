@@ -90,14 +90,18 @@ public class ControleurMediateur {
         }*/
         
         public void tictac() {
+        	boolean b;
 			if (jeu.enCours()) {
 				if (decompte == 0) {
 					//System.out.println("joueur courant " + joueurCourant);
-					System.out.println("tempsEcoule" + vpara.joueurs[joueurCourant].tempsEcoule());
-					if(vpara.joueurs[joueurCourant].tempsEcoule()) 
+					if((b = vpara.joueurs[joueurCourant].tempsEcoule())) {
+						System.out.println("joueur " + joueurCourant + b);
+						vjouer.joueurCourant = jeu.joueurCourant;
+						vjouer.miseAJour();
 						changeJoueur();
+					}
 					else {
-						//System.out.println("On vous attend, joueur " + joueurs[joueurCourant].num());
+						System.out.println("On vous attend, joueur " + vpara.joueurs[joueurCourant].num());
 						decompte = lenteurAttente;
 					}
 				}
