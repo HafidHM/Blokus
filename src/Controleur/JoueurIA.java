@@ -18,25 +18,23 @@ public class JoueurIA extends Joueur {
 	boolean tempsEcoule() {
 		int bound;
 		Position posPlateau;
-		System.out.println("coord " + jeu.coord.size());
 		if(jeu.coord.size()>0) {
 			posPlateau = jeu.coord.get(r.nextInt(jeu.coord.size()));
 		}else{
 			return false;
 		}
-		System.out.println("bound " + jeu.piecesJ[jeu.joueurCourant].size());
 		if((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0) {
 			num = r.nextInt(bound);
 			//num = 3;
 
 			Piece choix = jeu.choixPiece(num);
-			System.out.println("piece est " + num);
 			Position posPiece = getPosPiece(posPlateau, choix);
 
-			System.out.println("placepossible " + jeu.placerPossible(posPlateau, posPiece, choix));
 			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
-				jeu.jouer(posPlateau, posPiece, choix);
 				jeu.piecesJ[jeu.joueurCourant].remove(choix.getNum());
+				jeu.plateauPiece[jeu.joueurCourant].enlevePiece(choix.getNum());
+				jeu.jouer(posPlateau, posPiece, choix);
+				
 				return true;
 			} else {
 				return false;
