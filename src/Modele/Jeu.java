@@ -245,7 +245,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 1);
 		p.ajout(true, 1, 2);
 		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
+		p.ajout(true, 3, 2);
 		p.ajout(true, 1, 3);
 		p.num = 18;
 		pieces.add(p);
@@ -323,5 +323,8 @@ public class Jeu extends Observable implements Serializable {
 	}
 	public boolean placerPossible(Position posPlateau, Position posPiece, Piece p){
 		return libre(posPlateau,posPiece,p) && (!connecter(posPlateau,posPiece,p));
+	}
+	public Piece choixPiece(int num) {
+		return pieces.get(num);
 	}
 }
