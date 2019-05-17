@@ -36,7 +36,7 @@ public class Jeu extends Observable implements Serializable {
 		coord = new ArrayList<>();
 		initialiserPieces();
 		initPiecesJoueurs();
-		
+
 		plateauAffiche.initPlateauAffiche();
 		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
 	}
@@ -72,7 +72,7 @@ public class Jeu extends Observable implements Serializable {
 	public boolean enCours() {
 		return enCours;
 	}
-    public void refaire() {
+	public void refaire() {
 		plateau.p = new int[plateau.taille()][plateau.taille()];
 		for (int i = 0; i < 4; i++) {
 			plateauPiece[i].initPlateauPiece();
@@ -92,11 +92,11 @@ public class Jeu extends Observable implements Serializable {
 
 		plateauAffiche.initPlateauAffiche();
 		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
-        metAJour();
-   }
-   	public void updateJoueurCour(){
+		metAJour();
+	}
+	public void updateJoueurCour(){
 		joueurCourant = ((joueurCourant+1) %4);
-   }
+	}
 	public void initialiserPieces() {
 		Piece p = new Piece(5);
 		p.ajout(true, 2, 2);
@@ -281,9 +281,9 @@ public class Jeu extends Observable implements Serializable {
 	}
 
 	public boolean noPiecesPosées(){
-   		return piecesJ[((joueurCourant+1) %4)].size() == pieces.size();
+		return piecesJ[joueurCourant].size() == pieces.size();
 	}
-    public boolean libre(Position posPlateau, Position posPiece, Piece p) {
+	public boolean libre(Position posPlateau, Position posPiece, Piece p) {
 		boolean lib = true;
 		boolean dans = false;
 		int debutI = posPlateau.l-posPiece.l;
