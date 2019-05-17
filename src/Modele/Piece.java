@@ -8,8 +8,9 @@ public class Piece implements PieceInterface  {
 	Color color;
 	int num;
 	public int  taille;
+	public int nbAngles;
 
-	
+
 	public Piece(int taille) {
 		carres = new boolean[taille][taille];
 		this.taille = taille;
@@ -21,57 +22,57 @@ public class Piece implements PieceInterface  {
 		this.taille = taille;
 		this.carres = new boolean [taille][taille];
 	}
-	
+
 	public void setPiece(boolean [][] carres) {
 		this.carres = carres;
 	}
-	
+
 	public void AffichePiece() {
 		System.out.println("Afficher Piece");
-		 for(int i =0;i<taille;i++) {
-	        	for(int j = 0;j<taille;j++) {
-	        		if(carres[i][j]==false)
-	        			System.out.print("0");
-	        		else
-	        			System.out.print("1");
-	        	}
-	        	System.out.println();
-	        }
-	 }
-	
+		for(int i =0;i<taille;i++) {
+			for(int j = 0;j<taille;j++) {
+				if(carres[i][j]==false)
+					System.out.print("0");
+				else
+					System.out.print("1");
+			}
+			System.out.println();
+		}
+	}
+
 	@Override
 	public void retationGauche() {
-            boolean[][] carres = new boolean[this.taille][this.taille];
-    	       
-            for (int i = 0; i < this.taille; i++) {
-                for (int j = 0; j < this.taille; j++) {
-                    carres [i][j] = this.carres [j][this.taille-i-1];
-                }
-            }
-            setPiece(carres);	
+		boolean[][] carres = new boolean[this.taille][this.taille];
+
+		for (int i = 0; i < this.taille; i++) {
+			for (int j = 0; j < this.taille; j++) {
+				carres [i][j] = this.carres [j][this.taille-i-1];
+			}
+		}
+		setPiece(carres);
 	}
 
 	@Override
 	public void retationDroite() {
-	       boolean[][] carres = new boolean[this.taille][this.taille];
-	       
-	        for (int i = 0; i < this.taille; i++) {
-	            for (int j = 0; j < this.taille; j++) {
-	                carres[j][this.taille - i - 1 ] = this.carres[i][j];
-	            }
-	        }
-	        setPiece(carres);	
+		boolean[][] carres = new boolean[this.taille][this.taille];
+
+		for (int i = 0; i < this.taille; i++) {
+			for (int j = 0; j < this.taille; j++) {
+				carres[j][this.taille - i - 1 ] = this.carres[i][j];
+			}
+		}
+		setPiece(carres);
 	}
 
 	@Override
 	public void Miroir() {
-    		  boolean[][] carres = new boolean[this.taille][this.taille];
-    	       for (int i = 0; i < this.taille; i++) {
-    	            for (int j = 0; j < this.taille; j++) {
-    	                carres[i][j] = this.carres[i][this.taille- j - 1];
-    	            }
-    	       }
-    	       setPiece(carres);
+		boolean[][] carres = new boolean[this.taille][this.taille];
+		for (int i = 0; i < this.taille; i++) {
+			for (int j = 0; j < this.taille; j++) {
+				carres[i][j] = this.carres[i][this.taille- j - 1];
+			}
+		}
+		setPiece(carres);
 	}
 
 	public boolean PlacePiece(int l, int c, Piece piece, int [][] Plateau, int player){
@@ -99,8 +100,8 @@ public class Piece implements PieceInterface  {
 	public Color getColor() {
 		return this.color;
 	}
-	
-	
+
+
 	@Override
 	public void setColor(Color color) {
 		this.color = color;
@@ -110,7 +111,7 @@ public class Piece implements PieceInterface  {
 	public int getNum() {
 		return this.num;
 	}
-	
+
 	@Override
 	public void setNum(int num) {
 		this.num = num;
@@ -120,18 +121,24 @@ public class Piece implements PieceInterface  {
 	public int getTaille() {
 		return this.taille;
 	}
-	
+
 	@Override
 	public void ajout(boolean b ,int i, int j) {
 		this.carres[i][j] = b;
 	}
-	
+
+	public void setAngle(int a){
+		this.nbAngles = a;
+	}
+
+	public int nbAngles(){ return this.nbAngles;}
+
 	@Override
 	public String toString() {
 		//return "num:"+this.num+" Color:"+this.color;
-		return ""; 
+		return "";
 	}
-	
+
 	//Si vous voulez tester
 /*	
 	public void affiche() {

@@ -5,7 +5,7 @@ import Modele.Piece;
 import Modele.Position;
 
 
-abstract class Joueur {
+public abstract class Joueur {
 	Jeu jeu;
 	int num;
 

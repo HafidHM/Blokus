@@ -5,23 +5,27 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Jeu extends Observable implements Serializable {
-	boolean enCours;
+	public boolean enCours;
 	public int joueurCourant;
 	public ArrayList<Piece> []piecesJ;
 	public Plateau plateau;
-	ArrayList<Piece> pieces;
+	public ArrayList<Piece> pieces;
 	public ArrayList<Position> coord;
-	public PlateauPiece plateauPiece;
-	public PlateauAffiche plateauAffiche;
-	public int pieceCourant;
+	public Plateau[] plateauPiece;
+	public Plateau plateauAffiche;
+	public Piece pieceCourant;
 	public int PosPieceL;
 	public int PosPieceC;
 
 	public Jeu(int n) {
-		plateau = new Plateau(n);
-		plateauPiece = new PlateauPiece();
-		plateauAffiche = new PlateauAffiche();
-		enCours = true;
+		plateau = new Plateau(n,n);
+		plateauPiece = new Plateau[4];
+		for (int i = 0; i < 4; i++) {
+			plateauPiece[i] = new Plateau(12, 23);
+			plateauPiece[i].initPlateauPiece();
+		}
+		plateauAffiche = new Plateau(5,5);
+		enCours = false;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
 				plateau.newVal(i, j, -1);
@@ -32,8 +36,9 @@ public class Jeu extends Observable implements Serializable {
 		coord = new ArrayList<>();
 		initialiserPieces();
 		initPiecesJoueurs();
-		plateauPiece.initPlateauPiece();
+
 		plateauAffiche.initPlateauAffiche();
+		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
 	}
 	public void jouer(Position posPlateau, Position posPiece, Piece p){
 		int debutI = posPlateau.l-posPiece.l;
@@ -55,14 +60,24 @@ public class Jeu extends Observable implements Serializable {
 		PosPieceC = num;
 	}
 	public void setSelected(int num) {
-		pieceCourant = num;
+		pieceCourant = new Piece(5);
+		for(int i=0;i<5;i++) {
+			for(int j=0;j<5;j++) {
+				if(pieces.get(num).carres[i][j])
+					pieceCourant.ajout(true, i, j);
+			}
+		}
+		pieceCourant.num = pieces.get(num).num;
 	}
 	public boolean enCours() {
 		return enCours;
 	}
-    public void refaire() {
-		plateau.p = new int[9][9];
-		enCours = true;
+	public void refaire() {
+		plateau.p = new int[plateau.taille()][plateau.taille()];
+		for (int i = 0; i < 4; i++) {
+			plateauPiece[i].initPlateauPiece();
+		}
+		enCours = false;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
 				plateau.newVal(i, j, -1);
@@ -71,18 +86,17 @@ public class Jeu extends Observable implements Serializable {
 
 		joueurCourant = 0;
 
-		pieces = new ArrayList<>();
-		piecesJ = new ArrayList[4]; // TODO ???
 		coord = new ArrayList<>();
 		initialiserPieces();
 		initPiecesJoueurs();
 
-
-        metAJour();
-   }
-   	public void updateJoueurCour(){
+		plateauAffiche.initPlateauAffiche();
+		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
+		metAJour();
+	}
+	public void updateJoueurCour(){
 		joueurCourant = ((joueurCourant+1) %4);
-   }
+	}
 	public void initialiserPieces() {
 		Piece p = new Piece(5);
 		p.ajout(true, 2, 2);
@@ -234,7 +248,7 @@ public class Jeu extends Observable implements Serializable {
 		p.ajout(true, 2, 1);
 		p.ajout(true, 1, 2);
 		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
+		p.ajout(true, 3, 2);
 		p.ajout(true, 1, 3);
 		p.num = 18;
 		pieces.add(p);
@@ -265,11 +279,9 @@ public class Jeu extends Observable implements Serializable {
 
 
 	}
-	public Piece choixPiece(int num){
-		return pieces.get(num);
-	}
+
 	public boolean noPiecesPosées(){
-   		return piecesJ[((joueurCourant+1) %4)].size() == pieces.size();
+		return piecesJ[joueurCourant].size() == pieces.size();
 	}
 	public boolean libre(Position posPlateau, Position posPiece, Piece p) {
 		boolean lib = true;
@@ -278,10 +290,16 @@ public class Jeu extends Observable implements Serializable {
 		int debutJ = posPlateau.c-posPiece.c;
 		for(int i=0;i<p.taille;i++){
 			for(int j=0;j<p.taille;j++){
-				if (p.carres[i][j] && !(plateau.p[debutI+i][debutJ+j]==-1|| plateau.p[debutI+i][debutJ+j]==8))
-					lib = false;
-				if(p.carres[i][j] && plateau.p[debutI+i][debutJ+j]==8)
-					dans = true;
+				if (p.carres[i][j]) {
+					if(plateau.horsBord(new Position(debutI+i,debutJ+j)))
+						return false;
+					else {
+						if(!(plateau.p[debutI+i][debutJ+j]==-1|| plateau.p[debutI+i][debutJ+j]==8))
+							lib = false;
+						if(plateau.p[debutI+i][debutJ+j]==8)
+							dans = true;
+					}
+				}
 			}
 		}
 		return lib && dans;
@@ -308,5 +326,8 @@ public class Jeu extends Observable implements Serializable {
 	}
 	public boolean placerPossible(Position posPlateau, Position posPiece, Piece p){
 		return libre(posPlateau,posPiece,p) && (!connecter(posPlateau,posPiece,p));
+	}
+	public Piece choixPiece(int num) {
+		return pieces.get(num);
 	}
 }

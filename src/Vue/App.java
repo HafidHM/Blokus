@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import Modele.Jeu;
 import Modele.Plateau;
-import Modele.PlateauPiece;
 import Patterns.Observateur;
 import blokus.Framework;
 import javafx.application.Platform;
@@ -24,7 +23,7 @@ public class App implements Observateur{
 
 	Jeu jeu;
 	Plateau plateau;
-	PlateauPiece plateauPiece;
+	Plateau[] plateauPiece;
 	private final Stage stage;
 	private final Scene scene;
 	private final Pane pane;

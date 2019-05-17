@@ -2,99 +2,124 @@ package Controleur;
 
 import java.util.Random;
 import Modele.Jeu;
+import Modele.Piece;
 import Modele.Position;
 
-class JoueurIA extends Joueur {
+
+public class JoueurIA extends Joueur {
 	Random r;
 	int MAXPROF = 5;
 
-	JoueurIA(int n, Jeu j) {
+	public JoueurIA(int n, Jeu j) {
 		super(n, j);
 		r = new Random();
 	}
 
-	@Override/*
 	boolean tempsEcoule() {
-		int i, j;
 		int bound;
-		Position pos;
+		Position posPlateau;
 
 		if(jeu.coord.size()>0) {
-			pos = jeu.coord.get(r.nextInt(jeu.coord.size()));
+			posPlateau = jeu.coord.get(r.nextInt(jeu.coord.size()));
 		}else{
 			return false;
 		}
-
-		i = pos.l;
-		j = pos.c;
-
-
-		jeu.plateau.availableCases(((jeu.joueurCourant) %4)+1, jeu.coord, jeu.noPiecesPosées());
-
-		if((bound = jeu.piecesJ[jeu.joueurCourant-1].size()) != 0){
+		if((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0) {
 			num = r.nextInt(bound);
 
-			while(!jeu.jouer(i, j, jeu.choixPiece(num))) {
-				num = r.nextInt(bound);
+			jeu.setSelected(jeu.piecesJ[jeu.joueurCourant].get(num).getNum());
 
+
+			Piece choix = jeu.pieceCourant;
+			Position posPiece = getPosPiece(posPlateau, choix);
+
+			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
+				jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
+				jeu.plateauPiece[jeu.joueurCourant].enlevePiece(choix.getNum());
+				jeu.jouer(posPlateau, posPiece, choix);
+
+				return true;
 			}
-		} else {
-			return false;
 		}
-
-
-		jeu.piecesJ[jeu.joueurCourant - 1].remove(num);
-		jeu.updateJoueurCour();
-
-
-		return true;
-}
-
-	boolean tempsEcouleNonPerdant(){
-		int i, j;
-		int bound;
-		Position pos;
-
-		if(jeu.coord.size()>0) {
-			pos = closestToMiddle();
-		}else{
-			return false;
-		}
-
-		i = pos.l;
-		j = pos.c;
-
-
-		jeu.plateau.availableCases(((jeu.joueurCourant) %4)+1, jeu.coord, jeu.noPiecesPosées());
-
-		if((bound = jeu.piecesJ[jeu.joueurCourant-1].size()) != 0){
-			num = r.nextInt(bound);
-
-			while(!jeu.jouer(i, j, jeu.choixPiece(num))) {
-				num = r.nextInt(bound);
-
-			}
-		} else {
-			return false;
-		}
-
-
-		jeu.piecesJ[jeu.joueurCourant - 1].remove(num);
-		jeu.updateJoueurCour();
-		return true;
+		return false;
 	}
 
+	Position getPosPiece(Position posPl, Piece p) {
+		Position pos = new Position(0, 0);
+		int ok = 0;
+
+		if (ok < 4){
+			for (int i = 0; i < p.taille; i++) {
+				for (int j = 0; j < p.taille; j++) {
+					pos = new Position(i, j);
+					if (p.carres[i][j] == true) {
+						if (jeu.placerPossible(posPl, pos, p)) {
+							return pos;
+						}
+					}
+				}
+			}
+
+		}else{
+			int tourner = r.nextInt(3);
+			int inverser = r.nextInt(2);
+			for (int i = 0; i < tourner; i++) {
+				p.retationDroite();
+			}
+			if(inverser == 0){
+				p.Miroir();
+			}
+			ok++;
+		}
+
+
+		return pos;
+	}
+
+	boolean tempsEcouleNonPerdant() {
+		int bound;
+		Position posPlateau;
+		if(jeu.coord.size()>0) {
+			posPlateau = jeu.coord.get(r.nextInt(jeu.coord.size()));
+		}else{
+			return false;
+		}
+		if((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0) {
+			num = r.nextInt(bound);
+
+			Piece choix = jeu.choixPiece(num);
+			Position posPiece = closestToMiddle();
+			//Position posPiece = nextPiece(posPlateau, choix);
+
+			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
+				jeu.jouer(posPlateau, posPiece, choix);
+				jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/*Position nextPiece(Position posPl, Piece p){
+
+
+	}*/
+
 	Position closestToMiddle(){
-		Position closest = new Position(0, 0);
+		Position closest = basePos();
 
 		for(Position pos : jeu.coord){
-			if((pos.l > closest.l) && (pos.l <= jeu.plateau.taille()) ||  ((pos.c > closest.c)  && (pos.c <= jeu.plateau.taille()))){
+			if((jeu.joueurCourant == 1) && ((pos.l > closest.l) ||  ((pos.c > closest.c)))){
 				closest = pos;
-			} else if((pos.l > closest.l) && (pos.l <= jeu.plateau.taille()) || ((pos.c < closest.c)  && (pos.c >= jeu.plateau.taille()))){
+			}
+			if((jeu.joueurCourant == 2) && ((pos.l > closest.l) || ((pos.c < closest.c)))){
 				closest = pos;
-			} else if((pos.l < closest.l) && (pos.l >= jeu.plateau.taille()) || ((pos.c < closest.c)  && (pos.c >= jeu.plateau.taille()))){
+			}
+			if((jeu.joueurCourant == 3) && ((pos.l < closest.l) || ((pos.c < closest.c)))){
 				closest = pos;
-			} else if((pos.l < closest.l) && (pos.l >= jeu.plateau.taille()) || ((pos.c > closest.c)  && (pos.c <= jeu.plateau.taille()))){
+			}
+			if((jeu.joueurCourant == 0) && ((pos.l < closest.l) || ((pos.c > closest.c)))){
 				closest = pos;
 			}
 		}
@@ -102,7 +127,21 @@ class JoueurIA extends Joueur {
 		return closest;
 
 	}
-*/
+
+	Position basePos(){
+		switch(jeu.joueurCourant){
+			case 0:
+				return new Position(jeu.plateau.taille()-1,0);
+			case 1:
+				return new Position(0,0);
+			case 2:
+				return new Position(0,jeu.plateau.taille()-1);
+			case 3:
+				return new Position(jeu.plateau.taille()-1,jeu.plateau.taille()-1);
+		}
+		return new Position(0,0);
+	}
+
 	boolean tempsEcouleMinimax(){
 		int iandj [] = new int [2];
 
