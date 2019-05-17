@@ -5,12 +5,16 @@ import Controleur.ControleurMediateur;
 import Modele.Jeu;
 import Modele.Plateau;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -28,6 +32,7 @@ public class ViewJouer extends View {
 	double largeurCaseAffiche, hauteurCaseAffiche;
 	public int joueurCourant = jeu.joueurCourant;
 	
+	private Button jouerBtn;
 	private Button quitBtn;
 	private Button miroirBtn;
 	private Button inversBtn;
@@ -56,11 +61,45 @@ public class ViewJouer extends View {
 		panePlateau = new AnchorPane(canPlateau);
 		panePlateau.setPrefSize(450, 400);
 		
+		jouerBtn = new Button("Jouer");
+		jouerBtn.setOnAction((event)->{
+			jeu.enCours = true;
+		});
         quitBtn = new Button("Quit");
-        quitBtn.setOnAction((event)->{
-			app.exit();
-		}); 
-        
+        quitBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+				Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
+				yes.setText("Oui");
+				Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
+				no.setText("Non");
+				
+				yes.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						app.exit();
+						
+					}
+				});
+				no.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						dialog.close();
+						
+					}
+				});
+				
+				dialog.setContentText("Voulez vous terminer le jeu ?");
+				dialog.show();
+				
+			}
+		});
         miroirBtn = new Button("Miroir");
         miroirBtn.setOnAction((event)->{
         	jeu.plateauAffiche.Miroir();
@@ -119,7 +158,7 @@ public class ViewJouer extends View {
        
         gPlateau.getChildren().add(panePlateau);
         gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(paneAffiche,actionBtn,quitBtn);
+        gAffiche.getChildren().addAll(paneAffiche,actionBtn,jouerBtn,quitBtn);
         gAffiche.setSpacing(20);
         gAffiche.setAlignment(Pos.CENTER);
         
@@ -139,7 +178,6 @@ public class ViewJouer extends View {
 				try {
 					c.initAffiche();
 					c.clicSouris(e.getX(), e.getY());
-					System.out.println("X = " + e.getX() + " " + " Y = " + e.getY());
 					jeu.pieceCourant = null;
 				}catch(ArrayIndexOutOfBoundsException exception) {
 					System.out.println("select une piece!");
@@ -164,11 +202,49 @@ public class ViewJouer extends View {
 				c.PieceAffiche(e.getX(), e.getY());
 			}
 		});
+
+        canAffiche.setOnDragDetected(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				canAffiche.startFullDrag();
+				System.out.println("detect");
+				
+			}
+		});
         
+        canAffiche.setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
+
+			@Override
+			public void handle(MouseDragEvent e) {
+				System.out.println("drag");
+				c.PieceAffiche(e.getX(), e.getY());
+				
+			}
+		});
+        
+        canPlateau.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+
+			@Override
+			public void handle(MouseDragEvent e) {
+				try {
+					System.out.println("released");
+					c.initAffiche();
+					c.clicSouris(e.getX(), e.getY());
+					jeu.pieceCourant = null;
+				}catch(ArrayIndexOutOfBoundsException exception) {
+					System.out.println("select une piece!");
+				}catch(NullPointerException exception) {
+					System.out.println("select une piece!");
+				}
+				
+				
+			}
+		});
         new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				c.tictac();
+					c.tictac();
 			}
 		}.start();
 	}
@@ -297,7 +373,7 @@ public class ViewJouer extends View {
             	   		case -1:
             	   			break;
             	   		case -2:
-		            	   	g.setFill(Color.DIMGRAY);
+		            	   	g.setFill(Color.LIGHTGREY);
 		            	   	g.fillRect(j*largeur, i*hauteur, largeur, hauteur);
 		            	   	g.strokeLine(j*largeur, i*hauteur, (j+1)*largeur, i*hauteur);
 			           	   	g.strokeLine(j*largeur, i*hauteur, j*largeur, (i+1)*hauteur);
