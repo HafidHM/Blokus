@@ -1,10 +1,10 @@
 package Controleur;
 
 import java.util.Random;
-
 import Modele.Jeu;
 import Modele.Piece;
 import Modele.Position;
+
 
 public class JoueurIA extends Joueur {
 	Random r;
@@ -27,41 +27,56 @@ public class JoueurIA extends Joueur {
 		if((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0) {
 			num = r.nextInt(bound);
 
-			Piece choix = jeu.choixPiece(num);
+			jeu.setSelected(jeu.piecesJ[jeu.joueurCourant].get(num).getNum());
+
+
+			Piece choix = jeu.pieceCourant;
 			Position posPiece = getPosPiece(posPlateau, choix);
 
 			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
-				System.out.println("Piece courant est " + choix.getNum());
-				jeu.plateauPiece[jeu.joueurCourant].enlevePiece(choix.getNum());
+				jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
 				jeu.jouer(posPlateau, posPiece, choix);
-				jeu.piecesJ[jeu.joueurCourant].remove(choix.getNum());
-				
+
 				return true;
 			}
 		}
 		return false;
 	}
 
-	Position getPosPiece(Position posPl, Piece p){
-		Position pos = new Position(0,0);
+	Position getPosPiece(Position posPl, Piece p) {
+		Position pos = new Position(0, 0);
+		int ok = 0;
 
-		for(int i=0; i<p.taille; i++){
-			for(int j=0; j<p.taille; j++){
-				pos = new Position(i,j);
-				if(p.carres[i][j] == true){
-					if(jeu.placerPossible(posPl, pos, p)) {
-						return pos;
+		if (ok < 4){
+			for (int i = 0; i < p.taille; i++) {
+				for (int j = 0; j < p.taille; j++) {
+					pos = new Position(i, j);
+					if (p.carres[i][j] == true) {
+						if (jeu.placerPossible(posPl, pos, p)) {
+							return pos;
+						}
 					}
 				}
-
 			}
+
+		}else{
+			int tourner = r.nextInt(3);
+			int inverser = r.nextInt(2);
+			for (int i = 0; i < tourner; i++) {
+				p.retationDroite();
+			}
+			if(inverser == 0){
+				p.Miroir();
+			}
+			ok++;
 		}
+
 
 		return pos;
 	}
 
 	boolean tempsEcouleNonPerdant() {
-	/*	int bound;
+		int bound;
 		Position posPlateau;
 		if(jeu.coord.size()>0) {
 			posPlateau = jeu.coord.get(r.nextInt(jeu.coord.size()));
@@ -72,14 +87,15 @@ public class JoueurIA extends Joueur {
 			num = r.nextInt(bound);
 
 			Piece choix = jeu.choixPiece(num);
+			Position posPiece = closestToMiddle();
 			//Position posPiece = nextPiece(posPlateau, choix);
 
 			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
 				jeu.jouer(posPlateau, posPiece, choix);
-				jeu.piecesJ[jeu.joueurCourant].remove(choix.getNum());
+				jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
 				return true;
 			}
-		}*/
+		}
 		return false;
 	}
 
