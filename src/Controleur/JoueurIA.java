@@ -35,6 +35,7 @@ public class JoueurIA extends Joueur {
 
 			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
 				jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
+				jeu.plateauPiece[jeu.joueurCourant].enlevePiece(choix.getNum());
 				jeu.jouer(posPlateau, posPiece, choix);
 
 				return true;
