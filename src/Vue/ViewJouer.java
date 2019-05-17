@@ -33,9 +33,11 @@ public class ViewJouer extends View {
 	public int joueurCourant = jeu.joueurCourant;
 	
 	private Button jouerBtn;
+	private Button retourBtn;
 	private Button quitBtn;
+	private Button recommencerBtn;
 	private Button miroirBtn;
-	private Button inversBtn;
+	private Button tourneBtn;
 	private Button joueur0;
 	private Button joueur1;
 	private Button joueur2;
@@ -64,6 +66,48 @@ public class ViewJouer extends View {
 		jouerBtn = new Button("Jouer");
 		jouerBtn.setOnAction((event)->{
 			jeu.enCours = true;
+		});
+		
+		recommencerBtn = new Button("Recommencer");
+		recommencerBtn.setOnAction((event)->{
+			jeu.refaire();
+		});
+		retourBtn = new Button("Retour");
+		retourBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+				Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
+				yes.setText("Oui");
+				Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
+				no.setText("Non");
+				
+				yes.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+					
+						jeu.refaire();
+						app.gotoView("Parametre");
+
+					}
+				});
+				no.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						dialog.close();
+						
+					}
+				});
+				
+				dialog.setContentText("Voulez vous aller à la page Paramètre ?");
+				dialog.show();
+				
+			}
 		});
         quitBtn = new Button("Quit");
         quitBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -108,8 +152,8 @@ public class ViewJouer extends View {
         	miseAJour();
         });
         
-        inversBtn = new Button("Inverser");
-        inversBtn.setOnAction((event)->{
+        tourneBtn = new Button("Tourner");
+        tourneBtn.setOnAction((event)->{
         	jeu.plateauAffiche.retationGauche();
         	jeu.pieceCourant.retationGauche();
         	jeu.pieceCourant.AffichePiece();
@@ -117,9 +161,14 @@ public class ViewJouer extends View {
         });
         
         HBox actionBtn = new HBox();
-        actionBtn.getChildren().addAll(miroirBtn,inversBtn);
+        actionBtn.getChildren().addAll(miroirBtn,tourneBtn);
         actionBtn.setSpacing(20);
         actionBtn.setAlignment(Pos.CENTER);
+        
+        HBox pageBtn = new HBox();
+        pageBtn.getChildren().addAll(retourBtn,quitBtn);
+        pageBtn.setSpacing(20);
+        pageBtn.setAlignment(Pos.CENTER);
         
         HBox JoueurBtn = new HBox();
         joueur0 = new Button("Joueur0");
@@ -158,7 +207,7 @@ public class ViewJouer extends View {
        
         gPlateau.getChildren().add(panePlateau);
         gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(paneAffiche,actionBtn,jouerBtn,quitBtn);
+        gAffiche.getChildren().addAll(jouerBtn,actionBtn,paneAffiche,pageBtn,recommencerBtn);
         gAffiche.setSpacing(20);
         gAffiche.setAlignment(Pos.CENTER);
         
