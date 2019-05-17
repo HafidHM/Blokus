@@ -18,7 +18,7 @@ public class ViewParametre extends View{
 	public ViewParametre(Jeu j) {
 		super(j);
 	}
-	
+
 	private Button retourBtn;
 	private Button commencerBtn;
 	boolean jeuAutomatique;
@@ -53,9 +53,9 @@ public class ViewParametre extends View{
 		Joueur = new ChoiceBox[4];
 		for(int i=0;i<4;i++) {
 			Joueur[i] = new ChoiceBox<String>(FXCollections.observableArrayList("Humain", "Robot simple", "Robot Intelligent","Robot Excellent"));
-		    Joueur[i].getSelectionModel().selectFirst();	    
+			Joueur[i].getSelectionModel().selectFirst();
 		}
-		
+
 		Label j0 = new Label("Joueur 0 (vert) :   ");
 		HBox J0 = new HBox(j0,Joueur[0]);
 		Label j1 = new Label("Joueur 1 (bleu) :   ");
@@ -64,7 +64,7 @@ public class ViewParametre extends View{
 		HBox J2 = new HBox(j2,Joueur[2]);
 		Label j3 = new Label("Joueur 3 (rouge) : ");
 		HBox J3 = new HBox(j3,Joueur[3]);
-		
+
 		VBox joueurbox = new VBox(J0,J1,J2,J3);
 		joueurbox.setAlignment(Pos.CENTER);
 		joueurbox.setSpacing(20);
@@ -74,53 +74,53 @@ public class ViewParametre extends View{
 		getPane().setCenter(box);
 		getPane().setTop(joueurbox);
 		getPane().setPadding(new Insets(50));
-		
+
 		Joueur[0].getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(newValue.equalsIgnoreCase("Humain")) {
-                	joueurs[0] = new JoueurHumain(0, jeu); 
-                }else {
-                	joueurs[0] = new JoueurIA(0, jeu); 
-                }
-            }
-        });
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if(newValue.equalsIgnoreCase("Humain")) {
+					joueurs[0] = new JoueurHumain(0, jeu);
+				}else {
+					joueurs[0] = new JoueurIA(0, jeu);
+				}
+			}
+		});
 		Joueur[1].getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            	 if(newValue.equalsIgnoreCase("Humain")) {
-                 	joueurs[1] = new JoueurHumain(1, jeu); 
-                 }else {
-                 	joueurs[1] = new JoueurIA(1, jeu); 
-                 }
-            }
-        });
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if(newValue.equalsIgnoreCase("Humain")) {
+					joueurs[1] = new JoueurHumain(1, jeu);
+				}else {
+					joueurs[1] = new JoueurIA(1, jeu);
+				}
+			}
+		});
 		Joueur[2].getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            	 if(newValue.equalsIgnoreCase("Humain")) {
-                 	joueurs[2] = new JoueurHumain(2, jeu);
-                 }else {
-                 	joueurs[2] = new JoueurIA(2, jeu); 
-                 }
-            }
-        });
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if(newValue.equalsIgnoreCase("Humain")) {
+					joueurs[2] = new JoueurHumain(2, jeu);
+				}else {
+					joueurs[2] = new JoueurIA(2, jeu);
+				}
+			}
+		});
 		Joueur[3].getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            	 if(newValue.equalsIgnoreCase("Humain")) {
-                 	joueurs[3] = new JoueurHumain(3, jeu);
-                 }else {
-                 	joueurs[3] = new JoueurIA(3, jeu); 
-                 }
-            }
-        });
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if(newValue.equalsIgnoreCase("Humain")) {
+					joueurs[3] = new JoueurHumain(3, jeu);
+				}else {
+					joueurs[3] = new JoueurIA(3, jeu);
+				}
+			}
+		});
 	}
 
 	@Override
 	public void miseAJour() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/*@Override
