@@ -74,6 +74,9 @@ public class Jeu extends Observable implements Serializable {
 	}
     public void refaire() {
 		plateau.p = new int[plateau.taille()][plateau.taille()];
+		for (int i = 0; i < 4; i++) {
+			plateauPiece[i].initPlateauPiece();
+		}
 		enCours = false;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
@@ -83,8 +86,6 @@ public class Jeu extends Observable implements Serializable {
 
 		joueurCourant = 0;
 
-		pieces = new ArrayList<>();
-		piecesJ = new ArrayList[4]; // TODO ???
 		coord = new ArrayList<>();
 		initialiserPieces();
 		initPiecesJoueurs();
