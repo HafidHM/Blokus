@@ -25,12 +25,15 @@ public class ControleurMediateur {
 	public void redimensionnement() {
 		vjouer.miseAJour();
 	}
+	
 	public void clicSouris(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCase());
 		int c = (int) (x / vjouer.largeurCase());
+		
+		System.out.println("lP = " + l);
+		System.out.println("cA = " + c);
 		Position posPlateau = new Position(l,c);
 		Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
-		System.out.println("courant = " + jeu.pieceCourant);
 		if (vpara.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
 			jeu.plateauPiece[vjouer.joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
 			vjouer.joueurCourant = jeu.joueurCourant;
@@ -54,6 +57,8 @@ public class ControleurMediateur {
 		int l = (int) (y / vjouer.hauteurCaseAffiche());
 		int c = (int) (x / vjouer.largeurCaseAffiche());
 
+		System.out.println("lA = " + l);
+		System.out.println("cA = " + c);
 		jeu.setPieceL(l);
 		jeu.setPieceC(c);
 	}
@@ -91,17 +96,17 @@ public class ControleurMediateur {
         
         public void tictac() {
         	boolean b;
+        	
 			if (jeu.enCours()) {
 				if (decompte == 0) {
-					//System.out.println("joueur courant " + joueurCourant);
-					if((b = vpara.joueurs[joueurCourant].tempsEcoule())) {
+					if((b = vpara.joueurs[joueurCourant].tempsEcoule())) {//num() pour joueurCourant change
 						System.out.println("joueur " + joueurCourant + " " + b);
 						vjouer.joueurCourant = jeu.joueurCourant;
 						vjouer.miseAJour();
 						changeJoueur();
 					}
 					else {
-						System.out.println("On vous attend, joueur " + vpara.joueurs[joueurCourant].num());
+						System.out.println("On vous attend, joueur " + joueurCourant);
 						decompte = lenteurAttente;
 					}
 				}
