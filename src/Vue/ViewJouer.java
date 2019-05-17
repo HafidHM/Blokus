@@ -71,6 +71,10 @@ public class ViewJouer extends View {
 		recommencerBtn = new Button("Recommencer");
 		recommencerBtn.setOnAction((event)->{
 			jeu.refaire();
+			jeu.enCours = true ;
+			joueurCourant = jeu.joueurCourant;
+			miseAJour();
+			
 		});
 		retourBtn = new Button("Retour");
 		retourBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -89,10 +93,9 @@ public class ViewJouer extends View {
 
 					@Override
 					public void handle(ActionEvent event) {
-					
 						jeu.refaire();
+						joueurCourant = jeu.joueurCourant;
 						app.gotoView("Parametre");
-
 					}
 				});
 				no.setOnAction(new EventHandler<ActionEvent>() {
@@ -207,7 +210,7 @@ public class ViewJouer extends View {
        
         gPlateau.getChildren().add(panePlateau);
         gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(jouerBtn,actionBtn,paneAffiche,pageBtn,recommencerBtn);
+        gAffiche.getChildren().addAll(jouerBtn,actionBtn,paneAffiche,recommencerBtn,pageBtn);
         gAffiche.setSpacing(20);
         gAffiche.setAlignment(Pos.CENTER);
         
