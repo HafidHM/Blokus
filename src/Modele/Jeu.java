@@ -9,7 +9,7 @@ public class Jeu extends Observable implements Serializable {
 	public int joueurCourant;
 	public ArrayList<Piece> []piecesJ;
 	public Plateau plateau;
-	ArrayList<Piece> pieces;
+	public ArrayList<Piece> pieces;
 	public ArrayList<Position> coord;
 	public Plateau[] plateauPiece;
 	public Plateau plateauAffiche;
