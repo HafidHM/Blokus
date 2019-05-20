@@ -4,6 +4,12 @@ import Modele.Jeu;
 import Modele.Position;
 import Vue.ViewJouer;
 import Vue.ViewParametre;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 public class ControleurMediateur {
 	Jeu jeu;
@@ -21,7 +27,28 @@ public class ControleurMediateur {
 	}
 
 
+	public void setNom(TextField t) {
+		t.textProperty().addListener(new ChangeListener<String>() {
+			
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					t.setText(newValue);
+					vpara.nom = newValue;
+			}
+		});
+	}
 	
+	public void valide(Button b,int order) {
+		b.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				vjouer.joueur[order].setText(vpara.nom);
+				if(vpara.nbJoueur==2)
+					vjouer.joueur[order+2].setText(vpara.nom);
+				
+			}
+		});
+	}
 	public void redimensionnement() {
 		vjouer.miseAJour();
 	}
@@ -30,10 +57,11 @@ public class ControleurMediateur {
 		int l = (int) (y / vjouer.hauteurCase());
 		int c = (int) (x / vjouer.largeurCase());
 		
-		System.out.println("lP = " + l);
-		System.out.println("cA = " + c);
+		System.out.println("lPlateau = " + l);
+		System.out.println("cPlateau = " + c);
 		Position posPlateau = new Position(l,c);
 		Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
+		System.out.println("pieceCorant " + jeu.pieceCourant.getNum());
 		if (vpara.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
 			jeu.plateauPiece[vjouer.joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
 			vjouer.joueurCourant = jeu.joueurCourant;
@@ -57,8 +85,8 @@ public class ControleurMediateur {
 		int l = (int) (y / vjouer.hauteurCaseAffiche());
 		int c = (int) (x / vjouer.largeurCaseAffiche());
 
-		System.out.println("lA = " + l);
-		System.out.println("cA = " + c);
+		System.out.println("lAffiche = " + l);
+		System.out.println("cAffiche = " + c);
 		jeu.setPieceL(l);
 		jeu.setPieceC(c);
 	}
