@@ -18,7 +18,7 @@ public class ControleurMediateur {
 	int joueurCourant;
 	final int lenteurAttente = 50;
 	int decompte;
- 
+
 	public ControleurMediateur(Jeu j, ViewJouer vj, ViewParametre vp) {
 		jeu = j;
 		vjouer = vj;
@@ -35,15 +35,15 @@ public class ControleurMediateur {
 	}
 	public void setNom(TextField t) {
 		t.textProperty().addListener(new ChangeListener<String>() {
-			
+
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					t.setText(newValue);
-					vpara.nom = newValue;
+				t.setText(newValue);
+				vpara.nom = newValue;
 			}
 		});
 	}
-	
+
 	public void valide(Button b,int order) {
 		b.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -51,18 +51,18 @@ public class ControleurMediateur {
 				vjouer.joueur[order].setText(vpara.nom);
 				if(vpara.nbJoueur==2)
 					vjouer.joueur[order+2].setText(vpara.nom);
-				
+
 			}
 		});
 	}
 	public void redimensionnement() {
 		vjouer.miseAJour();
 	}
-	
+
 	public void clicSouris(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCase());
 		int c = (int) (x / vjouer.largeurCase());
-		
+
 		System.out.println("lPlateau = " + l);
 		System.out.println("cPlateau = " + c);
 		Position posPlateau = new Position(l,c);
@@ -73,10 +73,10 @@ public class ControleurMediateur {
 			vjouer.joueurCourant = jeu.joueurCourant;
 			vjouer.miseAJour();
 			changeJoueur();
-			
+
 		}
 	}
-	
+
 	public void selectPiece(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCasePiece());
 		int c = (int) (x / vjouer.largeurCasePiece());
@@ -86,7 +86,7 @@ public class ControleurMediateur {
 			vjouer.miseAJour();
 		}
 	}
-	
+
 	public void PieceAffiche(double x, double y) {
 		int l = (int) (y / vjouer.hauteurCaseAffiche());
 		int c = (int) (x / vjouer.largeurCaseAffiche());
@@ -110,7 +110,7 @@ public class ControleurMediateur {
             if(!niv.equals(niveau)){
                 System.out.println("Vous avez choisit " + niveau);
                 niv=niveau;
-            } 
+            }
             switch(niveau){
                 case "Easy":return joueurs[joueurCourant].tempsEcoule();
                 case "Medium":return joueurs[joueurCourant].tempsEcouleNonPertant();
@@ -127,29 +127,35 @@ public class ControleurMediateur {
             else
             	joueurs[1] = new JoueurHumain(1, jeu);
         }*/
-        
-        public void tictac() {
-        	boolean b;
-        	
-			if (jeu.enCours()) {
-				if (decompte == 0) {
-					System.out.println("joucourant " + joueurCourant);
-					if((b = vpara.joueurs[joueurCourant].tempsEcoule())) {//num() pour joueurCourant change
-						System.out.println("joueur " + joueurCourant + " " + b);
+
+	public void tictac() {
+		boolean b;
+
+		if (jeu.enCours()) {
+			if (decompte == 0) {
+				if((b = vpara.joueurs[joueurCourant].tempsEcoule())) {//num() pour joueurCourant change
+					//System.out.println("joueur " + joueurCourant + " " + b);
+					vjouer.joueurCourant = jeu.joueurCourant;
+					vjouer.miseAJour();
+					changeJoueur();
+				}
+				else {
+					if(vpara.joueurs[joueurCourant].jeu.enCoursJ[joueurCourant]) {
+						System.out.println("On vous attend, joueur " + joueurCourant);
+						decompte = lenteurAttente;
+					}
+					else{
+						vpara.joueurs[joueurCourant].jeu.changerJoueurSansJeuer();
 						vjouer.joueurCourant = jeu.joueurCourant;
 						vjouer.miseAJour();
 						changeJoueur();
 					}
-					else {
-						System.out.println("On vous attend, joueur " + joueurCourant);
-						decompte = lenteurAttente;
-					}
-				}
-				else{
-					decompte--;
+
 				}
 			}
-        }    
+			else{
+				decompte--;
+			}
+		}
 	}
-        
-
+}
