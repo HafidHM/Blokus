@@ -74,13 +74,23 @@ public class ViewJouer extends View {
 		
 		jouerBtn = new Button("Jouer");
 		jouerBtn.setOnAction((event)->{
-			jeu.enCours = true;
+			
+			if(jouerBtn.getText().equalsIgnoreCase("Jouer")) {
+				jouerBtn.setText("Stop");
+				jeu.enCours = true;
+			}
+			else if(jouerBtn.getText().equalsIgnoreCase("Stop")) {
+				jouerBtn.setText("Jouer");
+				jeu.enCours=false;
+			}
+			miseAJour();
 		});
 		
 		recommencerBtn = new Button("Recommencer");
 		recommencerBtn.setOnAction((event)->{
 			jeu.refaire();
-			jeu.enCours = true ;
+			jouerBtn.setText("Jouer");
+			jeu.enCours = false ;
 			joueurCourant = jeu.joueurCourant;
 			miseAJour();
 			
@@ -392,13 +402,13 @@ public class ViewJouer extends View {
 	            GraphicsContext gScore = canScore.getGraphicsContext2D();
 	            line(gScore,largeurAffiche(),hauteurAffiche());
 	            
-	            
 	            if(vp.nbJoueur==4) {
 		            joueur0.setText(joueur[0].getText() + ": " + jeu.Score[0]);
 		    		joueur1.setText(joueur[1].getText() + ": " + jeu.Score[1]);
 		    		joueur2.setText(joueur[2].getText() + ": " + jeu.Score[2]);
 		    		joueur3.setText(joueur[3].getText() + ": " + jeu.Score[3]);
 	            }
+	           
 	}
 
 	/*@Override
