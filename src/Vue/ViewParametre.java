@@ -36,11 +36,10 @@ public class ViewParametre extends View{
 	private Button Jeu4Btn;
 	private Button Jeu2Btn;
 	public ChoiceBox<String>[] Joueur;
-	public int nbJoueur = 4;
+	public int nbJoueur=4;
 	public Joueur[] joueurs;
 	public Button[] joueur;
 	public String nom;
-	String key;
 	TextField text0;
 	TextField text1;
 	TextField text2;
@@ -49,6 +48,45 @@ public class ViewParametre extends View{
 
 	@Override
 	public void onLaunch() {
+		miseAJour();
+	}
+
+	void login(ControleurMediateur c) {	
+		if(nbJoueur==4) {
+			c.setNom(text0);
+			c.valide(joueur[0],0);
+			c.setNom(text1);
+			c.valide(joueur[1],1);
+			c.setNom(text2);
+			c.valide(joueur[2],2);
+			c.setNom(text3);
+			c.valide(joueur[3],3);
+		}
+		else {
+			c.setNom(text0);
+			c.valide(joueur[0], 0);
+			c.setNom(text1);
+			c.valide(joueur[1], 2);
+		}
+		
+	}
+
+	void changeModele(ChoiceBox<String> c, int order) {
+		c.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            	 if(newValue.equalsIgnoreCase("Humain")) {
+                 	joueurs[order] = new JoueurHumain(order, jeu);
+                 }else {
+                 	joueurs[order] = new JoueurIA(order, jeu); 
+                 }
+            }
+        });
+	}
+
+	
+	@Override
+	public void miseAJour() {
 		vj = (ViewJouer) app.getView("Jouer");
 		c = new ControleurMediateur(jeu,vj,this);
 		
@@ -66,11 +104,13 @@ public class ViewParametre extends View{
 		Jeu4Btn = new Button("Jeu A 4");
 		Jeu4Btn.setOnAction((event)->{
 			nbJoueur = 4;
+			c.modifScore(4);
 			miseAJour();
 		});
 		Jeu2Btn = new Button("Jeu A 2");
 		Jeu2Btn.setOnAction((event)->{
 			nbJoueur = 2;
+			c.modifScore(2);
 			miseAJour();
 		});
 		JeuBtn.getChildren().addAll(Jeu4Btn,Jeu2Btn);
@@ -156,6 +196,7 @@ public class ViewParametre extends View{
 				changeModele(Joueur[i], i);
 			else if(nbJoueur==2 && i<2) {
 				changeModele(Joueur[i], i);
+				changeModele(Joueur[i], i+2);
 			}
 			else if(nbJoueur==2 && i>=2) {
 			}
@@ -164,45 +205,6 @@ public class ViewParametre extends View{
 		login(c);
 
 
-	}
-
-	void login(ControleurMediateur c) {	
-		if(nbJoueur==4) {
-			c.setNom(text0);
-			c.valide(joueur[0],0);
-			c.setNom(text1);
-			c.valide(joueur[1],1);
-			c.setNom(text2);
-			c.valide(joueur[2],2);
-			c.setNom(text3);
-			c.valide(joueur[3],3);
-		}
-		else {
-			c.setNom(text0);
-			c.valide(joueur[0], 0);
-			c.setNom(text1);
-			c.valide(joueur[1], 2);
-		}
-		
-	}
-
-	void changeModele(ChoiceBox<String> c, int order) {
-		c.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            	 if(newValue.equalsIgnoreCase("Humain")) {
-                 	joueurs[order] = new JoueurHumain(order, jeu);
-                 }else {
-                 	joueurs[order] = new JoueurIA(order, jeu); 
-                 }
-            }
-        });
-	}
-
-	
-	@Override
-	public void miseAJour() {
-		
 	}
 
 	/*@Override
