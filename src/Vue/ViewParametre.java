@@ -25,7 +25,9 @@ public class ViewParametre extends View{
 	public ViewParametre(Jeu j) {
 		super(j);
 	}
+
 	ViewJouer vj;
+	ControleurMediateur c;
 	private Canvas can;
 	private AnchorPane pane;
 	VBox boiteJeu;
@@ -44,55 +46,11 @@ public class ViewParametre extends View{
 	TextField text2;
 	TextField text3;
 	HBox JoueurBtn = new HBox();
-	
-	
+
 	@Override
 	public void onLaunch() {
-
-		jeu.ajouteObservateur(this);
-		miseAJour();
-		
-	}
-
-	void login(ControleurMediateur c) {	
-		if(nbJoueur==4) {
-			c.setNom(text0);
-			c.valide(joueur[0],0);
-			c.setNom(text1);
-			c.valide(joueur[1],1);
-			c.setNom(text2);
-			c.valide(joueur[2],2);
-			c.setNom(text3);
-			c.valide(joueur[3],3);
-		}
-		else {
-			c.setNom(text0);
-			c.valide(joueur[0], 0);
-			c.setNom(text1);
-			c.valide(joueur[1], 2);
-		}
-		
-	}
-	void changeModele(ChoiceBox<String> c, int order) {
-		c.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            	 if(newValue.equalsIgnoreCase("Humain")) {
-                 	joueurs[order] = new JoueurHumain(order, jeu);
-                 }else {
-                 	joueurs[order] = new JoueurIA(order, jeu); 
-                 }
-            }
-        });
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void miseAJour() {
-		
-		ViewJouer vj = (ViewJouer) app.getView("Jouer");
-		ControleurMediateur c = new ControleurMediateur(jeu,vj,this);
+		vj = (ViewJouer) app.getView("Jouer");
+		c = new ControleurMediateur(jeu,vj,this);
 		
 		can = new Canvas(600,200);
 		pane = new AnchorPane(can);
@@ -204,6 +162,47 @@ public class ViewParametre extends View{
 		}
 	
 		login(c);
+
+
+	}
+
+	void login(ControleurMediateur c) {	
+		if(nbJoueur==4) {
+			c.setNom(text0);
+			c.valide(joueur[0],0);
+			c.setNom(text1);
+			c.valide(joueur[1],1);
+			c.setNom(text2);
+			c.valide(joueur[2],2);
+			c.setNom(text3);
+			c.valide(joueur[3],3);
+		}
+		else {
+			c.setNom(text0);
+			c.valide(joueur[0], 0);
+			c.setNom(text1);
+			c.valide(joueur[1], 2);
+		}
+		
+	}
+
+	void changeModele(ChoiceBox<String> c, int order) {
+		c.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            	 if(newValue.equalsIgnoreCase("Humain")) {
+                 	joueurs[order] = new JoueurHumain(order, jeu);
+                 }else {
+                 	joueurs[order] = new JoueurIA(order, jeu); 
+                 }
+            }
+        });
+	}
+
+	
+	@Override
+	public void miseAJour() {
+		
 	}
 
 	/*@Override
