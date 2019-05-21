@@ -27,6 +27,18 @@ public class Piece implements PieceInterface  {
 		this.carres = carres;
 	}
 
+	public void AffichePiece() {
+		System.out.println("Afficher Piece");
+		for(int i =0;i<taille;i++) {
+			for(int j = 0;j<taille;j++) {
+				if(carres[i][j]==false)
+					System.out.print("0");
+				else
+					System.out.print("1");
+			}
+			System.out.println();
+		}
+	}
 
 	@Override
 	public void retationGauche() {
@@ -126,16 +138,15 @@ public class Piece implements PieceInterface  {
 		//return "num:"+this.num+" Color:"+this.color;
 		return "";
 	}
-
 	public int getNbCarres() {
-        int nbCarres= 0;
-    for(int i = 0; i< this.taille; i++) 
-            for(int j= 0; j<this.taille;j++)
-                if(carres[i][j]==true){
-                    nbCarres+=1;
-                } 
-        return nbCarres;
-}
+		int nbCarres= 0;
+		for(int i = 0; i< this.taille; i++)
+			for(int j= 0; j<this.taille;j++)
+				if(carres[i][j]==true){
+					nbCarres+=1;
+				}
+		return nbCarres;
+	}
 
 	//Si vous voulez tester
 /*	
