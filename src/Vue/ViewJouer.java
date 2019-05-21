@@ -33,7 +33,7 @@ public class ViewJouer extends View {
 	double largeurCasePiece, hauteurCasePiece;
 	double largeurCaseAffiche, hauteurCaseAffiche;
 	public int joueurCourant = jeu.joueurCourant;
-	
+	public VBox Score;
 	private Button jouerBtn;
 	private Button retourBtn;
 	private Button quitBtn;
@@ -42,10 +42,11 @@ public class ViewJouer extends View {
 	private Button tourneBtn;
 	public Button[] joueur;
 	public HBox JoueurBtn ;
-	private Label joueur0;
-	private Label joueur1;
-	private Label joueur2;
-	private Label joueur3;
+	public Label joueur0;
+	public Label joueur1;
+	public Label joueur2;
+	public Label joueur3;
+
 
 	
 	private Canvas canPlateau;
@@ -67,6 +68,350 @@ public class ViewJouer extends View {
 		vp = (ViewParametre) app.getView("Parametre");
 		ControleurMediateur c = new ControleurMediateur(jeu,this,vp);
 		
+	
+		canPlateau = new Canvas(450, 400);
+		panePlateau = new AnchorPane(canPlateau);
+		panePlateau.setPrefSize(450, 400);
+		joueur = new Button[4];
+		
+		jouerBtn = new Button("Jouer");
+		jouerBtn.setOnAction((event)->{
+			
+			if(jouerBtn.getText().equalsIgnoreCase("Jouer")) {
+				jouerBtn.setText("Stop");
+				jeu.enCours = true;
+			}
+			else if(jouerBtn.getText().equalsIgnoreCase("Stop")) {
+				jouerBtn.setText("Jouer");
+				jeu.enCours=false;
+			}
+			miseAJour();
+		});
+		
+		recommencerBtn = new Button("Recommencer");
+		recommencerBtn.setOnAction((event)->{
+			jeu.refaire();
+			jeu.initScores_Joueurs_Jeu();
+			jouerBtn.setText("Jouer");
+			jeu.enCours = false ;
+			joueurCourant = jeu.joueurCourant;
+			miseAJour();
+			
+		});
+		retourBtn = new Button("Retour");
+		retourBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+				Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
+				yes.setText("Oui");
+				Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
+				no.setText("Non");
+				
+				yes.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						jeu.refaire();
+						jeu.initScores_Joueurs_Jeu();
+						jouerBtn.setText("Jouer");
+						joueurCourant = jeu.joueurCourant;
+						app.gotoView("Parametre");
+						miseAJour();
+					}
+				});
+				no.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						dialog.close();
+						
+					}
+				});
+				
+				dialog.setContentText("Voulez vous aller à la page Paramètre ?");
+				dialog.show();
+				
+			}
+		});
+        quitBtn = new Button("Quit");
+        quitBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+				dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+				Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
+				yes.setText("Oui");
+				Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
+				no.setText("Non");
+				
+				yes.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						app.exit();
+						
+					}
+				});
+				no.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						dialog.close();
+						
+					}
+				});
+				
+				dialog.setContentText("Voulez vous terminer le jeu ?");
+				dialog.show();
+				
+			}
+		});
+        miroirBtn = new Button("Miroir");
+        miroirBtn.setOnAction((event)->{
+        	jeu.plateauAffiche.Miroir();
+        	jeu.pieceCourant.Miroir();
+        	miseAJour();
+        });
+        
+        tourneBtn = new Button("Tourner");
+        tourneBtn.setOnAction((event)->{
+        	jeu.plateauAffiche.retationGauche();
+        	jeu.pieceCourant.retationGauche();
+        	miseAJour();
+        });
+        
+        HBox actionBtn = new HBox();
+        actionBtn.getChildren().addAll(miroirBtn,tourneBtn);
+        actionBtn.setSpacing(20);
+        actionBtn.setAlignment(Pos.CENTER);
+        
+        HBox pageBtn = new HBox();
+        pageBtn.getChildren().addAll(retourBtn,quitBtn);
+        pageBtn.setSpacing(20);
+        pageBtn.setAlignment(Pos.CENTER);
+      
+        HBox JoueurBtn = new HBox();
+	        joueur[0] = new Button("Joueur1");
+	        joueur[0].setOnAction((event)->{
+	        	joueurCourant = 0;
+	        	miseAJour();
+	        });
+	        joueur[1] = new Button("Joueur2");
+	        joueur[1].setOnAction((event)->{
+	        	joueurCourant = 1;
+	        	miseAJour();
+	        });
+	        joueur[2] = new Button("Joueur3");
+	        joueur[2].setOnAction((event)->{
+	        	joueurCourant = 2;
+	        	miseAJour();
+	        });
+	        joueur[3] = new Button("Joueur4");
+	        joueur[3].setOnAction((event)->{
+	        	joueurCourant = 3;
+	        	miseAJour();
+	        });
+       
+	    JoueurBtn.getChildren().addAll(joueur[0],joueur[1],joueur[2],joueur[3]);
+	    
+	    
+	    Score = new VBox();
+	    Label score = new Label("Score");
+	    
+	    Score.getChildren().add(score);
+	    Score.setPadding(new Insets(20));
+	    Score.setSpacing(20.0);
+	    score.setAlignment(Pos.TOP_CENTER);
+	    System.out.println("vj nbjoueur " + vp.nbJoueur);
+	
+			    joueur0 = new Label(joueur[0].getText() + ": ");
+				joueur1 = new Label(joueur[1].getText() + ": ");
+				joueur2 = new Label(joueur[2].getText() + ": ");
+				joueur3 = new Label(joueur[3].getText() + ": ");
+				Score.getChildren().addAll(joueur0,joueur1,joueur2,joueur3);
+		   
+        canPiece = new Canvas(450, 200);
+        panePiece = new AnchorPane(canPiece);
+        panePiece.setPrefSize(450, 200);
+        
+        canAffiche = new Canvas(200,200);
+        paneAffiche = new AnchorPane(canAffiche);
+        paneAffiche.setPrefSize(200,200);
+        
+        canScore = new Canvas(200,200);
+        paneScore = new AnchorPane(canScore);
+        paneScore.getChildren().add(Score);
+        
+        gPlateau = new VBox();
+        gPiece = new VBox();
+        gAffiche = new VBox();
+        
+        BorderPane Pane = new BorderPane();
+	    
+        gPlateau.getChildren().add(panePlateau);
+        gPiece.getChildren().addAll(JoueurBtn,panePiece);
+        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recommencerBtn,pageBtn);
+        gAffiche.setSpacing(20);
+        gAffiche.setAlignment(Pos.CENTER);
+        
+        getPane().setPadding(new Insets(10));
+        
+        Pane.setTop(gPlateau);
+        Pane.setBottom(gPiece);
+        getPane().setLeft(Pane);
+        getPane().setRight(gAffiche);
+		
+        jeu.ajouteObservateur(this);
+        miseAJour();
+       
+   	 	
+        canPlateau.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				try {
+					c.initAffiche();
+					c.clicSouris(e.getX(), e.getY());
+					jeu.pieceCourant = null;
+				}catch(ArrayIndexOutOfBoundsException exception) {
+					System.out.println("select une piece!");
+				}catch(NullPointerException exception) {
+					System.out.println("null pointer!");
+				}
+			}
+		});
+        
+        canPiece.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				c.selectPiece(e.getX(), e.getY());
+			}
+		});
+        
+        canAffiche.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				c.PieceAffiche(e.getX(), e.getY());
+			}
+		});
+
+        canAffiche.setOnDragDetected(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				canAffiche.startFullDrag();
+				System.out.println("detect");
+				
+			}
+		});
+        
+        canAffiche.setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
+
+			@Override
+			public void handle(MouseDragEvent e) {
+				System.out.println("drag");
+				c.PieceAffiche(e.getX(), e.getY());
+				
+			}
+		});
+        
+        canPlateau.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+
+			@Override
+			public void handle(MouseDragEvent e) {
+				try {
+					System.out.println("released");
+					c.initAffiche();
+					c.clicSouris(e.getX(), e.getY());
+					jeu.pieceCourant = null;
+				}catch(ArrayIndexOutOfBoundsException exception) {
+					System.out.println("select une piece!");
+				}catch(NullPointerException exception) {
+					System.out.println("select une piece!");
+				}
+				
+				
+			}
+		});
+        new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+					c.tictac();
+			}
+		}.start();
+	}
+
+	
+	@Override 
+	public void miseAJour() {
+	            double lignes = plateau.taille();
+	            double colonnes = plateau.taille();
+	            largeurCase = largeurPlateau() / colonnes;
+	            hauteurCase = hauteurPlateau() / lignes;
+	
+	            GraphicsContext gPlateau = canPlateau.getGraphicsContext2D();
+	            gPlateau.clearRect(0, 0, largeurPlateau(), hauteurPlateau());
+	            // Grille
+	            for (int i=0; i<lignes;i++) {
+	                for (int j=0; j<colonnes;j++) {
+	                    gPlateau.setFill(Color.LIGHTGRAY);
+	                    gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
+	
+	                }
+	            }
+	            for (int i=0; i<lignes+1;i++) {
+	                gPlateau.strokeLine(0, i*hauteurCase, largeurPlateau(), i*hauteurCase);
+	            }
+	            for (int i=0; i<colonnes+1;i++) {
+	                gPlateau.strokeLine(i*largeurCase, 0, i*largeurCase, hauteurPlateau());
+	            }
+	            // Coups
+	            draw(hauteurCase, largeurCase, plateau, gPlateau);
+	            
+	            //canPiece
+	            largeurCasePiece = largeurPiece() / 23;
+	            hauteurCasePiece = hauteurPiece() / 12;
+	            
+	            GraphicsContext gPiece = canPiece.getGraphicsContext2D();
+	            line(gPiece,largeurPiece(),hauteurPiece());
+	            draw(hauteurCasePiece, largeurCasePiece, plateauPiece[joueurCourant], gPiece);
+	            
+	
+	            //canAffiche
+	            largeurCaseAffiche = largeurAffiche() / 5;
+	            hauteurCaseAffiche = hauteurAffiche() / 5;
+	            GraphicsContext gAffiche = canAffiche.getGraphicsContext2D();
+	            
+	            line(gAffiche,largeurAffiche(),hauteurAffiche());
+	            draw(hauteurCaseAffiche, largeurCaseAffiche, plateauAffiche, gAffiche);
+	            
+	            
+	            //canScore
+	            GraphicsContext gScore = canScore.getGraphicsContext2D();
+	            line(gScore,largeurAffiche(),hauteurAffiche());
+	            
+	            if(vp.nbJoueur==4) {
+		            joueur0.setText(joueur[0].getText() + ": " + jeu.Score[0]);
+		    		joueur1.setText(joueur[1].getText() + ": " + jeu.Score[1]);
+		    		joueur2.setText(joueur[2].getText() + ": " + jeu.Score[2]);
+		    		joueur3.setText(joueur[3].getText() + ": " + jeu.Score[3]);
+	            }
+	            if(vp.nbJoueur==2) {
+		            joueur0.setText(joueur[0].getText() + ": " + (jeu.Score[0]+jeu.Score[2]));
+		    		joueur1.setText(joueur[1].getText() + ": " + (jeu.Score[1]+jeu.Score[3]));
+		    		
+	            }
+	           
+	}
+
+	public void Init_vuejouer() {
 		canPlateau = new Canvas(450, 400);
 		panePlateau = new AnchorPane(canPlateau);
 		panePlateau.setPrefSize(450, 400);
@@ -224,22 +569,26 @@ public class ViewJouer extends View {
 	    Score.setPadding(new Insets(20));
 	    Score.setSpacing(20.0);
 	    score.setAlignment(Pos.TOP_CENTER);
-	    
-	    if(vp.nbJoueur==4) {
-		    joueur0 = new Label(joueur[0].getText() + ": ");
-			Score.getChildren().add(joueur0);
-			joueur1 = new Label(joueur[1].getText() + ": ");
-			Score.getChildren().add(joueur1);
-			joueur2 = new Label(joueur[2].getText() + ": ");
-			Score.getChildren().add(joueur2);
-			joueur3 = new Label(joueur[3].getText() + ": ");
-			Score.getChildren().add(joueur3);
-	    }
-	    if(vp.nbJoueur==2) {
-		    joueur0 = new Label(joueur[0].getText() + ": ");
-			Score.getChildren().add(joueur0);
-			joueur1 = new Label(joueur[1].getText() + ": ");
-			Score.getChildren().add(joueur1);
+	    System.out.println("vj nbjoueur " + vp.nbJoueur);
+	    try {
+		    if(vp.nbJoueur==4) {
+			    joueur0 = new Label(joueur[0].getText() + ": ");
+				Score.getChildren().add(joueur0);
+				joueur1 = new Label(joueur[1].getText() + ": ");
+				Score.getChildren().add(joueur1);
+				joueur2 = new Label(joueur[2].getText() + ": ");
+				Score.getChildren().add(joueur2);
+				joueur3 = new Label(joueur[3].getText() + ": ");
+				Score.getChildren().add(joueur3);
+		    }
+		    if(vp.nbJoueur==2) {
+			    joueur0 = new Label(joueur[0].getText() + ": ");
+				Score.getChildren().add(joueur0);
+				joueur1 = new Label(joueur[1].getText() + ": ");
+				Score.getChildren().add(joueur1);
+		    }
+	    }catch(NullPointerException e) {
+	    	System.out.println("vj: pas de nbjoueur");
 	    }
         canPiece = new Canvas(450, 200);
         panePiece = new AnchorPane(canPiece);
@@ -272,145 +621,7 @@ public class ViewJouer extends View {
         getPane().setLeft(Pane);
         getPane().setRight(gAffiche);
 
-        jeu.ajouteObservateur(this);
-        miseAJour();
-       
-   	 	
-        canPlateau.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				try {
-					c.initAffiche();
-					c.clicSouris(e.getX(), e.getY());
-					jeu.pieceCourant = null;
-				}catch(ArrayIndexOutOfBoundsException exception) {
-					System.out.println("select une piece!");
-				}catch(NullPointerException exception) {
-					System.out.println("null pointer!");
-				}
-			}
-		});
-        
-        canPiece.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent e) {
-				c.selectPiece(e.getX(), e.getY());
-			}
-		});
-        
-        canAffiche.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent e) {
-				c.PieceAffiche(e.getX(), e.getY());
-			}
-		});
-
-        canAffiche.setOnDragDetected(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent e) {
-				canAffiche.startFullDrag();
-				System.out.println("detect");
-				
-			}
-		});
-        
-        canAffiche.setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
-
-			@Override
-			public void handle(MouseDragEvent e) {
-				System.out.println("drag");
-				c.PieceAffiche(e.getX(), e.getY());
-				
-			}
-		});
-        
-        canPlateau.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
-
-			@Override
-			public void handle(MouseDragEvent e) {
-				try {
-					System.out.println("released");
-					c.initAffiche();
-					c.clicSouris(e.getX(), e.getY());
-					jeu.pieceCourant = null;
-				}catch(ArrayIndexOutOfBoundsException exception) {
-					System.out.println("select une piece!");
-				}catch(NullPointerException exception) {
-					System.out.println("select une piece!");
-				}
-				
-				
-			}
-		});
-        new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-					c.tictac();
-			}
-		}.start();
 	}
-
-	
-	@Override 
-	public void miseAJour() {
-	            double lignes = plateau.taille();
-	            double colonnes = plateau.taille();
-	            largeurCase = largeurPlateau() / colonnes;
-	            hauteurCase = hauteurPlateau() / lignes;
-	
-	            GraphicsContext gPlateau = canPlateau.getGraphicsContext2D();
-	            gPlateau.clearRect(0, 0, largeurPlateau(), hauteurPlateau());
-	            // Grille
-	            for (int i=0; i<lignes;i++) {
-	                for (int j=0; j<colonnes;j++) {
-	                    gPlateau.setFill(Color.LIGHTGRAY);
-	                    gPlateau.fillRect(j*largeurCase, i*hauteurCase, largeurCase, hauteurCase);
-	
-	                }
-	            }
-	            for (int i=0; i<lignes+1;i++) {
-	                gPlateau.strokeLine(0, i*hauteurCase, largeurPlateau(), i*hauteurCase);
-	            }
-	            for (int i=0; i<colonnes+1;i++) {
-	                gPlateau.strokeLine(i*largeurCase, 0, i*largeurCase, hauteurPlateau());
-	            }
-	            // Coups
-	            draw(hauteurCase, largeurCase, plateau, gPlateau);
-	            
-	            //canPiece
-	            largeurCasePiece = largeurPiece() / 23;
-	            hauteurCasePiece = hauteurPiece() / 12;
-	            
-	            GraphicsContext gPiece = canPiece.getGraphicsContext2D();
-	            line(gPiece,largeurPiece(),hauteurPiece());
-	            draw(hauteurCasePiece, largeurCasePiece, plateauPiece[joueurCourant], gPiece);
-	            
-	
-	            //canAffiche
-	            largeurCaseAffiche = largeurAffiche() / 5;
-	            hauteurCaseAffiche = hauteurAffiche() / 5;
-	            GraphicsContext gAffiche = canAffiche.getGraphicsContext2D();
-	            
-	            line(gAffiche,largeurAffiche(),hauteurAffiche());
-	            draw(hauteurCaseAffiche, largeurCaseAffiche, plateauAffiche, gAffiche);
-	            
-	            
-	            //canScore
-	            GraphicsContext gScore = canScore.getGraphicsContext2D();
-	            line(gScore,largeurAffiche(),hauteurAffiche());
-	            
-	            if(vp.nbJoueur==4) {
-		            joueur0.setText(joueur[0].getText() + ": " + jeu.Score[0]);
-		    		joueur1.setText(joueur[1].getText() + ": " + jeu.Score[1]);
-		    		joueur2.setText(joueur[2].getText() + ": " + jeu.Score[2]);
-		    		joueur3.setText(joueur[3].getText() + ": " + jeu.Score[3]);
-	            }
-	           
-	}
-
 	/*@Override
 	public void redimension() {
 		System.out.println("redimensionner");
