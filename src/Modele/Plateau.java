@@ -10,12 +10,8 @@ public class Plateau implements PlateauInterface {
         p = new int[largeur][hauteur];
         pB = new boolean[largeur][hauteur];
     }
-
     public int taille() {
         return p.length;
-    }
-    public boolean jouable(int i, int j) {
-        return valeur(i, j) == 8 ||valeur(i, j) == -1;
     }
     public int valeur(int i, int j) {
         return p[i][j];
@@ -35,32 +31,30 @@ public class Plateau implements PlateauInterface {
                     if (placeNearby(i, j, player)) {
                         p[i][j] = 8;
                         Position pos = new Position(i, j);
+
                         coord.add(pos);
                     }
                 }
             }
         } else {
+            coord.clear();
             Position pos;
             switch (player){
                 case 0:
-                    pos = new Position(taille()-1, 0);
-                    coord.add(pos);
+                    coord.add(new Position(taille() - 1,0));
                     break;
                 case 1:
                     p[0][0] = 8;
-
                     pos = new Position(0, 0);
                     coord.add(pos);
                     break;
                 case 2:
                     p[0][taille()-1] = 8;
-
                     pos = new Position(0, taille()-1);
                     coord.add(pos);
                     break;
                 case 3:
                     p[taille()-1][taille()-1] = 8;
-
                     pos = new Position(taille()-1, taille()-1);
                     coord.add(pos);
                     break;
@@ -93,7 +87,6 @@ public class Plateau implements PlateauInterface {
     public boolean horsBord(Position p){
         return p.l<0 || p.l>=taille() || p.c<0 || p.c>=taille();
     }
-
     public void initPlateauPiece() {
         for(int i =0;i<p.length;i++) {
             for(int j = 0;j<p[0].length;j++) {
@@ -212,7 +205,6 @@ public class Plateau implements PlateauInterface {
 
 
     }
-
     public void enlevePiece(int num) {
         for(int i =0;i<p.length;i++) {
             for(int j = 0;j<p[0].length;j++) {
@@ -221,7 +213,6 @@ public class Plateau implements PlateauInterface {
             }
         }
     }
-
     public void initPlateauAffiche() {
         for(int i =0;i<pB.length;i++) {
             for(int j = 0;j<pB[0].length;j++) {
@@ -229,7 +220,6 @@ public class Plateau implements PlateauInterface {
             }
         }
     }
-
     public void AffichePlateauP() {
         System.out.println("Afficher PlateauPiece");
         for(int i =0;i<p.length;i++) {
@@ -258,15 +248,12 @@ public class Plateau implements PlateauInterface {
             }
         }
     }
-
     public boolean valeurB(int i, int j) {
         return pB[i][j];
     }
-
     public void setPiece(boolean [][] carres) {
         this.pB = carres;
     }
-
     public void retationGauche() {
         boolean[][] carres = new boolean[5][5];
 
@@ -277,7 +264,6 @@ public class Plateau implements PlateauInterface {
         }
         setPiece(carres);
     }
-
     public void Miroir() {
 
         boolean[][] carres = new boolean[5][5];
