@@ -26,7 +26,13 @@ public class ControleurMediateur {
 
 	}
 
-
+	public void modifScore(int nb) {
+		vjouer.Score.getChildren().clear();
+		if(nb == 4)
+			vjouer.Score.getChildren().addAll(vjouer.joueur0,vjouer.joueur1,vjouer.joueur2,vjouer.joueur3);
+		else if(nb == 2)
+			vjouer.Score.getChildren().addAll(vjouer.joueur0,vjouer.joueur1);
+	}
 	public void setNom(TextField t) {
 		t.textProperty().addListener(new ChangeListener<String>() {
 			
@@ -127,6 +133,7 @@ public class ControleurMediateur {
         	
 			if (jeu.enCours()) {
 				if (decompte == 0) {
+					System.out.println("joucourant " + joueurCourant);
 					if((b = vpara.joueurs[joueurCourant].tempsEcoule())) {//num() pour joueurCourant change
 						System.out.println("joueur " + joueurCourant + " " + b);
 						vjouer.joueurCourant = jeu.joueurCourant;
