@@ -138,6 +138,7 @@ public class Piece implements PieceInterface  {
 		//return "num:"+this.num+" Color:"+this.color;
 		return "";
 	}
+
 	public int getNbCarres() {
 		int nbCarres= 0;
 		for(int i = 0; i< this.taille; i++)
@@ -147,18 +148,6 @@ public class Piece implements PieceInterface  {
 				}
 		return nbCarres;
 	}
-
-	//Si vous voulez tester
-/*	
-	public void affiche() {
-		for(int i = 0; i< this.taille; i++) {
-			for(int j= 0; j<this.taille;j++)
-				{System.out.print(this.carres[i][j]+"\t");}
-			System.out.println("");}
-		System.out.println("");
-	}
-
-*/
 
 
 
