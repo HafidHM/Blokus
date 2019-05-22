@@ -114,6 +114,7 @@ public class ViewJouer extends View {
 						jeu.refaire();
 						jouerBtn.setText("Jouer");
 						joueurCourant = jeu.joueurCourant;
+						c.joueurCourant = jeu.joueurCourant;
 						app.gotoView("Parametre");
 						miseAJour();
 					}
