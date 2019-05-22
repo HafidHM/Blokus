@@ -10,11 +10,18 @@ public class JoueurHumain extends Joueur {
 		super(n, p);
 	}
 	boolean jeu(Position posPlateau,Position posPiece,Piece choix) {
-		if (jeu.placerPossible(posPlateau, posPiece, choix)) {
-			jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
-			jeu.jouer(posPlateau, posPiece, choix);
+		if(jeu.coord.size()>0) {
+			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
+				jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
+				jeu.jouer(posPlateau, posPiece, choix);
 
-			return true;
+				return true;
+			}
+		} else {
+			System.out.println("Joueur " + jeu.joueurCourant + " ne peut plus jouer !");
+			jeu.enCoursJ[jeu.joueurCourant]=false;
+			jeu.updateEncours();
+			jeu.setupNextJoueur();
 		}
 		return false;
 	}

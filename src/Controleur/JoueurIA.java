@@ -1,5 +1,6 @@
 package Controleur;
 
+import java.util.Hashtable;
 import java.util.Random;
 import Modele.Jeu;
 import Modele.Piece;
@@ -8,60 +9,84 @@ import Modele.Position;
 
 public class JoueurIA extends Joueur {
 	Random r;
-	int MAXPROF = 5;
+
+	Hashtable<Object[],Boolean> Seq;
 
 	public JoueurIA(int n, Jeu j) {
 		super(n, j);
 		r = new Random();
+
+		Seq = new Hashtable<>();
 	}
 
 	boolean tempsEcoule() {
 		int bound;
 		Position posPlateau;
+		boolean trouve = false;
+
 
 		if(jeu.coord.size()>0) {
-			posPlateau = jeu.coord.get(r.nextInt(jeu.coord.size()));
-		}else{
-			return false;
-		}
-		if((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0) {
-			num = r.nextInt(bound);
+			if ((bound = jeu.piecesJ[jeu.joueurCourant].size()) != 0) {
 
-			jeu.setSelected(jeu.piecesJ[jeu.joueurCourant].get(num).getNum());
+				while (!trouve) {
 
+					posPlateau = jeu.coord.get(r.nextInt(jeu.coord.size()));
 
-			Piece choix = jeu.pieceCourant;
-			Position posPiece = getPosPiece(posPlateau, choix);
+					num = r.nextInt(bound);
 
-			if (jeu.placerPossible(posPlateau, posPiece, choix)) {
-				jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
-				jeu.plateauPiece[jeu.joueurCourant].enlevePiece(choix.getNum());
-				jeu.jouer(posPlateau, posPiece, choix);
+					jeu.setSelected(jeu.piecesJ[jeu.joueurCourant].get(num).getNum());
 
-				return true;
+					Piece choix = jeu.pieceCourant;
+					Position posPiece = getPosPiece(posPlateau, choix);
+					if (!(posPiece.c == -1 || posPiece.l == -1)) {
+						if (jeu.plateau.placerPossible(posPlateau, posPiece, choix, jeu.joueurCourant)) {
+							jeu.piecesJ[jeu.joueurCourant].remove(jeu.pieces.get(choix.getNum()));
+							jeu.plateauPiece[jeu.joueurCourant].enlevePiece(choix.getNum());
+							jeu.jouer(posPlateau, posPiece, choix);
+
+							trouve = true;
+						}
+					}
+
+				}
+			} else {
+				System.out.println("Joueur " + jeu.joueurCourant + " ne peut plus jouer !");
+				jeu.enCoursJ[jeu.joueurCourant]=false;
+				jeu.setupNextJoueur();
 			}
+
+		} else {
+			System.out.println("Joueur " + jeu.joueurCourant + " ne peut plus jouer !");
+			jeu.enCoursJ[jeu.joueurCourant]=false;
+			jeu.setupNextJoueur();
 		}
-		return false;
+
+
+		return trouve;
 	}
 
 	Position getPosPiece(Position posPl, Piece p) {
-		Position pos = new Position(0, 0);
-		int ok = 0;
+		// TODO // Modifier cette fonction en stockant les résultats dans une table de hachage
+		// TODO // ATTENTION, IL SE PEUT QUE LA PIECE CHOISIE NE PUISSE PAS ETRE POSEE !!!
+		Position pos;
 
-		if (ok < 4){
+		for(int tries = 0; tries < 8; tries++){
 			for (int i = 0; i < p.taille; i++) {
 				for (int j = 0; j < p.taille; j++) {
 					pos = new Position(i, j);
 					if (p.carres[i][j] == true) {
-						if (jeu.placerPossible(posPl, pos, p)) {
+						if (jeu.plateau.placerPossible(posPl, pos, p, jeu.joueurCourant)) {
 							return pos;
+
 						}
+
 					}
+
 				}
+
 			}
 
-		}else{
-			int tourner = r.nextInt(3);
+			int tourner = r.nextInt(4);
 			int inverser = r.nextInt(2);
 			for (int i = 0; i < tourner; i++) {
 				p.retationDroite();
@@ -69,12 +94,12 @@ public class JoueurIA extends Joueur {
 			if(inverser == 0){
 				p.Miroir();
 			}
-			ok++;
 		}
 
-
-		return pos;
+		return new Position(-1, -1);
 	}
+
+
 
 	boolean tempsEcouleNonPerdant() {
 		int bound;

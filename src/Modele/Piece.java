@@ -139,17 +139,15 @@ public class Piece implements PieceInterface  {
 		return "";
 	}
 
-	//Si vous voulez tester
-/*	
-	public void affiche() {
-		for(int i = 0; i< this.taille; i++) {
+	public int getNbCarres() {
+		int nbCarres= 0;
+		for(int i = 0; i< this.taille; i++)
 			for(int j= 0; j<this.taille;j++)
-				{System.out.print(this.carres[i][j]+"\t");}
-			System.out.println("");}
-		System.out.println("");
+				if(carres[i][j]==true){
+					nbCarres+=1;
+				}
+		return nbCarres;
 	}
-
-*/
 
 
 

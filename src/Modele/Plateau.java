@@ -5,24 +5,30 @@ import java.util.ArrayList;
 public class Plateau implements PlateauInterface {
     public int[][] p;
     public boolean[][]pB;
+    private Jeu jeu;
 
-    public Plateau (int largeur, int hauteur){
+    public Plateau (int largeur, int hauteur, Jeu jeu){
         p = new int[largeur][hauteur];
         pB = new boolean[largeur][hauteur];
+        this.jeu = jeu;
     }
 
     public int taille() {
         return p.length;
     }
+
     public boolean jouable(int i, int j) {
         return valeur(i, j) == 8 ||valeur(i, j) == -1;
     }
+
     public int valeur(int i, int j) {
         return p[i][j];
     }
+
     public void newVal(int i, int j, int v){
         p[i][j] = v;
     }
+
     public void availableCases(int player, ArrayList<Position> coord, boolean noPieces){
         if (!noPieces) {
             for (Position pos : coord) {
@@ -35,12 +41,17 @@ public class Plateau implements PlateauInterface {
                     if (placeNearby(i, j, player)) {
                         p[i][j] = 8;
                         Position pos = new Position(i, j);
-                        coord.add(pos);
+                        if(existePlacement(pos)) {
+                            coord.add(pos);
+                        } else {
+                            p[i][j] = -1;
+                        }
                     }
                 }
             }
         } else {
             Position pos;
+            coord.clear();
             switch (player){
                 case 0:
                     pos = new Position(taille()-1, 0);
@@ -68,6 +79,7 @@ public class Plateau implements PlateauInterface {
         }
 
     }
+
     public boolean placeNearby(int i, int j, int player) {
         if (p[i][j]!=-1)
             return false;
@@ -82,6 +94,7 @@ public class Plateau implements PlateauInterface {
             return res;
         }
     }
+
     public boolean caseNearby(int i, int j, int player){
         boolean res = false;
         if(!horsBord(new Position(i+1,j))) res = res || (p[i+1][j] == player);
@@ -90,6 +103,7 @@ public class Plateau implements PlateauInterface {
         if(!horsBord(new Position(i,j-1))) res = res || (p[i][j-1] == player);
         return res;
     }
+
     public boolean horsBord(Position p){
         return p.l<0 || p.l>=taille() || p.c<0 || p.c>=taille();
     }
@@ -288,5 +302,92 @@ public class Plateau implements PlateauInterface {
         }
         setPiece(carres);
     }
+
+    public boolean libre(Position posPlateau, Position posPiece, Piece piece) {
+        boolean lib = true;
+        boolean dans = false;
+        int debutI = posPlateau.l-posPiece.l;
+        int debutJ = posPlateau.c-posPiece.c;
+        for(int i=0;i<piece.taille;i++){
+            for(int j=0;j<piece.taille;j++){
+                if (piece.carres[i][j]) {
+                    if(horsBord(new Position(debutI+i,debutJ+j)))
+                        return false;
+                    else {
+                        if(!(p[debutI+i][debutJ+j]==-1|| p[debutI+i][debutJ+j]==8))
+                            lib = false;
+                        if(p[debutI+i][debutJ+j]==8)
+                            dans = true;
+                    }
+                }
+            }
+        }
+        return lib && dans;
+    }
+    public boolean connecter(Position posPlateau, Position posPiece, Piece piece, int joueurCourant){
+        boolean res = false;
+        int debutI = posPlateau.l-posPiece.l;
+        int debutJ = posPlateau.c-posPiece.c;
+        for(int i=0;i<piece.taille;i++){
+            for(int j=0;j<piece.taille;j++){
+                if(piece.carres[i][j]){
+                    if(!horsBord(new Position(debutI+i-1,debutJ+j)))
+                        res = res || p[debutI+i-1][debutJ+j]==joueurCourant;
+                    if(!horsBord(new Position(debutI+i+1,debutJ+j)))
+                        res = res || p[debutI+i+1][debutJ+j]==joueurCourant;
+                    if(!horsBord(new Position(debutI+i,debutJ+j-1)))
+                        res = res || p[debutI+i][debutJ+j-1]==joueurCourant;
+                    if(!horsBord(new Position(debutI+i,debutJ+j+1)))
+                        res = res || p[debutI+i][debutJ+j+1]==joueurCourant;
+                }
+            }
+        }
+        return res;
+    }
+    public boolean placerPossible(Position posPlateau, Position posPiece, Piece p, int joueurCourant){
+        return libre(posPlateau,posPiece,p) && (!connecter(posPlateau,posPiece,p, joueurCourant));
+    }
+
+    boolean existePlacement(Position posPl){
+        for(Piece p : jeu.piecesJ[jeu.joueurCourant]) {
+
+            Position pos;
+            boolean ok = false;
+            int tourner =0;
+            boolean pivoter=false;
+
+
+            while (!ok) {
+                for (int i = 0; i < p.taille; i++) {
+                    for (int j = 0; j < p.taille; j++) {
+                        pos = new Position(i, j);
+                        if (p.carres[i][j] == true) {
+                            if (jeu.placerPossible(posPl, pos, p)) {
+                                return true;
+
+                            }
+
+                        }
+                    }
+                }
+
+                p.retationDroite();
+                tourner++;
+                if (pivoter) {
+                    ok = true;
+                }
+                if ((tourner == 3) && (!pivoter)) {
+                    p.Miroir();
+                    pivoter = true;
+                    tourner=0;
+                }
+            }
+
+        }
+
+
+        return  false;
+    }
+
 
 }

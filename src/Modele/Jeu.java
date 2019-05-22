@@ -1,6 +1,8 @@
 package Modele;
 import Patterns.Observable;
+import Global.Configuration;
 
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -16,15 +18,20 @@ public class Jeu extends Observable implements Serializable {
 	public Piece pieceCourant;
 	public int PosPieceL;
 	public int PosPieceC;
+	public int [] Score;
+	public int ScoreT;
+	public boolean[] enCoursJ;
+
+	String fichierPieces = "resources/Pieces/pieces.txt";
 
 	public Jeu(int n) {
-		plateau = new Plateau(n,n);
+		plateau = new Plateau(n,n, this);
 		plateauPiece = new Plateau[4];
 		for (int i = 0; i < 4; i++) {
-			plateauPiece[i] = new Plateau(12, 23);
+			plateauPiece[i] = new Plateau(12, 23, this);
 			plateauPiece[i].initPlateauPiece();
 		}
-		plateauAffiche = new Plateau(5,5);
+		plateauAffiche = new Plateau(5,5, this);
 		enCours = false;
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
@@ -34,8 +41,10 @@ public class Jeu extends Observable implements Serializable {
 		pieces = new ArrayList<>();
 		piecesJ = new ArrayList[4];
 		coord = new ArrayList<>();
+		initScores_Joueurs_Jeu();
 		initialiserPieces();
 		initPiecesJoueurs();
+		initEnCoursJ();
 
 		plateauAffiche.initPlateauAffiche();
 		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
@@ -49,9 +58,10 @@ public class Jeu extends Observable implements Serializable {
 					plateau.p[debutI + i][debutJ + j] = joueurCourant;
 			}
 		}
-		updateJoueurCour();
-		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
-		metAJour();
+		ScoreT += pieceCourant.getNbCarres();
+		Score[joueurCourant]+= pieceCourant.getNbCarres();
+
+		setupNextJoueur();
 	}
 	public void setPieceL(int num) {
 		PosPieceL = num;
@@ -89,188 +99,25 @@ public class Jeu extends Observable implements Serializable {
 		coord = new ArrayList<>();
 		initialiserPieces();
 		initPiecesJoueurs();
+		initEnCoursJ();
+		initScores_Joueurs_Jeu();
 
 		plateauAffiche.initPlateauAffiche();
 		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
 		metAJour();
 	}
+
 	public void updateJoueurCour(){
 		joueurCourant = ((joueurCourant+1) %4);
 	}
+
 	public void initialiserPieces() {
-		Piece p = new Piece(5);
-		p.ajout(true, 2, 2);
-		p.num = 0;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.num = 1;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 2);
-		p.num = 2;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
-		p.num = 3;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.num = 4;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 3);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.num = 5;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 2, 0);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
-		p.num = 6;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
-		p.ajout(true, 1, 3);
-		p.num = 7;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 1, 3);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.num = 8;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
-		p.ajout(true, 2, 4);
-		p.num = 9;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 3, 2);
-		p.ajout(true, 3, 1);
-		p.ajout(true, 3, 3);
-		p.num = 10;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 3, 1);
-		p.ajout(true, 3, 2);
-		p.ajout(true, 3, 3);
-		p.num = 11;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 1, 3);
-		p.ajout(true, 1, 4);
-		p.num = 12;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 3, 1);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
-		p.ajout(true, 1, 3);
-		p.num = 13;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 0, 2);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 3, 2);
-		p.ajout(true, 4, 2);
-		p.num = 14;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 3, 1);
-		p.ajout(true, 3, 2);
-		p.num = 15;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 3, 1);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 1,3);
-		p.num = 16;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 3, 1);
-		p.ajout(true, 3,2);
-		p.num = 17;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 3, 2);
-		p.ajout(true, 1, 3);
-		p.num = 18;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
-		p.ajout(true, 3, 2);
-		p.num = 19;
-		pieces.add(p);
-
-		p = new Piece(5);
-		p.ajout(true, 1, 2);
-		p.ajout(true, 2, 1);
-		p.ajout(true, 2, 2);
-		p.ajout(true, 2, 3);
-		p.ajout(true, 2, 4);
-		p.num = 20;
-		pieces.add(p);
+		FileInputStream in;
+		in = Configuration.charge(fichierPieces);
+		LecteurPiece l = new LecteurPiece(in);
+		pieces = l.pieces;
 	}
+
 	public void initPiecesJoueurs() {
 		for (int i = 0; i < 4; i++) {
 			piecesJ[i] = new ArrayList<>();
@@ -329,5 +176,44 @@ public class Jeu extends Observable implements Serializable {
 	}
 	public Piece choixPiece(int num) {
 		return pieces.get(num);
+	}
+
+	public void  initScores_Joueurs_Jeu(){
+		Score = new int[4];
+		for (int i = 0; i < 4; i++)
+			Score[i] = 0;
+		ScoreT = 0;
+	}
+
+
+	public void setupNextJoueur(){
+		updateJoueurCour();
+		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
+		updateEncours();
+		metAJour();
+
+	}
+
+	public void updateEncours(){
+		int compte=0;
+	    for(int i=0;i<4;i++){
+	        if(enCoursJ[i])
+	            compte++;
+        }
+	    enCours = (compte>=2);
+
+	}
+
+	public void initEnCoursJ(){
+		enCoursJ = new boolean[4];
+		for(int i=0;i<4;i++) {
+			enCoursJ[i] = true;
+		}
+	}
+
+	public boolean jouable(){
+		boolean res = true;
+		res = res && (coord.size()>0) && (piecesJ[joueurCourant].size()>0);
+		return res;
 	}
 }
