@@ -37,9 +37,9 @@ public class ViewParametre extends View{
 	private Button Jeu2Btn;
 	public ChoiceBox<String>[] Joueur;
 	public int nbJoueur=4;
+	public String dif;
 	public Joueur[] joueurs;
-	public Button[] joueur;
-	public String nom;
+	public String[] nom;
 	TextField text0;
 	TextField text1;
 	TextField text2;
@@ -51,49 +51,18 @@ public class ViewParametre extends View{
 		miseAJour();
 	}
 
-	void login(ControleurMediateur c) {	
-		if(nbJoueur==4) {
-			c.setNom(text0);
-			c.valide(joueur[0],0);
-			c.setNom(text1);
-			c.valide(joueur[1],1);
-			c.setNom(text2);
-			c.valide(joueur[2],2);
-			c.setNom(text3);
-			c.valide(joueur[3],3);
-		}
-		else {
-			c.setNom(text0);
-			c.valide(joueur[0], 0);
-			c.setNom(text1);
-			c.valide(joueur[1], 2);
-		}
-		
-	}
-
-	void changeModele(ChoiceBox<String> c, int order) {
-		c.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            	 if(newValue.equalsIgnoreCase("Humain")) {
-                 	joueurs[order] = new JoueurHumain(order, jeu);
-                 }else {
-                 	joueurs[order] = new JoueurIA(order, jeu); 
-                 }
-            }
-        });
-	}
-
 	
 	@Override
 	public void miseAJour() {
 		vj = (ViewJouer) app.getView("Jouer");
 		c = new ControleurMediateur(jeu,vj,this);
-		
+		nom = new String[4];
+		for(int i=0;i<4;i++) {
+			nom[i] = "Joueur" + i; 
+		}
 		can = new Canvas(600,200);
 		pane = new AnchorPane(can);
 		joueurs = new Joueur[4];
-		joueur = new Button[4];
 		
 		joueurs[0] = new JoueurHumain(0, jeu);
 		joueurs[1] = new JoueurHumain(1, jeu);
@@ -122,6 +91,16 @@ public class ViewParametre extends View{
 		});
 		commencerBtn = new Button("Commencer");
 		commencerBtn.setOnAction((event)->{
+			if(nbJoueur==4) {
+				for(int i=0;i<4;i++) {
+					c.valide(i);
+				}
+			}
+			else {
+				for(int i=0;i<2;i++) {
+					c.valide(i);
+				}
+			}
 			app.gotoView("Jouer");
 		});
 		Joueur = new ChoiceBox[4];
@@ -136,8 +115,7 @@ public class ViewParametre extends View{
 		text0 = new TextField();
 		text0.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
 		text0.setFocusTraversable(false);
-		joueur[0] = new Button("OK");
-		HBox J0 = new HBox(j0,Joueur[0],text0,joueur[0]);
+		HBox J0 = new HBox(j0,Joueur[0],text0);
 		J0.setSpacing(10);
 		
 		Label j1 = new Label("Joueur 1 (bleu) :   ");
@@ -146,24 +124,21 @@ public class ViewParametre extends View{
 		text1 = new TextField();
 		text1.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
 		text1.setFocusTraversable(false);
-		joueur[1] = new Button("OK");
-		HBox J1 = new HBox(j1,Joueur[1],text1,joueur[1]);
+		HBox J1 = new HBox(j1,Joueur[1],text1);
 		J1.setSpacing(10);
 		
 		Label j2 = new Label("Joueur 2 (jaune) : ");
 		text2 = new TextField();
 		text2.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
 		text2.setFocusTraversable(false);
-		joueur[2] = new Button("OK");
-		HBox J2 = new HBox(j2,Joueur[2],text2,joueur[2]);
+		HBox J2 = new HBox(j2,Joueur[2],text2);
 		J2.setSpacing(10);
 		
 		Label j3 = new Label("Joueur 3 (rouge) : ");
 		text3 = new TextField();
 		text3.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
 		text3.setFocusTraversable(false);
-		joueur[3] = new Button("OK");
-		HBox J3 = new HBox(j3,Joueur[3],text3,joueur[3]);
+		HBox J3 = new HBox(j3,Joueur[3],text3);
 		J3.setSpacing(10);
 		
 		VBox joueurbox = new VBox();
@@ -207,6 +182,34 @@ public class ViewParametre extends View{
 
 	}
 
+	void login(ControleurMediateur c) {	
+		if(nbJoueur==4) {
+			c.setNom(text0,0);
+			c.setNom(text1,1);
+			c.setNom(text2,2);
+			c.setNom(text3,3);
+		}
+		else {
+			c.setNom(text0,0);
+			c.setNom(text1,1);
+		}
+		
+	}
+
+	String changeModele(ChoiceBox<String> c, int order) {
+		c.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            	 if(newValue.equalsIgnoreCase("Humain")) {
+                 	joueurs[order] = new JoueurHumain(order, jeu);
+                 }else {
+                 	joueurs[order] = new JoueurIA(order, jeu); 
+                 }
+            	 dif = newValue;
+            }
+        });
+		return dif;
+	}
 	/*@Override
 	public void redimension() {
 		// TODO Auto-generated method stub
