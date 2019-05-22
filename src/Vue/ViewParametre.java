@@ -37,7 +37,7 @@ public class ViewParametre extends View{
 	private Button Jeu2Btn;
 	public ChoiceBox<String>[] Joueur;
 	public int nbJoueur=4;
-	public String dif;
+	public String[] dif;
 	public Joueur[] joueurs;
 	public String[] nom;
 	TextField text0;
@@ -57,8 +57,10 @@ public class ViewParametre extends View{
 		vj = (ViewJouer) app.getView("Jouer");
 		c = new ControleurMediateur(jeu,vj,this);
 		nom = new String[4];
+		dif = new String[4];
 		for(int i=0;i<4;i++) {
-			nom[i] = "Joueur" + i; 
+			nom[i] = "Joueur" + i;
+			
 		}
 		can = new Canvas(600,200);
 		pane = new AnchorPane(can);
@@ -205,10 +207,10 @@ public class ViewParametre extends View{
                  }else {
                  	joueurs[order] = new JoueurIA(order, jeu); 
                  }
-            	 dif = newValue;
+            	 dif[order] = newValue;
             }
         });
-		return dif;
+		return dif[order];
 	}
 	/*@Override
 	public void redimension() {
