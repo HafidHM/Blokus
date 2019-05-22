@@ -90,6 +90,7 @@ public class ViewJouer extends View {
 			jouerBtn.setText("Jouer");
 			jeu.enCours = false ;
 			joueurCourant = jeu.joueurCourant;
+			c.joueurCourant = jeu.joueurCourant;
 			miseAJour();
 			
 		});
@@ -344,6 +345,7 @@ public class ViewJouer extends View {
 	
 	@Override 
 	public void miseAJour() {
+		
 	            double lignes = plateau.taille();
 	            double colonnes = plateau.taille();
 	            largeurCase = largeurPlateau() / colonnes;
