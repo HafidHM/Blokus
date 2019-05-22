@@ -116,7 +116,7 @@ public class ControleurMediateur {
 
 		if (jeu.enCours()) {
 			if (decompte == 0) {
-				if((b = choisirNiveau(vpara.dif))) {//num() pour joueurCourant change
+				if((b = choisirNiveau(vpara.dif[joueurCourant]))) {//num() pour joueurCourant change
 					vjouer.joueurCourant = jeu.joueurCourant;
 					vjouer.miseAJour();
 					changeJoueur();
