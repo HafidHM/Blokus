@@ -12,7 +12,7 @@ public class ControleurMediateur {
 	Jeu jeu;
 	ViewJouer vjouer;
 	ViewParametre vpara;
-	int joueurCourant;
+	public int joueurCourant;
 	final int lenteurAttente = 50;
 	int decompte;
 
@@ -116,6 +116,7 @@ public class ControleurMediateur {
 
 		if (jeu.enCours()) {
 			if (decompte == 0) {
+				System.out.println("joueurCourant " + joueurCourant);
 				if((b = choisirNiveau(vpara.dif[joueurCourant]))) {//num() pour joueurCourant change
 					vjouer.joueurCourant = jeu.joueurCourant;
 					vjouer.miseAJour();
