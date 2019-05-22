@@ -42,12 +42,7 @@ public class ViewJouer extends View {
 	private Button tourneBtn;
 	public Button[] joueur;
 	public HBox JoueurBtn ;
-	public Label joueur0;
-	public Label joueur1;
-	public Label joueur2;
-	public Label joueur3;
-
-
+	public Label[] joueur_score;
 	
 	private Canvas canPlateau;
 	private Canvas canPiece;
@@ -73,6 +68,7 @@ public class ViewJouer extends View {
 		panePlateau = new AnchorPane(canPlateau);
 		panePlateau.setPrefSize(450, 400);
 		joueur = new Button[4];
+		joueur_score = new Label[4];
 		
 		jouerBtn = new Button("Jouer");
 		jouerBtn.setOnAction((event)->{
@@ -91,7 +87,6 @@ public class ViewJouer extends View {
 		recommencerBtn = new Button("Recommencer");
 		recommencerBtn.setOnAction((event)->{
 			jeu.refaire();
-			jeu.initScores_Joueurs_Jeu();
 			jouerBtn.setText("Jouer");
 			jeu.enCours = false ;
 			joueurCourant = jeu.joueurCourant;
@@ -116,7 +111,6 @@ public class ViewJouer extends View {
 					@Override
 					public void handle(ActionEvent event) {
 						jeu.refaire();
-						jeu.initScores_Joueurs_Jeu();
 						jouerBtn.setText("Jouer");
 						joueurCourant = jeu.joueurCourant;
 						app.gotoView("Parametre");
@@ -226,15 +220,14 @@ public class ViewJouer extends View {
 	    
 	    Score.getChildren().add(score);
 	    Score.setPadding(new Insets(20));
-	    Score.setSpacing(20.0);
+	    Score.setSpacing(10.0);
 	    score.setAlignment(Pos.TOP_CENTER);
-	    System.out.println("vj nbjoueur " + vp.nbJoueur);
 	
-			    joueur0 = new Label(joueur[0].getText() + ": ");
-				joueur1 = new Label(joueur[1].getText() + ": ");
-				joueur2 = new Label(joueur[2].getText() + ": ");
-				joueur3 = new Label(joueur[3].getText() + ": ");
-				Score.getChildren().addAll(joueur0,joueur1,joueur2,joueur3);
+	    joueur_score[0] = new Label();
+	    joueur_score[1] = new Label();
+	    joueur_score[2] = new Label();
+	    joueur_score[3] = new Label();
+		Score.getChildren().addAll(joueur_score[0],joueur_score[1],joueur_score[2],joueur_score[3]);
 		   
         canPiece = new Canvas(450, 200);
         panePiece = new AnchorPane(canPiece);
@@ -398,230 +391,20 @@ public class ViewJouer extends View {
 	            line(gScore,largeurAffiche(),hauteurAffiche());
 	            
 	            if(vp.nbJoueur==4) {
-		            joueur0.setText(joueur[0].getText() + ": " + jeu.Score[0]);
-		    		joueur1.setText(joueur[1].getText() + ": " + jeu.Score[1]);
-		    		joueur2.setText(joueur[2].getText() + ": " + jeu.Score[2]);
-		    		joueur3.setText(joueur[3].getText() + ": " + jeu.Score[3]);
+	            	joueur_score[0].setText(joueur[0].getText() + ": " + jeu.Score[0]);
+	            	joueur_score[1].setText(joueur[1].getText() + ": " + jeu.Score[1]);
+	            	joueur_score[2].setText(joueur[2].getText() + ": " + jeu.Score[2]);
+	            	joueur_score[3].setText(joueur[3].getText() + ": " + jeu.Score[3]);
 	            }
 	            if(vp.nbJoueur==2) {
-		            joueur0.setText(joueur[0].getText() + ": " + (jeu.Score[0]+jeu.Score[2]));
-		    		joueur1.setText(joueur[1].getText() + ": " + (jeu.Score[1]+jeu.Score[3]));
+	            	joueur_score[0].setText(joueur[0].getText() + ": " + (jeu.Score[0]+jeu.Score[2]));
+	            	joueur_score[1].setText(joueur[1].getText() + ": " + (jeu.Score[1]+jeu.Score[3]));
 		    		
 	            }
 	           
 	}
 
-	public void Init_vuejouer() {
-		canPlateau = new Canvas(450, 400);
-		panePlateau = new AnchorPane(canPlateau);
-		panePlateau.setPrefSize(450, 400);
-		joueur = new Button[4];
-		
-		jouerBtn = new Button("Jouer");
-		jouerBtn.setOnAction((event)->{
-			
-			if(jouerBtn.getText().equalsIgnoreCase("Jouer")) {
-				jouerBtn.setText("Stop");
-				jeu.enCours = true;
-			}
-			else if(jouerBtn.getText().equalsIgnoreCase("Stop")) {
-				jouerBtn.setText("Jouer");
-				jeu.enCours=false;
-			}
-			miseAJour();
-		});
-		
-		recommencerBtn = new Button("Recommencer");
-		recommencerBtn.setOnAction((event)->{
-			jeu.refaire();
-			jouerBtn.setText("Jouer");
-			jeu.enCours = false ;
-			joueurCourant = jeu.joueurCourant;
-			miseAJour();
-			
-		});
-		retourBtn = new Button("Retour");
-		retourBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Dialog<ButtonType> dialog = new Dialog<ButtonType>();
-				dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
-				dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
-				Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
-				yes.setText("Oui");
-				Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
-				no.setText("Non");
-				
-				yes.setOnAction(new EventHandler<ActionEvent>() {
-
-					@Override
-					public void handle(ActionEvent event) {
-						jeu.refaire();
-						System.out.println("jeu.joueurCourant " + jeu.joueurCourant);
-						joueurCourant = jeu.joueurCourant;
-						app.gotoView("Parametre");
-						miseAJour();
-					}
-				});
-				no.setOnAction(new EventHandler<ActionEvent>() {
-
-					@Override
-					public void handle(ActionEvent event) {
-						dialog.close();
-						
-					}
-				});
-				
-				dialog.setContentText("Voulez vous aller à la page Paramètre ?");
-				dialog.show();
-				
-			}
-		});
-        quitBtn = new Button("Quit");
-        quitBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Dialog<ButtonType> dialog = new Dialog<ButtonType>();
-				dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
-				dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
-				Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
-				yes.setText("Oui");
-				Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
-				no.setText("Non");
-				
-				yes.setOnAction(new EventHandler<ActionEvent>() {
-
-					@Override
-					public void handle(ActionEvent event) {
-						app.exit();
-						
-					}
-				});
-				no.setOnAction(new EventHandler<ActionEvent>() {
-
-					@Override
-					public void handle(ActionEvent event) {
-						dialog.close();
-						
-					}
-				});
-				
-				dialog.setContentText("Voulez vous terminer le jeu ?");
-				dialog.show();
-				
-			}
-		});
-        miroirBtn = new Button("Miroir");
-        miroirBtn.setOnAction((event)->{
-        	jeu.plateauAffiche.Miroir();
-        	jeu.pieceCourant.Miroir();
-        	miseAJour();
-        });
-        
-        tourneBtn = new Button("Tourner");
-        tourneBtn.setOnAction((event)->{
-        	jeu.plateauAffiche.retationGauche();
-        	jeu.pieceCourant.retationGauche();
-        	miseAJour();
-        });
-        
-        HBox actionBtn = new HBox();
-        actionBtn.getChildren().addAll(miroirBtn,tourneBtn);
-        actionBtn.setSpacing(20);
-        actionBtn.setAlignment(Pos.CENTER);
-        
-        HBox pageBtn = new HBox();
-        pageBtn.getChildren().addAll(retourBtn,quitBtn);
-        pageBtn.setSpacing(20);
-        pageBtn.setAlignment(Pos.CENTER);
-      
-        HBox JoueurBtn = new HBox();
-	        joueur[0] = new Button("Joueur1");
-	        joueur[0].setOnAction((event)->{
-	        	joueurCourant = 0;
-	        	miseAJour();
-	        });
-	        joueur[1] = new Button("Joueur2");
-	        joueur[1].setOnAction((event)->{
-	        	joueurCourant = 1;
-	        	miseAJour();
-	        });
-	        joueur[2] = new Button("Joueur3");
-	        joueur[2].setOnAction((event)->{
-	        	joueurCourant = 2;
-	        	miseAJour();
-	        });
-	        joueur[3] = new Button("Joueur4");
-	        joueur[3].setOnAction((event)->{
-	        	joueurCourant = 3;
-	        	miseAJour();
-	        });
-       
-	    JoueurBtn.getChildren().addAll(joueur[0],joueur[1],joueur[2],joueur[3]);
-	    
-	    
-	    VBox Score = new VBox();
-	    Label score = new Label("Score");
-	    
-	    Score.getChildren().add(score);
-	    Score.setPadding(new Insets(20));
-	    Score.setSpacing(20.0);
-	    score.setAlignment(Pos.TOP_CENTER);
-	    System.out.println("vj nbjoueur " + vp.nbJoueur);
-	    try {
-		    if(vp.nbJoueur==4) {
-			    joueur0 = new Label(joueur[0].getText() + ": ");
-				Score.getChildren().add(joueur0);
-				joueur1 = new Label(joueur[1].getText() + ": ");
-				Score.getChildren().add(joueur1);
-				joueur2 = new Label(joueur[2].getText() + ": ");
-				Score.getChildren().add(joueur2);
-				joueur3 = new Label(joueur[3].getText() + ": ");
-				Score.getChildren().add(joueur3);
-		    }
-		    if(vp.nbJoueur==2) {
-			    joueur0 = new Label(joueur[0].getText() + ": ");
-				Score.getChildren().add(joueur0);
-				joueur1 = new Label(joueur[1].getText() + ": ");
-				Score.getChildren().add(joueur1);
-		    }
-	    }catch(NullPointerException e) {
-	    	System.out.println("vj: pas de nbjoueur");
-	    }
-        canPiece = new Canvas(450, 200);
-        panePiece = new AnchorPane(canPiece);
-        panePiece.setPrefSize(450, 200);
-        
-        canAffiche = new Canvas(200,200);
-        paneAffiche = new AnchorPane(canAffiche);
-        paneAffiche.setPrefSize(200,200);
-        
-        canScore = new Canvas(200,200);
-        paneScore = new AnchorPane(canScore);
-        paneScore.getChildren().add(Score);
-        
-        gPlateau = new VBox();
-        gPiece = new VBox();
-        gAffiche = new VBox();
-        
-        BorderPane Pane = new BorderPane();
-	    
-        gPlateau.getChildren().add(panePlateau);
-        gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recommencerBtn,pageBtn);
-        gAffiche.setSpacing(20);
-        gAffiche.setAlignment(Pos.CENTER);
-        
-        getPane().setPadding(new Insets(10));
-        
-        Pane.setTop(gPlateau);
-        Pane.setBottom(gPiece);
-        getPane().setLeft(Pane);
-        getPane().setRight(gAffiche);
-
-	}
+	
 	/*@Override
 	public void redimension() {
 		System.out.println("redimensionner");
