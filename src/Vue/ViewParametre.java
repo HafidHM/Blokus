@@ -65,7 +65,7 @@ public class ViewParametre extends View{
 		dif = new String[4];
 		for(int i=0;i<4;i++) {
 			nom[i] = "Joueur" + (i+1);
-			
+			dif[i] = "Humain";
 		}
 		can = new Canvas(600,200);
 		pane = new AnchorPane(can);
