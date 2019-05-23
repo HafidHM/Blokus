@@ -29,6 +29,7 @@ public class ViewJouer extends View {
 		super(j);
 	}
 	ViewParametre vp;
+	ControleurMediateur c;
 	double largeurCase, hauteurCase;
 	double largeurCasePiece, hauteurCasePiece;
 	double largeurCaseAffiche, hauteurCaseAffiche;
@@ -40,6 +41,8 @@ public class ViewJouer extends View {
 	private Button recommencerBtn;
 	private Button miroirBtn;
 	private Button tourneBtn;
+	private Button annulBtn;
+	private Button refaireBtn;
 	public Button[] joueur;
 	public HBox JoueurBtn ;
 	public Label[] joueur_score;
@@ -61,7 +64,7 @@ public class ViewJouer extends View {
 	@Override
 	public void onLaunch() {	
 		vp = (ViewParametre) app.getView("Parametre");
-		ControleurMediateur c = new ControleurMediateur(jeu,this,vp);
+		c = new ControleurMediateur(jeu,this,vp);
 		
 	
 		canPlateau = new Canvas(450, 400);
@@ -82,6 +85,7 @@ public class ViewJouer extends View {
 				jeu.enCours=false;
 			}
 			miseAJour();
+			engine();
 		});
 		
 		recommencerBtn = new Button("Recommencer");
@@ -94,6 +98,17 @@ public class ViewJouer extends View {
 			miseAJour();
 			
 		});
+		
+		annulBtn = new Button("Annuler");
+		annulBtn.setOnAction((event)->{
+			
+		});
+		
+		refaireBtn = new Button("Refaire");
+		refaireBtn.setOnAction((event)->{
+			
+		});
+		
 		retourBtn = new Button("Retour");
 		retourBtn.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -192,6 +207,11 @@ public class ViewJouer extends View {
         pageBtn.setSpacing(20);
         pageBtn.setAlignment(Pos.CENTER);
       
+        HBox annulerrefaire = new HBox();
+        annulerrefaire.getChildren().addAll(annulBtn,refaireBtn);
+        annulerrefaire.setSpacing(20);
+        annulerrefaire.setAlignment(Pos.CENTER);
+        
         HBox JoueurBtn = new HBox();
 	        joueur[0] = new Button("Joueur1");
 	        joueur[0].setOnAction((event)->{
@@ -251,7 +271,7 @@ public class ViewJouer extends View {
 	    
         gPlateau.getChildren().add(panePlateau);
         gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recommencerBtn,pageBtn);
+        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recommencerBtn,annulerrefaire,pageBtn);
         gAffiche.setSpacing(20);
         gAffiche.setAlignment(Pos.CENTER);
         
@@ -335,20 +355,24 @@ public class ViewJouer extends View {
 				
 			}
 		});
-        new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-					c.tictac();
-			}
-		}.start();
+
 	}
 
+	public void engine() {
+		 new AnimationTimer() {
+				@Override
+				public void handle(long now) {
+						c.tictac();
+				}
+			}.start();
+	}
 	
 	@Override 
 	public void miseAJour() {
 		
 	            double lignes = plateau.taille();
 	            double colonnes = plateau.taille();
+	            
 	            largeurCase = largeurPlateau() / colonnes;
 	            hauteurCase = hauteurPlateau() / lignes;
 	
@@ -523,11 +547,11 @@ public class ViewJouer extends View {
 	}
 	
 	double largeurPlateau() {
-		return canPlateau.getWidth();
+		return panePlateau.getPrefWidth();
 	}
 
 	double hauteurPlateau() {
-		return canPlateau.getHeight();
+		return panePlateau.getPrefHeight();
 	}
 	
 	double largeurPiece() {
@@ -570,7 +594,6 @@ public class ViewJouer extends View {
 	public double hauteurCaseAffiche() {
 		return hauteurCaseAffiche;
 	}
-
 
 	
 }
