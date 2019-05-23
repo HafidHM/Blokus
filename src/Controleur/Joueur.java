@@ -14,8 +14,11 @@ public abstract class Joueur {
 		jeu = j;
 	}
 
+	public void modify(Jeu j){
+		jeu = j;
+	}
 	int num() {
-		return num;
+		return this.num;
 	}
 
 	boolean tempsEcoule() {
