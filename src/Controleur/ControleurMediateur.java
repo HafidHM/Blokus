@@ -1,5 +1,4 @@
 package Controleur;
-
 import Modele.Jeu;
 import Modele.Position;
 import Vue.ViewJouer;
@@ -23,6 +22,16 @@ public class ControleurMediateur {
 
 	}
 
+	public void setDimension(int n) {
+		jeu = new Jeu(n);
+		vjouer.modify(jeu);
+		vpara.modify(jeu);
+		for(int i=0;i<4;i++) {
+			vpara.joueurs[i].modify(jeu);
+		}
+		System.out.println("view para " + vpara.plateau.taille());
+		vjouer.onLaunch();
+	}
 	public void modifScore(int nb) {
 		vjouer.Score.getChildren().clear();
 		if(nb == 4)
@@ -113,11 +122,10 @@ public class ControleurMediateur {
     
 	public void tictac() {
 		boolean b;
-
 		if (jeu.enCours()) {
 			if (decompte == 0) {
-				System.out.println("joueurCourant " + joueurCourant);
 				if((b = choisirNiveau(vpara.dif[joueurCourant]))) {//num() pour joueurCourant change
+					System.out.println("joueurcorant " + joueurCourant + " " + b);
 					vjouer.joueurCourant = jeu.joueurCourant;
 					vjouer.miseAJour();
 					changeJoueur();
