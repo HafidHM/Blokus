@@ -16,8 +16,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -31,6 +35,7 @@ public class ViewParametre extends View{
 	private Canvas can;
 	private AnchorPane pane;
 	VBox boiteJeu;
+	VBox dimension;
 	private Button retourBtn;
 	private Button commencerBtn;
 	private Button Jeu4Btn;
@@ -40,6 +45,7 @@ public class ViewParametre extends View{
 	public String[] dif;
 	public Joueur[] joueurs;
 	public String[] nom;
+	public ToggleGroup group;
 	TextField text0;
 	TextField text1;
 	TextField text2;
@@ -51,7 +57,6 @@ public class ViewParametre extends View{
 		miseAJour();
 	}
 
-	
 	@Override
 	public void miseAJour() {
 		vj = (ViewJouer) app.getView("Jouer");
@@ -59,7 +64,7 @@ public class ViewParametre extends View{
 		nom = new String[4];
 		dif = new String[4];
 		for(int i=0;i<4;i++) {
-			nom[i] = "Joueur" + i;
+			nom[i] = "Joueur" + (i+1);
 			
 		}
 		can = new Canvas(600,200);
@@ -158,12 +163,35 @@ public class ViewParametre extends View{
 		boiteJeu = new VBox();
 		boiteJeu.getChildren().addAll(JeuBtn,pane);
 		boiteJeu.setAlignment(Pos.CENTER);
+		
+		dimension = new VBox();
+		Label dim = new Label("Veuillez choisir un dimension : ");
+		group = new ToggleGroup();
+		RadioButton d1 = new RadioButton("11 * 11");
+		d1.setUserData(11);;
+		d1.setToggleGroup(group);
+		RadioButton d2 = new RadioButton("13 * 13");
+		d2.setUserData(13);
+		d2.setToggleGroup(group);
+		RadioButton d3 = new RadioButton("17 * 17");
+		d3.setToggleGroup(group);
+		d3.setUserData(17);
+		RadioButton d4 = new RadioButton("23 * 23");
+		d4.setToggleGroup(group);
+		d4.setUserData(23);
+		
+		dimension.getChildren().addAll(dim,d1,d2,d3,d4);
+		dimension.setSpacing(20);
+		
 		HBox box = new HBox(retourBtn,commencerBtn);
 		box.setAlignment(Pos.BOTTOM_CENTER);//居中对齐
 		box.setSpacing(100);
 		getPane().setBottom(box);
-		getPane().setCenter(boiteJeu);
+		getPane().setTop(boiteJeu);
+		getPane().setRight(dimension);
 		getPane().setPadding(new Insets(50));
+		getPane();
+		BorderPane.setMargin(dimension, new Insets(50));
 		
 		GraphicsContext gJeu = can.getGraphicsContext2D();
 		line(gJeu,can.getWidth(),can.getHeight());
@@ -180,7 +208,7 @@ public class ViewParametre extends View{
 		}
 	
 		login(c);
-
+		selectDimension();
 
 	}
 
@@ -212,6 +240,19 @@ public class ViewParametre extends View{
         });
 		return dif[order];
 	}
+	public void selectDimension() {
+		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			@Override
+			public void changed(ObservableValue<? extends Toggle> changed, Toggle oldVal, Toggle newVal)
+			{
+				RadioButton temp_rb=(RadioButton)newVal;
+				c.setDimension((int)temp_rb.getUserData());
+				System.out.println("dimension " + (int)temp_rb.getUserData());
+			}
+		});
+	}
+	
+
 	/*@Override
 	public void redimension() {
 		// TODO Auto-generated method stub
