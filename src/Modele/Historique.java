@@ -1,121 +1,151 @@
-/*package Modele;
+package Modele;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Stack;
 
-public class Historique<E> implements HistoriqueInterface<E>  {
-	Stack<E> memoire;
-	String fichier;
-    String rep="historique/";
+import javafx.scene.control.Tab;
+
+public class Historique implements HistoriqueInterface{
+    
+           public Stack<Jeu> futur;
+           public Stack<Jeu> passe;
+	       public Jeu mem;
+           String rep="historique/";
+           String fichier;
 	
-	public Historique(String fichier) {
-		this.fichier = rep+fichier;
-		memoire = new Stack <>();
+	public Historique(String fic) {
+            futur = new Stack<>();
+            passe = new Stack<>();
+            mem = null;
+            fichier=fic;
 	}
+
+        public void setMem(Jeu m) {
+            mem = m;
+            /* 
+                if(mem.getClass().getSimpleName().toString().compareTo("Jeu")==0) {
+					mem=(E)copy((Jeu)mem);
+		}
+             */
+        }
+        
+        
 	
 	@Override
 	public boolean peutAnnuler() {
-		return !memoire.isEmpty();
+		return !passe.isEmpty();
 	}
 
 
 	@Override
 	public boolean peutRefaire() {
-		return !memoire.isEmpty();
+		return !futur.isEmpty();
 	}
+        
+     public Jeu transfert(Stack<Jeu> source, Stack<Jeu> destination) {
+	    Jeu resultat = source.pop();
+		destination.push(resultat);
+		return resultat;
+	 }
+
 
 	@Override
-	public E annuler() {
-		if(peutAnnuler())
-			return memoire.pop();
-		return null;
+	public Jeu annuler() {
+            if (peutAnnuler()) {
+            	System.out.println("Je peux annuler");
+                Jeu resultat = transfert(passe, futur);
+                mem = resultat;
+                return resultat;
+            }
+            return null;
 	}
 
 
 	@Override
-	public void refaire() {
-		if(peutAnnuler()){
-			memoire.clear();
-		}		
+	public Jeu refaire() {
+            if (peutRefaire()) {
+            	System.out.println("Je peux Refaire ");
+                Jeu resultat = transfert(futur, passe);
+                mem = resultat;
+                return resultat;
+            }
+            return null;		
 	}
+       
+      /*  
+        public  void save(){
+                FileOutputStream fileOut;
+                try {
+                      fileOut = new FileOutputStream(fichier);
+                      ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                      out.writeObject(mem);
+                      out.close();
+                      fileOut.close();
+                      System.out.println("Enregistrer une partie");
 
-	
-	@Override
-    public  void save(){
-          FileOutputStream fileOut;
-          try {
-            fileOut = new FileOutputStream(fichier);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(memoire);
-            out.close();
-            fileOut.close();
-            System.out.println("Enregistrer une partie");
-            
-          } catch (FileNotFoundException e) {
-                 System.err.println("Le fichier "+fichier+"n'existe pas");
-          } catch (IOException e) {
-        	  System.err.println("Probleme d'enregistrement des donnees");
-          }  
-   }
-    
-	
-    @Override
-    public  E load(String fichier){
-    	fichier = rep+ fichier;
-        E  obj = null;
-   
-        try {
-                FileInputStream fileIn = new FileInputStream(fichier);
-                ObjectInputStream in = new ObjectInputStream(fileIn);
-                obj = (E) in.readObject();
-                System.out.println("Charger les parties du fichier "+ fichier);
-                
-        } catch (FileNotFoundException e) {
-        	System.err.println("Le fichier "+fichier+"n'existe pas");
-        } catch (IOException e) {
-        	System.err.println("Probleme du chargement des donnees");
-        } catch (ClassNotFoundException e) {
-        	System.err.println("Class non trouvee");
+                } catch (FileNotFoundException e) {
+                       System.err.println("Le fichier "+fichier+"n'existe pas");
+                } catch (IOException e) {
+                        System.err.println("Probleme d'enregistrement des donnees");
+                }  
         }
-        this.memoire = (Stack<E>) obj;
-        return obj;
-    }
-    
-    
  
-    Jeu copy(Jeu aux,Jeu jeu) {    
-			for(int i=0; i<20; i++) {
-				for(int j=0; j<20; j++ ) {
-					aux.enCours = jeu.enCours;
-					aux.joueurCourant = jeu.joueurCourant;
-					aux .piecesJ= jeu.piecesJ;
-					aux.plateau= jeu.plateau;
-					aux.pieces = jeu.pieces;
-					aux.coord = jeu.coord;
-					aux.plateauPiece= jeu.plateauPiece;
-					aux.l = jeu.l;
-					aux.fichierPieces= jeu.fichierPieces;
-				}
-			}
-		return aux;
-	}
-    
+        
+        public  E load(String fichier){
+                fichier = rep+ fichier;
+                E  obj = null;
+                try {
+                        FileInputStream fileIn = new FileInputStream(fichier);
+                        ObjectInputStream in = new ObjectInputStream(fileIn);
+                        obj = (E) in.readObject();
+                        System.out.println("Charger les parties du fichier "+ fichier);
 
-	@Override
-	public void add(E obj) {
-		
-		if(obj.getClass().getSimpleName().toString().compareTo("Jeu")==0) {
-					Jeu jeu = new Jeu(20);
-					obj=(E)copy(jeu,(Jeu)obj);
-		}
-		
-		 memoire.push(obj);
-	}
+                } catch (FileNotFoundException e) {
+                        System.err.println("Le fichier "+fichier+"n'existe pas");
+                } catch (IOException e) {
+                        System.err.println("Probleme du chargement des donnees");
+                } catch (ClassNotFoundException e) {
+                        System.err.println("Class non trouvee");
+                }
+                this.mem = (E) obj;
+                return obj;
+        }
+       */ 
+        public void add(Jeu jeu){
+        	passe.push((Jeu)copyObject(jeu));
+        }
+        
+        private Object copyObject(Object objSource) {
+                Object objDest = null;
+                try {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(bos);
 
-
+                    oos.writeObject(objSource);
+                    oos.flush();
+                    oos.close();
+                    bos.close();
+                    byte[] byteData = bos.toByteArray();
+                    ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+                    try {
+                        objDest = new ObjectInputStream(bais).readObject();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            return objDest;
+        }
+     
+           
 }
-*/
