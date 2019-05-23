@@ -155,7 +155,7 @@ public class ViewParametre extends View{
 		else if(nbJoueur == 2) {
 			joueurbox.getChildren().addAll(J0,J1);
 		}
-		//joueurbox.setAlignment(Pos.CENTER);
+		
 		joueurbox.setPadding(new Insets(10));
 		joueurbox.setSpacing(20);
 		pane.getChildren().add(joueurbox);
@@ -191,7 +191,6 @@ public class ViewParametre extends View{
 		getPane().setTop(boiteJeu);
 		getPane().setRight(dimension);
 		getPane().setPadding(new Insets(50));
-		getPane();
 		BorderPane.setMargin(dimension, new Insets(50));
 		
 		GraphicsContext gJeu = can.getGraphicsContext2D();
