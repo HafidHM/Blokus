@@ -15,7 +15,7 @@ public abstract class View implements Observateur {
 	private final BorderPane pane;
 	//private final StackPane pane;
 	Jeu jeu;
-	Plateau plateau;
+	public Plateau plateau;
 	Plateau[] plateauPiece;
 	Plateau plateauAffiche;
 	public View(Jeu j) {
@@ -74,6 +74,11 @@ public abstract class View implements Observateur {
 		
 	}
 
-
+	public void modify(Jeu j) {
+		jeu = j;
+		plateau = jeu.plateau;
+		plateauPiece = jeu.plateauPiece;
+		plateauAffiche = jeu.plateauAffiche;
+	}
 }
 
