@@ -179,6 +179,7 @@ public class ViewParametre extends View{
 		RadioButton d4 = new RadioButton("23 * 23");
 		d4.setToggleGroup(group);
 		d4.setUserData(23);
+		d4.setSelected(true);
 		
 		dimension.getChildren().addAll(dim,d1,d2,d3,d4);
 		dimension.setSpacing(20);
