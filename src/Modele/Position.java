@@ -1,6 +1,8 @@
 package Modele;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position  implements  Serializable{
     public int l;
     public int c;
     public Position(int i,int j){
