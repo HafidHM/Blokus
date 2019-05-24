@@ -4,9 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Stack;
 
-public class Historique implements HistoriqueInterface{
+public class Historique implements HistoriqueInterface, Serializable{
     
            public Stack<Jeu> futur;
            public Stack<Jeu> passe;
@@ -25,7 +26,7 @@ public class Historique implements HistoriqueInterface{
         
 	@Override
 	public boolean peutAnnuler() {
-		return !passe.isEmpty();
+		return !(passe.isEmpty()&&passe.size()<2);
 	}
 
 
@@ -36,13 +37,13 @@ public class Historique implements HistoriqueInterface{
         
 	@Override
 	public Jeu annuler() {
-            if (peutAnnuler()) {
+              if (peutAnnuler()) {
             	System.out.println("Je peux annuler");
                 Jeu resultat = transfert(passe, futur);
                 mem = resultat;
                 return resultat;
-            }
-            return null;
+              }
+               return null;
 	}
 
 
@@ -61,15 +62,11 @@ public class Historique implements HistoriqueInterface{
         public void add(Jeu jeu){
         	passe.push((Jeu)copyObject(jeu));
         }
-        
-        public Jeu getNewJeu(){
-            return passe.peek();
-        }
-        
+
         public Jeu transfert(Stack<Jeu> source, Stack<Jeu> destination) {
 	    Jeu resultat = source.pop();
 		destination.push(resultat);
-		return resultat;
+		return destination.peek();
 	}
         
         Object copyObject(Object src) {
@@ -89,7 +86,7 @@ public class Historique implements HistoriqueInterface{
                         System.err.println("Class non trouvee");
                     }
                 } catch (IOException e) {
-                    System.err.println("Erreur dentree sortie");
+                    e.printStackTrace();
                 }
             return dest;
         }
@@ -143,6 +140,11 @@ public class Historique implements HistoriqueInterface{
                 return obj;
         }
        */ 
-     
+     public void affiche(){
+         System.err.println("******* Historique**********");
+         for (Jeu jeu : passe) {
+            jeu.affiche();
+         }
+     }
            
 }
