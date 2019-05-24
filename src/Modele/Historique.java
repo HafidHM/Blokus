@@ -16,15 +16,16 @@ public class Historique implements HistoriqueInterface, Serializable{
            String rep="historique/";
            String fichier;
 	
-	public Historique(String fic) {
+	public Historique() {
             futur = new Stack<>();
             passe = new Stack<>();
-            fichier=fic;
+            fichier="";
 	}
         
         
         @Override
-        public  void save(Jeu j){
+        public  void save(Jeu j,String nomFic){
+                fichier = nomFic;
                 FileOutputStream fileOut;
                 try {
                       fileOut = new FileOutputStream(fichier);
