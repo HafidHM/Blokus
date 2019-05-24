@@ -1,9 +1,10 @@
 package Modele;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Plateau implements PlateauInterface {
-    public int[][] p;
+public class Plateau implements PlateauInterface, Serializable {
+    public int[][] p; 
     public boolean[][]pB;
     private Jeu jeu;
 
@@ -245,7 +246,6 @@ public class Plateau implements PlateauInterface {
     }
 
     public void AffichePlateauP() {
-        System.out.println("Afficher PlateauPiece");
         for(int i =0;i<p.length;i++) {
             for(int j = 0;j<p[0].length;j++) {
                 System.out.print(p[i][j] + " ");
