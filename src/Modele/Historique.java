@@ -11,7 +11,7 @@ public class Historique implements HistoriqueInterface, Serializable{
     
            public Stack<Jeu> futur;
            public Stack<Jeu> passe;
-	   public Jeu mem;
+
            
            String rep="historique/";
            String fichier;
