@@ -1,8 +1,13 @@
 package Modele;
 import Patterns.Observable;
 import Global.Configuration;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -22,7 +27,7 @@ public class Jeu extends Observable implements Serializable {
 	public int ScoreT;
 	public boolean[] enCoursJ;
 
-	String fichierPieces = "resources/Pieces/pieces.txt";
+	String fichierPieces = "C:\\Users\\HAFID MOHAMED\\Desktop\\MasterHis\\src\\resources\\Pieces\\pieces.txt";
 
 	public Jeu(int n) {
 		plateau = new Plateau(n,n, this);
@@ -216,4 +221,10 @@ public class Jeu extends Observable implements Serializable {
 		res = res && (coord.size()>0) && (piecesJ[joueurCourant].size()>0);
 		return res;
 	}
+        
+
+        public void affiche(){
+            System.out.println("le joueur:  "+joueurCourant);
+            plateau.AffichePlateauP();
+        }
 }
