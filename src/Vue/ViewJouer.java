@@ -40,6 +40,8 @@ public class ViewJouer extends View {
     private Button recommencerBtn;
     private Button miroirBtn;
     private Button tourneBtn;
+    private Button annulBtn;
+    private Button refaireBtn;
     public Button[] joueur;
     public HBox JoueurBtn ;
     public Label[] joueur_score;
@@ -86,7 +88,7 @@ public class ViewJouer extends View {
 
         recommencerBtn = new Button("Recommencer");
         recommencerBtn.setOnAction((event)->{
-            jeu.refaire();
+            jeu.recommencer();
             jouerBtn.setText("Jouer");
             jeu.enCours = false ;
             joueurCourant = jeu.joueurCourant;
@@ -94,6 +96,20 @@ public class ViewJouer extends View {
             miseAJour();
 
         });
+        
+        annulBtn = new Button("Annuler");
+        annulBtn.setOnAction((event)->{
+        	jeu.enCours = false;
+            c.annuler();
+
+        });
+        
+        refaireBtn = new Button("Refaire");
+        refaireBtn.setOnAction((event)->{
+            c.refaire();
+
+        });
+        
         retourBtn = new Button("Retour");
         retourBtn.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -111,7 +127,7 @@ public class ViewJouer extends View {
 
                     @Override
                     public void handle(ActionEvent event) {
-                        jeu.refaire();
+                        jeu.recommencer();
                         jouerBtn.setText("Jouer");
                         joueurCourant = jeu.joueurCourant;
                         c.joueurCourant = jeu.joueurCourant;
@@ -187,6 +203,11 @@ public class ViewJouer extends View {
         actionBtn.setSpacing(20);
         actionBtn.setAlignment(Pos.CENTER);
 
+        HBox annulrefaire = new HBox();
+        annulrefaire.getChildren().addAll(annulBtn,refaireBtn);
+        actionBtn.setSpacing(20);
+        actionBtn.setAlignment(Pos.CENTER);
+        
         HBox pageBtn = new HBox();
         pageBtn.getChildren().addAll(retourBtn,quitBtn);
         pageBtn.setSpacing(20);
@@ -251,7 +272,7 @@ public class ViewJouer extends View {
 
         gPlateau.getChildren().add(panePlateau);
         gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recommencerBtn,pageBtn);
+        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recommencerBtn,annulrefaire,pageBtn);
         gAffiche.setSpacing(20);
         gAffiche.setAlignment(Pos.CENTER);
 
