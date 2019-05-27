@@ -1,5 +1,6 @@
 package Controleur;
 
+import Modele.Historique;
 import Modele.Jeu;
 import Modele.Position;
 import Vue.ViewJouer;
@@ -15,12 +16,14 @@ public class ControleurMediateur {
     public int joueurCourant;
     final int lenteurAttente = 50;
     int decompte;
-
+    Historique h;
+    boolean refaire = false;
     public ControleurMediateur(Jeu j, ViewJouer vj, ViewParametre vp) {
         jeu = j;
         vjouer = vj;
         vpara = vp;
-
+        h = new Historique(jeu);
+        h.add(jeu);
     }
 
     public void setDimension(int n) {
@@ -34,6 +37,34 @@ public class ControleurMediateur {
 
 	}
 
+    public void annuler() {
+		jeu = h.annuler();
+		h.modify(jeu);
+		vjouer.modify(jeu);
+		vpara.modify(jeu);
+		for(int i=0;i<4;i++) {
+			vpara.joueurs[i].modify(jeu);
+		}
+		h.affiche_passe();
+		h.affiche_futur();
+		joueurCourant = (joueurCourant - 1) % vpara.joueurs.length;
+		vjouer.miseAJour();
+	}
+    
+    public void refaire() {
+		jeu = h.refaire();
+		h.modify(jeu);
+		vjouer.modify(jeu);
+		vpara.modify(jeu);
+		for(int i=0;i<4;i++) {
+			vpara.joueurs[i].modify(jeu);
+		}
+		h.affiche_passe();
+		h.affiche_futur();
+		joueurCourant = (joueurCourant + 1) % vpara.joueurs.length;
+		vjouer.miseAJour();
+	}
+    
     public void modifScore(int nb) {
         vjouer.Score.getChildren().clear();
         if(nb == 4)
@@ -70,6 +101,7 @@ public class ControleurMediateur {
         int l = (int) (y / vjouer.hauteurCase());
         int c = (int) (x / vjouer.largeurCase());
 
+        Jeu j = jeu;
         System.out.println("lPlateau = " + l);
         System.out.println("cPlateau = " + c);
         Position posPlateau = new Position(l,c);
@@ -78,10 +110,14 @@ public class ControleurMediateur {
         if (vpara.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
             jeu.plateauPiece[vjouer.joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
             vjouer.joueurCourant = jeu.joueurCourant;
+            	h.add(j);
+            h.affiche_passe();
+            h.affiche_futur();
             vjouer.miseAJour();
             changeJoueur();
-
+            
         }
+        refaire = false;
     }
 
     public void selectPiece(double x, double y) {
@@ -123,12 +159,13 @@ public class ControleurMediateur {
     }
 
     public void tictac() {
-        boolean b;
+        Jeu j = jeu;
 
         if (jeu.enCours()) {
             if (decompte == 0) {
-                if((b = choisirNiveau(vpara.dif[joueurCourant]))) {//num() pour joueurCourant change
+                if( choisirNiveau(vpara.dif[joueurCourant])) {//num() pour joueurCourant change
                     vjouer.joueurCourant = jeu.joueurCourant;
+                    h.add(j);
                     vjouer.miseAJour();
                     changeJoueur();
                 }
