@@ -1,6 +1,10 @@
 package Modele;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,21 +15,84 @@ public class Historique implements HistoriqueInterface, Serializable{
     
            public Stack<Jeu> futur;
            public Stack<Jeu> passe;
-
            
            String rep="historique/";
            String fichier;
 	
-	public Historique() {
+	public Historique(String fic) {
             futur = new Stack<>();
             passe = new Stack<>();
-            fichier="";
+            fichier=fic;
 	}
         
         
+	@Override
+	public boolean peutAnnuler() {
+		return !(passe.isEmpty()&&passe.size()<2);
+	}
+
+
+	@Override
+	public boolean peutRefaire() {
+		return !futur.isEmpty();
+	}
+        
+	@Override
+	public Jeu annuler() {
+              if (peutAnnuler()) {
+            	System.out.println("Je peux annuler");
+                transfert(passe, futur);
+                return passe.peek();
+              }
+               return null;
+	}
+
+
+	@Override
+	public Jeu refaire() {
+            if (peutRefaire()) {
+            	System.out.println("Je peux Refaire ");
+                transfert(futur, passe);
+                return passe.peek();
+            }
+            return null;		
+	}
+       
+ 
+        public void add(Jeu jeu){
+        	passe.push((Jeu)copyObject(jeu));
+        }
+
+        public void transfert(Stack<Jeu> source, Stack<Jeu> destination) {
+	    Jeu resultat = source.pop();
+            destination.push((Jeu)copyObject(resultat));            
+	}
+        
+        Object copyObject(Object src) {
+                Object dest = null;
+                try {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(bos);
+                    oos.writeObject(src);
+                    oos.flush();
+                    oos.close();
+                    bos.close();
+                    byte[] byteData = bos.toByteArray();
+                    ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+                    try {
+                        dest = new ObjectInputStream(bais).readObject();
+                    } catch (ClassNotFoundException e) {
+                        System.err.println("Class non trouvee");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            return dest;
+        }
+        
+        
         @Override
-        public  void save(Jeu j,String nomFic){
-                fichier = nomFic;
+        public  void save(Jeu j){
                 FileOutputStream fileOut;
                 try {
                       fileOut = new FileOutputStream(fichier);
@@ -61,6 +128,18 @@ public class Historique implements HistoriqueInterface, Serializable{
                 }
                 return obj;
         }
-
+       
+     public void afficheFutur(){
+         System.err.println("******* Historique Futur **********");
+         for (Jeu jeu : futur) {
+            jeu.affiche();
+         }
+     }
+     public void affichePasse(){
+         System.err.println("******* Historique passe **********");
+         for (Jeu jeu : passe) {
+            jeu.affiche();
+         }
+     }
            
 }
