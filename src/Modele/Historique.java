@@ -65,7 +65,9 @@ public class Historique implements HistoriqueInterface, Serializable{
 
         public void transfert(Stack<Jeu> source, Stack<Jeu> destination) {
 	    Jeu resultat = source.pop();
-            destination.push((Jeu)copyObject(resultat));            
+            if(resultat!=null){
+                          destination.push((Jeu)copyObject(resultat));
+            }  
 	}
         
         Object copyObject(Object src) {
