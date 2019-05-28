@@ -1,9 +1,17 @@
 package Vue;
 import static blokus.Framework.app;
 
+
+import java.util.LinkedList;
+
 import Controleur.ControleurMediateur;
+import Controleur.Joueur;
+import Controleur.JoueurHumain;
+import Controleur.JoueurIA;
 import Modele.Jeu;
 import Modele.Plateau;
+import Modele.Position;
+import Structures.Point;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,6 +23,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -99,14 +109,13 @@ public class ViewJouer extends View {
         
         annulBtn = new Button("Annuler");
         annulBtn.setOnAction((event)->{
-        	jeu.enCours = false;
-            c.annuler();
+            
 
         });
         
         refaireBtn = new Button("Refaire");
         refaireBtn.setOnAction((event)->{
-            c.refaire();
+            
 
         });
         
@@ -307,6 +316,7 @@ public class ViewJouer extends View {
             @Override
             public void handle(MouseEvent e) {
                 c.selectPiece(e.getX(), e.getY());
+                
             }
         });
 
@@ -315,8 +325,54 @@ public class ViewJouer extends View {
             @Override
             public void handle(MouseEvent e) {
                 c.PieceAffiche(e.getX(), e.getY());
+                //Get cursor forcement
+                canAffiche.requestFocus();
             }
         });
+        
+        canAffiche.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+					System.out.println("press W");
+					canAffiche.requestFocus();
+				
+			}			
+		});
+		
+		canAffiche.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				switch(event.getCode().getName()) {
+					case "Z":
+						jeu.plateauAffiche.Miroir();
+			            jeu.pieceCourant.Miroir();
+			            miseAJour();	     
+			            break;
+					case "S":
+						jeu.plateauAffiche.Miroir();
+			            jeu.pieceCourant.Miroir();
+			            miseAJour();
+						break;
+					case "Q":
+						jeu.plateauAffiche.retationGauche();
+				        jeu.pieceCourant.retationGauche();
+				        miseAJour();
+						break;
+					case "D":
+					    jeu.plateauAffiche.retationDroite();
+				        jeu.pieceCourant.retationDroite();
+				        miseAJour();
+						break;
+					
+				}
+				if(event.getCode().getName().equals(KeyCode.W.getName())) {
+					
+				}
+			}
+			
+		});
 
         canAffiche.setOnDragDetected(new EventHandler<MouseEvent>() {
 
@@ -331,22 +387,129 @@ public class ViewJouer extends View {
         canAffiche.setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
 
             @Override
-            public void handle(MouseDragEvent e) {
-                System.out.println("drag");
-                c.PieceAffiche(e.getX(), e.getY());
-
+            public void handle(MouseDragEvent e) {            	
+            	System.out.println("drag");
+            	c.PieceAffiche(e.getX(), e.getY());           
+                
             }
         });
+       
+       /* canAffiche.setOnMouseDragOver(new EventHandler<MouseEvent>() {
 
+			@Override
+			public void handle(MouseEvent e) {
+				System.out.println("e.isDragDetect()?" + e.isDragDetect() + " e.ge  "+ (e.getSource()!=e.getTarget()));
+            	if(e.isDragDetect()&&(e.getSource()==e.getTarget())){
+            		miseAJour();
+            	}
+			}
+        });*/
+        
+        canPlateau.setOnMouseDragOver(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				//reset Color
+				miseAJour();
+				
+				//Render l'indicateur
+				System.out.println("Drag in Plateau");
+				double x = event.getX();
+				double y = event.getY();
+				System.out.println(event.getX());
+				System.out.println(event.getY());
+				GraphicsContext gPlateau = canPlateau.getGraphicsContext2D();
+				int l = (int) (y / hauteurCase);
+			    int c = (int) (x / largeurCase);
+
+			    System.out.println("lPlateau = " + l);
+			    System.out.println("cPlateau = " + c);
+			    Position posPlateau = new Position(l,c);
+			    Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
+			    System.out.println("CourantPicce" + jeu.pieceCourant.getNum());
+			    
+			    //Create a list to save the places where we should render
+		    	LinkedList<Point> list = new LinkedList<>();
+		    	//Rechercher les position de chaque carrés d'une pièce
+		    	
+		    	
+		    	for(int i = 0; i<5 ;i++) {
+		    		for(int j = 0; j<5;j++) {
+		    			if(jeu.pieceCourant.carres[i][j]) {
+		    				Point p = new Point(i-posPiece.l,j-posPiece.c);
+		    				list.push(p);
+		    				
+		    			}
+		    		}
+		    	}
+			    if (jeu.placerPossible(posPlateau, posPiece, jeu.pieceCourant)) {
+			    	 
+			         System.out.println("ok");
+			         while(!list.isEmpty()){
+			        	 Point p = list.pop();
+			        	 gPlateau.setFill(Color.BLACK);
+			        	 c = posPlateau.c + p.getY();
+			        	 l = posPlateau.l + p.getX();
+			        	 gPlateau.fillRect(c*largeurCase, l*hauteurCase, largeurCase, hauteurCase);
+			         }
+					    
+			    }
+			    else {
+			    	 System.out.println("ko");
+			    	 while(!list.isEmpty()){
+			        	 Point p = list.pop();
+			        	 gPlateau.setFill(Color.RED);				       
+			        	 c = posPlateau.c + p.getY();
+			        	 l = posPlateau.l + p.getX();
+			        	 gPlateau.fillRect(c*largeurCase, l*hauteurCase, largeurCase, hauteurCase);
+			         }
+			    	
+					 
+			    }
+			    
+			    
+			    
+			}
+			
+		});
+        
+        canPlateau.setOnMouseDragEntered(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				System.out.println("DragEnterPlateau");
+				
+			}
+			
+		});
+        
         canPlateau.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
 
             @Override
             public void handle(MouseDragEvent e) {
                 try {
                     System.out.println("released");
+                    double x = e.getX();
+    				double y = e.getY();
+                    int l = (int) (y / hauteurCase);
+    			    int col = (int) (x / largeurCase);
+                    Position posPlateau = new Position(l,col);
+    			    Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
                     c.initAffiche();
-                    c.clicSouris(e.getX(), e.getY());
-                    jeu.pieceCourant = null;
+                    if (vp.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
+                    	
+                    	System.out.println("可以放");
+                    	jeu.plateauPiece[joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
+                        joueurCourant = jeu.joueurCourant;
+                        miseAJour();
+                        c.changeJoueur();
+                        
+                    }
+                    else {
+                    	System.out.println("不行");
+                    	
+                    }
+                    
                 }catch(ArrayIndexOutOfBoundsException exception) {
                     System.out.println("select une piece!");
                 }catch(NullPointerException exception) {
@@ -356,6 +519,20 @@ public class ViewJouer extends View {
 
             }
         });
+        canPlateau.setOnMouseDragExited(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				//如果把已经选到了的piece拖动到canPlateau以外canPlateau会重置
+				miseAJour();
+				
+				
+			}
+			
+		});
+        
+       
+        
         new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -449,7 +626,7 @@ public class ViewJouer extends View {
 
     void draw(double hauteur, double largeur, Plateau p, GraphicsContext g) {
         Color color = null;
-
+        
         for (int i=0; i<p.p.length; i++) {
             for (int j=0; j<p.p[0].length; j++) {
                 if(p==plateau) {
@@ -518,6 +695,7 @@ public class ViewJouer extends View {
 
                 }
                 if(p==plateauAffiche && p.valeurB(i, j)) {
+                	System.out.println(p.valeurB(i, j));
                     switch (jeu.joueurCourant) {
                         case 0:
                             color = Color.DARKOLIVEGREEN;
