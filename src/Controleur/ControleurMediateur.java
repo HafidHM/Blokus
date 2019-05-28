@@ -37,6 +37,22 @@ public class ControleurMediateur {
 
 	}
 
+    public void save() {
+    	h.save(jeu,"0");
+    }
+    
+    public void load() {
+    	jeu = h.load("0");
+    	h.modify(jeu);
+		vjouer.modify(jeu);
+		vpara.modify(jeu);
+		for(int i=0;i<4;i++) {
+			vpara.joueurs[i].modify(jeu);
+		}
+		vjouer.joueurCourant = jeu.joueurCourant;
+		vjouer.miseAJour();
+    }
+    
     public void annuler() {
 		jeu = h.annuler();
 		h.modify(jeu);
@@ -125,9 +141,11 @@ public class ControleurMediateur {
         int c = (int) (x / vjouer.largeurCasePiece());
         if(jeu.plateauPiece[jeu.joueurCourant].valeur(l,c)>=0 && vjouer.joueurCourant==jeu.joueurCourant) {
             jeu.setSelected(jeu.plateauPiece[jeu.joueurCourant].valeur(l,c));
+            jeu.plateauPiece[jeu.joueurCourant].select(jeu.pieceCourant.getNum());
             jeu.plateauAffiche.PlacerPiece(jeu.pieceCourant);
             vjouer.miseAJour();
         }
+        jeu.plateauPiece[jeu.joueurCourant].unselect(jeu.pieceCourant.getNum());
     }
 
     public void PieceAffiche(double x, double y) {
