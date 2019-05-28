@@ -1,6 +1,7 @@
 package Vue;
 import static blokus.Framework.app;
 
+import java.util.EmptyStackException;
 import java.util.LinkedList;
 
 import Controleur.ControleurMediateur;
@@ -93,7 +94,7 @@ public class ViewJouer extends View {
         	if(load==true) {
         		//jeu.load(c.h.load("0"));
         		c.jeu.load(jeu);
-        		vp.miseAJour();
+        		//vp.miseAJour();
                 this.modify(jeu);
         		System.out.println("viewjouer jeu joueur " + jeu.joueurCourant);
         	}
@@ -105,6 +106,7 @@ public class ViewJouer extends View {
                 jouerBtn.setText("Jouer");
                 jeu.enCours=false;
             }
+            load = false;
             miseAJour();
         });
 
@@ -126,7 +128,8 @@ public class ViewJouer extends View {
 						public void handle(ActionEvent event) {
 							System.out.println(in.getEditor().getText());
 							c.h.save(jeu, in.getEditor().getText());						
-							
+							c.h.futur.clear();
+							c.h.passe.clear();
 						}
 						
 					});
@@ -152,7 +155,7 @@ public class ViewJouer extends View {
         recommencerBtn = new Button("Recommencer");
         recommencerBtn.setOnAction((event)->{
             jeu.recommencer();
-            vp.miseAJour();
+            //vp.miseAJour();
             this.modify(jeu);
             jouerBtn.setText("Jouer");
             jeu.enCours = false ;
@@ -163,15 +166,24 @@ public class ViewJouer extends View {
         
         annulBtn = new Button("Annuler");
         annulBtn.setOnAction((event)->{
-        	jeu.enCours = false;
-            c.annuler();
+        	try {
+	            c.annuler();
+	            jeu.enCours = false;
+	            jouerBtn.setText("Jouer");
+        	}catch(EmptyStackException e) {
+        		System.out.println("je ne peux pas annuler!");
+        	}
         });
         
         refaireBtn = new Button("Refaire");
         refaireBtn.setOnAction((event)->{
-        	jeu.enCours = false;
-            c.refaire();
-
+        	try {
+	            c.refaire();
+	            jeu.enCours = false;
+	            jouerBtn.setText("Jouer");
+        	}catch(EmptyStackException e) {
+        		System.out.println("je ne peux pas refaire!");
+        	}
         });
         
         retourBtn = new Button("Retour");
@@ -197,6 +209,8 @@ public class ViewJouer extends View {
                         jouerBtn.setText("Jouer");
                         joueurCourant = jeu.joueurCourant;
                         c.joueurCourant = jeu.joueurCourant;
+                        c.h.futur.clear();
+						c.h.passe.clear();
                         app.gotoView("Parametre");
                         miseAJour();
                     }
@@ -658,24 +672,7 @@ public class ViewJouer extends View {
          }
          joueur[jc].setBackground(bg);
     }
-	/*@Override
-	public void redimension() {
-		System.out.println("redimensionner");
-
-        InvalidationListener listener = new InvalidationListener() {
-			@Override
-			public void invalidated(Observable observable) {
-				miseAJour();
-			}
-		};
-        	 canAffiche.widthProperty().addListener(listener);
-        	 canAffiche.heightProperty().addListener(listener);
-        	 canPiece.widthProperty().addListener(listener);
-        	 canPiece.heightProperty().addListener(listener);
-        	 canPlateau.widthProperty().addListener(listener);
-        	 canPlateau.heightProperty().addListener(listener);
-	}*/
-
+	
     void draw(double hauteur, double largeur, Plateau p, GraphicsContext g) {
         Color color = null;
 
