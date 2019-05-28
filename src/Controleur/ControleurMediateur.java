@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 
 import Modele.Historique;
 import Modele.Jeu;
+import Modele.Piece;
 import Modele.Position;
 import Vue.ViewJouer;
 import Vue.ViewParametre;
@@ -16,23 +17,21 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 
 public class ControleurMediateur {
-    Jeu jeu;
+    public Jeu jeu;
     ViewJouer vjouer;
     ViewParametre vpara;
     public int joueurCourant;
     final int lenteurAttente = 50;
-    int decompte;
-    Historique h;
-    boolean refaire = false;
+    int decompte; 
+    public Historique h;
+    public String fichier;
+    
     public ControleurMediateur(Jeu j, ViewJouer vj, ViewParametre vp) {
         jeu = j;
         vjouer = vj;
         vpara = vp;
         h = new Historique();
         h.add(jeu);
-        h.affiche_passe();
-        h.affiche_futur();
-
     }
 
     public void setDimension(int n) {
@@ -50,15 +49,16 @@ public class ControleurMediateur {
     	h.save(jeu,"0");
     }
     
-    public void load() {
-    	jeu = h.load("0");
-    	joueurCourant = jeu.joueurCourant;
+    public void load(String fichier) {
+    	this.jeu = h.load(fichier);
 		vjouer.modify(jeu);
-		vpara.modify(jeu);
+		joueurCourant = jeu.joueurCourant;
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
+		vjouer.joueurCourant = jeu.joueurCourant;
 		vjouer.miseAJour();
+		vjouer.load = true;
     }
     
     public void annuler() {
@@ -78,7 +78,6 @@ public class ControleurMediateur {
     public void refaire() {
     	jeu = (Jeu) copyObject(h.refaire());
         joueurCourant = jeu.joueurCourant;
-		//h.modify(jeu);
 		vjouer.modify(jeu);
 		vpara.modify(jeu);
 		for(int i=0;i<4;i++) {
@@ -131,6 +130,16 @@ public class ControleurMediateur {
             }
         });
     }
+    
+    public void setNomCharge(TextField t) {
+        t.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                t.setText(newValue);
+                fichier = newValue;
+            }
+        });
+    }
 
     public void valide(int order) {
         vjouer.joueur[order].setText(vpara.nom[order]);
@@ -152,30 +161,27 @@ public class ControleurMediateur {
         Jeu j = jeu;
         Position posPlateau = new Position(l,c);
         Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
-        System.out.println("pieceCorant " + jeu.pieceCourant.getNum());
-        if (vpara.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
+        Piece piece = jeu.pieceCourant;
+        if (vpara.joueurs[joueurCourant].jeu(posPlateau,posPiece,piece)) {
             jeu.plateauPiece[vjouer.joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
             vjouer.joueurCourant = jeu.joueurCourant;
-            if(refaire == false)
-            	h.add(j);
+            h.add(j);
             vjouer.miseAJour();
             changeJoueur(); 
         }
-        refaire = false;
     }
 
     public void selectPiece(double x, double y) {
         int l = (int) (y / vjouer.hauteurCasePiece());
         int c = (int) (x / vjouer.largeurCasePiece());
+        
         if(jeu.plateauPiece[jeu.joueurCourant].valeur(l,c)>=0 && vjouer.joueurCourant==jeu.joueurCourant) {
             jeu.setSelected(jeu.plateauPiece[jeu.joueurCourant].valeur(l,c));
-            System.out.println("recommence piece " + jeu.pieceCourant.getNum());
             jeu.plateauPiece[jeu.joueurCourant].select(jeu.pieceCourant.getNum());
             jeu.plateauAffiche.PlacerPiece(jeu.pieceCourant);
             vjouer.miseAJour();
         }
         jeu.plateauPiece[jeu.joueurCourant].unselect(jeu.pieceCourant.getNum());
-        
     }
 
     public void PieceAffiche(double x, double y) {
