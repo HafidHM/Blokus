@@ -1,13 +1,9 @@
 package Vue;
 import static blokus.Framework.app;
 
-
 import java.util.LinkedList;
 
 import Controleur.ControleurMediateur;
-import Controleur.Joueur;
-import Controleur.JoueurHumain;
-import Controleur.JoueurIA;
 import Modele.Jeu;
 import Modele.Plateau;
 import Modele.Position;
@@ -28,10 +24,18 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class ViewJouer extends View {
 
@@ -48,11 +52,11 @@ public class ViewJouer extends View {
     private Button retourBtn;
     private Button quitBtn;
     private Button recommencerBtn;
+    private Button sauvegardeBtn;
     private Button miroirBtn;
     private Button tourneBtn;
     private Button annulBtn;
     private Button refaireBtn;
-    private Button sauvegardeBtn;
     public Button[] joueur;
     public HBox JoueurBtn ;
     public Label[] joueur_score;
@@ -87,10 +91,10 @@ public class ViewJouer extends View {
         jouerBtn.setOnAction((event)->{
 
             if(jouerBtn.getText().equalsIgnoreCase("Jouer")) {
-                jouerBtn.setText("Stop");
+                jouerBtn.setText("Pause");
                 jeu.enCours = true;
             }
-            else if(jouerBtn.getText().equalsIgnoreCase("Stop")) {
+            else if(jouerBtn.getText().equalsIgnoreCase("Pause")) {
                 jouerBtn.setText("Jouer");
                 jeu.enCours=false;
             }
@@ -98,47 +102,9 @@ public class ViewJouer extends View {
         });
 
         sauvegardeBtn = new Button("Sauvegarder");
-        sauvegardeBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                Dialog<ButtonType> dialog = new Dialog<ButtonType>();
-                dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
-                dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
-                Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
-                yes.setText("Oui");
-                Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
-                no.setText("Non");
-
-                yes.setOnAction(new EventHandler<ActionEvent>() {
-
-                    @Override
-                    public void handle(ActionEvent event) {
-                        jeu.recommencer();
-                        vp.miseAJour();
-                        modify(jeu);
-                        jouerBtn.setText("Jouer");
-                        joueurCourant = jeu.joueurCourant;
-                        c.joueurCourant = jeu.joueurCourant;
-                        app.gotoView("Parametre");
-                        miseAJour();
-                    }
-                });
-                no.setOnAction(new EventHandler<ActionEvent>() {
-
-                    @Override
-                    public void handle(ActionEvent event) {
-                        dialog.close();
-
-                    }
-                });
-
-                dialog.setContentText("Voulez vous aller à la page Paramètre ?");
-                dialog.show();
-
-            }
+        sauvegardeBtn.setOnAction(event->{
+        	c.save();
         });
-        
         recommencerBtn = new Button("Recommencer");
         recommencerBtn.setOnAction((event)->{
             jeu.recommencer();
@@ -149,18 +115,18 @@ public class ViewJouer extends View {
             joueurCourant = jeu.joueurCourant;
             c.joueurCourant = jeu.joueurCourant;
             miseAJour();
-
         });
         
         annulBtn = new Button("Annuler");
         annulBtn.setOnAction((event)->{
-            
-
+        	jeu.enCours = false;
+            c.annuler();
         });
         
         refaireBtn = new Button("Refaire");
         refaireBtn.setOnAction((event)->{
-            
+        	jeu.enCours = false;
+            c.refaire();
 
         });
         
@@ -242,7 +208,7 @@ public class ViewJouer extends View {
         });
         miroirBtn = new Button("Miroir");
         miroirBtn.setOnAction((event)->{
-            try {
+        	try {
 	            jeu.plateauAffiche.Miroir();
 	            jeu.pieceCourant.Miroir();
 	            miseAJour();
@@ -253,7 +219,7 @@ public class ViewJouer extends View {
 
         tourneBtn = new Button("Tourner");
         tourneBtn.setOnAction((event)->{
-            try {
+        	try {
 	            jeu.plateauAffiche.retationGauche();
 	            jeu.pieceCourant.retationGauche();
 	            miseAJour();
@@ -274,8 +240,8 @@ public class ViewJouer extends View {
 
         HBox annulrefaire = new HBox();
         annulrefaire.getChildren().addAll(annulBtn,refaireBtn);
-        actionBtn.setSpacing(20);
-        actionBtn.setAlignment(Pos.CENTER);
+        annulrefaire.setSpacing(20);
+        annulrefaire.setAlignment(Pos.CENTER);
         
         HBox pageBtn = new HBox();
         pageBtn.getChildren().addAll(retourBtn,quitBtn);
@@ -315,7 +281,7 @@ public class ViewJouer extends View {
         Score.setSpacing(10.0);
         score.setAlignment(Pos.TOP_CENTER);
 
-         for(int i=0;i<4;i++) {
+        for(int i=0;i<4;i++) {
         	joueur_score[i] = new Label();
         }
         Score.getChildren().addAll(joueur_score[0],joueur_score[1],joueur_score[2],joueur_score[3]);
@@ -547,8 +513,7 @@ public class ViewJouer extends View {
 			}
         		
         });
-       
-        
+
         new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -602,7 +567,6 @@ public class ViewJouer extends View {
         line(gAffiche,largeurAffiche(),hauteurAffiche());
         draw(hauteurCaseAffiche, largeurCaseAffiche, plateauAffiche, gAffiche);
 
-
         //canScore
         GraphicsContext gScore = canScore.getGraphicsContext2D();
         line(gScore,largeurAffiche(),hauteurAffiche());
@@ -618,10 +582,22 @@ public class ViewJouer extends View {
             joueur_score[1].setText(joueur[1].getText() + ": " + (jeu.Score[1]+jeu.Score[3]));
 
         }
-
+        
+        bouton(joueurCourant);
     }
 
-
+    void bouton(int jc) {
+    	System.out.println("bouton joueurcourant " + jc);
+    	 BackgroundFill bgf = new BackgroundFill(Paint.valueOf("#8FBC8F"), new CornerRadii(20), new Insets(10));
+         Background bg = new Background(bgf);
+         BorderStroke bos = new BorderStroke(Paint.valueOf("#8FBC8F"), BorderStrokeStyle.SOLID,null,new BorderWidths(5),new Insets(10));
+         Border bo = new Border(bos);
+         for(int i = 0;i<4;i++) {
+        	 joueur[i].setBorder(bo);
+        	 joueur[i].setBackground(null);
+         }
+         joueur[jc].setBackground(bg);
+    }
 	/*@Override
 	public void redimension() {
 		System.out.println("redimensionner");
@@ -642,7 +618,7 @@ public class ViewJouer extends View {
 
     void draw(double hauteur, double largeur, Plateau p, GraphicsContext g) {
         Color color = null;
-        
+
         for (int i=0; i<p.p.length; i++) {
             for (int j=0; j<p.p[0].length; j++) {
                 if(p==plateau) {
@@ -719,7 +695,6 @@ public class ViewJouer extends View {
 
                 }
                 if(p==plateauAffiche && p.valeurB(i, j)) {
-                	System.out.println(p.valeurB(i, j));
                     switch (jeu.joueurCourant) {
                         case 0:
                             color = Color.DARKOLIVEGREEN;
