@@ -9,7 +9,7 @@ public interface HistoriqueInterface {
 	public Jeu annuler();
 	public Jeu refaire();
 	public Jeu load(String fichier);
-    public void save(Jeu j);
+    public void save(Jeu j,String fichier);
 
 
 
