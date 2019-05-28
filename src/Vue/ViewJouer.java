@@ -9,16 +9,22 @@ import Modele.Plateau;
 import Modele.Position;
 import Structures.Point;
 import javafx.animation.AnimationTimer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
@@ -36,6 +42,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class ViewJouer extends View {
 
@@ -102,9 +111,45 @@ public class ViewJouer extends View {
         });
 
         sauvegardeBtn = new Button("Sauvegarder");
-        sauvegardeBtn.setOnAction(event->{
-        	c.save();
-        });
+        sauvegardeBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+					TextInputDialog in = new TextInputDialog("default");
+					
+					in.setTitle("Sauvegarde");
+					in.setContentText("Saisir le nom de fichier : ");
+					
+					Button ok = (Button)in.getDialogPane().lookupButton(ButtonType.OK);
+					ok.setText("OK");
+					ok.setOnAction(new EventHandler<ActionEvent>(){
+
+						@Override
+						public void handle(ActionEvent event) {
+							System.out.println(in.getEditor().getText());
+							c.h.save(jeu, in.getEditor().getText());						
+							
+						}
+						
+					});
+					
+					Button cancel = (Button)in.getDialogPane().lookupButton(ButtonType.CANCEL);
+					cancel.setText("Cancel");
+					cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+						@Override
+						public void handle(ActionEvent event) {
+							System.out.println("Cancel");
+							
+						}
+						
+					});
+					in.show();
+					
+				
+			}
+			
+		});
         recommencerBtn = new Button("Recommencer");
         recommencerBtn.setOnAction((event)->{
             jeu.recommencer();
@@ -316,7 +361,7 @@ public class ViewJouer extends View {
         Pane.setBottom(gPiece);
         getPane().setLeft(Pane);
         getPane().setRight(gAffiche);
-
+        
         jeu.ajouteObservateur(this);
         miseAJour();
 
