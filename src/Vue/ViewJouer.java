@@ -516,22 +516,9 @@ public class ViewJouer extends View {
             @Override
             public void handle(MouseDragEvent e) {
                 try {                   
-                    /*double x = e.getX();
-    				double y = e.getY();
-                    int l = (int) (y / hauteurCase);
-    			    int col = (int) (x / largeurCase);
-                    Position posPlateau = new Position(l,col);
-    			    Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
                     c.initAffiche();
-                    if (vp.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {                	
-                    	
-                    	jeu.plateauPiece[joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
-                        joueurCourant = jeu.joueurCourant;
-                        miseAJour();
-                        c.changeJoueur();
-                        
-                    }*/
                     c.clicSouris(e.getX(), e.getY());
+                    jeu.pieceCourant = null;
                 }catch(ArrayIndexOutOfBoundsException exception) {
                     System.out.println("select une piece!");
                 }catch(NullPointerException exception) {
