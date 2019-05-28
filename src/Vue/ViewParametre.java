@@ -36,6 +36,7 @@ public class ViewParametre extends View{
 	private AnchorPane pane;
 	VBox boiteJeu;
 	VBox dimension;
+	VBox charge;
 	private Button retourBtn;
 	private Button commencerBtn;
 	private Button loadBtn;
@@ -114,7 +115,7 @@ public class ViewParametre extends View{
 		
 		loadBtn = new Button("Charger");
         loadBtn.setOnAction(event->{
-        	c.load();
+        	c.load(c.fichier);
         });
         
 		Joueur = new ChoiceBox[4];
@@ -123,34 +124,34 @@ public class ViewParametre extends View{
 		    Joueur[i].getSelectionModel().selectFirst();	    
 		}
 		
-		Label j0 = new Label("Joueur 0 (vert) :   ");
+		Label j0 = new Label("Joueur 1 (vert) :   ");
 		if(nbJoueur == 2)
-			j0.setText("Joueur 0 (vert et jaune) :   ");
+			j0.setText("Joueur 1 (vert et jaune) :   ");
 		text0 = new TextField();
-		text0.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
+		text0.setPromptText("Entrez le nom de joueur :");
 		text0.setFocusTraversable(false);
 		HBox J0 = new HBox(j0,Joueur[0],text0);
 		J0.setSpacing(10);
 		
-		Label j1 = new Label("Joueur 1 (bleu) :   ");
+		Label j1 = new Label("Joueur 2 (bleu) :   ");
 		if(nbJoueur == 2)
-			j1.setText("Joueur 1 (bleu et rouge) :   ");
+			j1.setText("Joueur 2 (bleu et rouge) :   ");
 		text1 = new TextField();
-		text1.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
+		text1.setPromptText("Entrez le nom de joueur :");
 		text1.setFocusTraversable(false);
 		HBox J1 = new HBox(j1,Joueur[1],text1);
 		J1.setSpacing(10);
 		
-		Label j2 = new Label("Joueur 2 (jaune) : ");
+		Label j2 = new Label("Joueur 3 (jaune) : ");
 		text2 = new TextField();
-		text2.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
+		text2.setPromptText("Entrez le nom de joueur :");
 		text2.setFocusTraversable(false);
 		HBox J2 = new HBox(j2,Joueur[2],text2);
 		J2.setSpacing(10);
 		
-		Label j3 = new Label("Joueur 3 (rouge) : ");
+		Label j3 = new Label("Joueur 4 (rouge) : ");
 		text3 = new TextField();
-		text3.setPromptText("Entrez le nom de joueur :(moins de 7 caractères)");
+		text3.setPromptText("Entrez le nom de joueur :");
 		text3.setFocusTraversable(false);
 		HBox J3 = new HBox(j3,Joueur[3],text3);
 		J3.setSpacing(10);
@@ -191,14 +192,24 @@ public class ViewParametre extends View{
 		dimension.getChildren().addAll(dim,d1,d2,d3,d4);
 		dimension.setSpacing(20);
 		
-		HBox box = new HBox(retourBtn,commencerBtn,loadBtn);
+		charge = new VBox();
+		Label charger = new Label("Si vous voulez charger une partie  ");
+		TextField text = new TextField();
+		text.setPromptText("Entrez le nom de fichier");
+		text.setFocusTraversable(false);
+		charge.getChildren().addAll(charger,text,loadBtn);
+		charge.setSpacing(20);
+		
+		HBox box = new HBox(retourBtn,commencerBtn);
 		box.setAlignment(Pos.BOTTOM_CENTER);//居中对齐
 		box.setSpacing(100);
 		getPane().setBottom(box);
 		getPane().setTop(boiteJeu);
 		getPane().setRight(dimension);
+		getPane().setLeft(charge);
 		getPane().setPadding(new Insets(50));
 		BorderPane.setMargin(dimension, new Insets(50));
+		BorderPane.setMargin(charge, new Insets(50));
 		
 		GraphicsContext gJeu = can.getGraphicsContext2D();
 		line(gJeu,can.getWidth(),can.getHeight());
@@ -215,6 +226,7 @@ public class ViewParametre extends View{
 		}
 	
 		login(c);
+		c.setNomCharge(text);
 		selectDimension();
 
 	}
