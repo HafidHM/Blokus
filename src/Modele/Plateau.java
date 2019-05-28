@@ -291,6 +291,17 @@ public class Plateau implements PlateauInterface {
         }
         setPiece(carres);
     }
+    public void retationDroite() {
+		boolean[][] carres = new boolean[5][5];
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                carres [j][5-i-1] = pB[i][j];
+            }
+        }
+        setPiece(carres);
+		
+	}
 
     public void Miroir() {
 
@@ -388,6 +399,8 @@ public class Plateau implements PlateauInterface {
 
         return  false;
     }
+
+	
 
 
 }
