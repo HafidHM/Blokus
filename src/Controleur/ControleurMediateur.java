@@ -1,59 +1,130 @@
 package Controleur;
 
+import Modele.Historique;
 import Modele.Jeu;
 import Modele.Position;
 import Vue.ViewJouer;
 import Vue.ViewParametre;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 
 public class ControleurMediateur {
     Jeu jeu;
     ViewJouer vjouer;
     ViewParametre vpara;
-    int joueurCourant;
+    public int joueurCourant;
     final int lenteurAttente = 50;
     int decompte;
-
+    Historique h;
+    boolean refaire = false;
     public ControleurMediateur(Jeu j, ViewJouer vj, ViewParametre vp) {
         jeu = j;
         vjouer = vj;
         vpara = vp;
-
+        h = new Historique();
+        h.add(jeu);
+        h.affiche_passe();
+        h.affiche_futur();
     }
 
+    public void setDimension(int n) {
+		jeu = new Jeu(n);
+		vjouer.modify(jeu);
+		vpara.modify(jeu);
+		for(int i=0;i<4;i++) {
+			vpara.joueurs[i].modify(jeu);
+		}
+		vjouer.onLaunch();
+	}
+
+    public void annuler() {
+		jeu = h.annuler();
+                joueurCourant = jeu.joueurCourant;
+		//h.modify(jeu);
+		vjouer.modify(jeu);
+		vpara.modify(jeu);
+		for(int i=0;i<4;i++) {
+			vpara.joueurs[i].modify(jeu);
+		}
+		h.affiche_passe();
+		h.affiche_futur();
+		//joueurCourant = (joueurCourant - 1) % vpara.joueurs.length;
+		vjouer.miseAJour();
+           
+              
+	}
+    
+    public void refaire() {
+		jeu = (Jeu) copyObject(h.refaire());
+                joueurCourant = jeu.joueurCourant;
+		//h.modify(jeu);
+		vjouer.modify(jeu);
+		vpara.modify(jeu);
+		for(int i=0;i<4;i++) {
+			vpara.joueurs[i].modify(jeu);
+		}
+		h.affiche_passe();
+		h.affiche_futur();
+		//joueurCourant = (joueurCourant + 1) % vpara.joueurs.length;
+		vjouer.miseAJour();
+              
+               
+   }
+          Object copyObject(Object src) {
+                Object dest = null;
+                try {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(bos);
+                    oos.writeObject(src);
+                    oos.flush();
+                    oos.close();
+                    bos.close();
+                    byte[] byteData = bos.toByteArray();
+                    ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+                    try {
+                        dest = new ObjectInputStream(bais).readObject();
+                    } catch (ClassNotFoundException e) {
+                        System.err.println("Class non trouvee");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            return dest;
+        }
+    
     public void modifScore(int nb) {
         vjouer.Score.getChildren().clear();
         if(nb == 4)
-            vjouer.Score.getChildren().addAll(vjouer.joueur0,vjouer.joueur1,vjouer.joueur2,vjouer.joueur3);
+            vjouer.Score.getChildren().addAll(vjouer.joueur_score[0],vjouer.joueur_score[1],vjouer.joueur_score[2],vjouer.joueur_score[3]);
         else if(nb == 2)
-            vjouer.Score.getChildren().addAll(vjouer.joueur0,vjouer.joueur1);
+            vjouer.Score.getChildren().addAll(vjouer.joueur_score[0],vjouer.joueur_score[1]);
     }
-    public void setNom(TextField t) {
+
+    public void setNom(TextField t,int order) {
         t.textProperty().addListener(new ChangeListener<String>() {
 
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 t.setText(newValue);
-                vpara.nom = newValue;
+                vpara.nom[order] = newValue;
             }
         });
     }
 
-    public void valide(Button b,int order) {
-        b.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                vjouer.joueur[order].setText(vpara.nom);
-                if(vpara.nbJoueur==2)
-                    vjouer.joueur[order+2].setText(vpara.nom);
+    public void valide(int order) {
+        vjouer.joueur[order].setText(vpara.nom[order]);
+        vjouer.joueur_score[order].setText(vpara.nom[order]+ ": " + jeu.Score[order]);
+        if(vpara.nbJoueur==2) {
+            vjouer.joueur[order+2].setText(vpara.nom[order]);
+            vjouer.joueur_score[order].setText(vpara.nom[order]+ ": " + (jeu.Score[order]+jeu.Score[order+2]));
+        }
 
-            }
-        });
     }
     public void redimensionnement() {
         vjouer.miseAJour();
@@ -63,6 +134,7 @@ public class ControleurMediateur {
         int l = (int) (y / vjouer.hauteurCase());
         int c = (int) (x / vjouer.largeurCase());
 
+        Jeu j = jeu;
         System.out.println("lPlateau = " + l);
         System.out.println("cPlateau = " + c);
         Position posPlateau = new Position(l,c);
@@ -71,10 +143,15 @@ public class ControleurMediateur {
         if (vpara.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
             jeu.plateauPiece[vjouer.joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
             vjouer.joueurCourant = jeu.joueurCourant;
-            vjouer.miseAJour();
+            h.add(j);
+            h.affiche_passe();
+            h.affiche_futur();
             changeJoueur();
-
+            vjouer.miseAJour();
+            
+            
         }
+        refaire = false;
     }
 
     public void selectPiece(double x, double y) {
@@ -106,55 +183,45 @@ public class ControleurMediateur {
         decompte = lenteurAttente;
     }
 
-       /* public boolean choisirNiveau(String niveau){
-            if(!niv.equals(niveau)){
-                System.out.println("Vous avez choisit " + niveau);
-                niv=niveau;
-            }
-            switch(niveau){
-                case "Easy":return joueurs[joueurCourant].tempsEcoule();
-                case "Medium":return joueurs[joueurCourant].tempsEcouleNonPertant();
-                case "Hard": return joueurs[joueurCourant].tempsEcouleMinimax();
-                default:return false;
-            }
-        }*/
-       /* public void basculeIA(boolean value) {
-        	jeuAutomatique = value;
-        	System.out.println("jeuautomatique " + jeuAutomatique);
-        	//f.changeBoutonIA(value);
-            if (jeuAutomatique)
-            	joueurs[1] = new JoueurIA(1, jeu);
-            else
-            	joueurs[1] = new JoueurHumain(1, jeu);
-        }*/
-
+    public boolean choisirNiveau(String niveau){
+        switch(niveau){
+            case "Robot simple": return vpara.joueurs[joueurCourant].tempsEcoule();
+            case "Robot Intelligent": return vpara.joueurs[joueurCourant].tempsEcouleNonPerdant();
+            case "Robot Excellent": return vpara.joueurs[joueurCourant].tempsEcouleMinimax();
+            default: return false;
+        }
+    }
 
     public void tictac() {
-		boolean b;
+        Jeu j = jeu;
 
-		if (jeu.enCours()) {
-			if (decompte == 0) {
-				if((b = vpara.joueurs[joueurCourant].tempsEcoule())) { // TODO // Pouvoir changer la difficulté -> Biyun
-					System.out.println("joueur " + joueurCourant + " " + b);
-					vjouer.joueurCourant = jeu.joueurCourant;
-					vjouer.miseAJour();
-					changeJoueur();
-				} else {
+        if (jeu.enCours()) {
+            if (decompte == 0) {
+                if( choisirNiveau(vpara.dif[joueurCourant])) {//num() pour joueurCourant change
+                    vjouer.joueurCourant = jeu.joueurCourant;
+                    h.add(j);
+                    vjouer.miseAJour();
+                    changeJoueur();
+                }
+                else {
                     if(vpara.joueurs[joueurCourant].jeu.enCoursJ[joueurCourant]) {
                         System.out.println("On vous attend, joueur " + joueurCourant);
                         decompte = lenteurAttente;
-                    } else {
+                    }
+                    else{
                         vpara.joueurs[joueurCourant].jeu.setupNextJoueur();
                         vjouer.joueurCourant = jeu.joueurCourant;
-
+                        vjouer.miseAJour();
                         changeJoueur();
-					}
-                    vjouer.miseAJour();
-				}
-			} else {
-				decompte--;
-			}
-		}
-	}
-}
+                    }
 
+                }
+            }
+            else{
+                decompte--;
+            }
+        }
+    }
+    
+    
+}
