@@ -151,7 +151,15 @@ public class Historique implements HistoriqueInterface, Serializable{
              }
              return obj;
      }
-
+    
+    public void initHistorique(){
+        boolean condition = futur.isEmpty()&&passe.size()<1;
+        if (!condition) {
+            futur.clear();
+            passe.clear();
+            passe.push(new Jeu(23));
+        }
+    }
 	
            
 }
