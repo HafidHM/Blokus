@@ -273,6 +273,24 @@ public class Plateau implements PlateauInterface {
         }
     }
 
+    public void select(int num) {
+        for(int i =0;i<p.length;i++) {
+            for(int j = 0;j<p[0].length;j++) {
+                if(p[i][j]==num)
+                    p[i][j]=-3;
+            }
+        }
+    }
+
+    public void unselect(int num) {
+        for(int i =0;i<p.length;i++) {
+            for(int j = 0;j<p[0].length;j++) {
+                if(p[i][j]==-3)
+                    p[i][j]=num;
+            }
+        }
+    }
+    
     public boolean valeurB(int i, int j) {
         return pB[i][j];
     }
