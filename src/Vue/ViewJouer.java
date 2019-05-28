@@ -9,23 +9,17 @@ import Modele.Plateau;
 import Modele.Position;
 import Structures.Point;
 import javafx.animation.AnimationTimer;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
@@ -41,10 +35,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class ViewJouer extends View {
 
@@ -52,6 +42,7 @@ public class ViewJouer extends View {
         super(j);
     }
     ViewParametre vp;
+    ControleurMediateur c;
     double largeurCase, hauteurCase;
     double largeurCasePiece, hauteurCasePiece;
     double largeurCaseAffiche, hauteurCaseAffiche;
@@ -69,6 +60,7 @@ public class ViewJouer extends View {
     public Button[] joueur;
     public HBox JoueurBtn ;
     public Label[] joueur_score;
+    public boolean load = false;
 
     private Canvas canPlateau;
     private Canvas canPiece;
@@ -87,7 +79,7 @@ public class ViewJouer extends View {
     @Override
     public void onLaunch() {
         vp = (ViewParametre) app.getView("Parametre");
-        ControleurMediateur c = new ControleurMediateur(jeu,this,vp);
+        c = new ControleurMediateur(jeu,this,vp);
 
 
         canPlateau = new Canvas(450, 400);
@@ -98,7 +90,13 @@ public class ViewJouer extends View {
 
         jouerBtn = new Button("Jouer");
         jouerBtn.setOnAction((event)->{
-
+        	if(load==true) {
+        		//jeu.load(c.h.load("0"));
+        		c.jeu.load(jeu);
+        		vp.miseAJour();
+                this.modify(jeu);
+        		System.out.println("viewjouer jeu joueur " + jeu.joueurCourant);
+        	}
             if(jouerBtn.getText().equalsIgnoreCase("Jouer")) {
                 jouerBtn.setText("Pause");
                 jeu.enCours = true;
@@ -150,6 +148,7 @@ public class ViewJouer extends View {
 			}
 			
 		});
+
         recommencerBtn = new Button("Recommencer");
         recommencerBtn.setOnAction((event)->{
             jeu.recommencer();
@@ -234,15 +233,12 @@ public class ViewJouer extends View {
                     @Override
                     public void handle(ActionEvent event) {
                         app.exit();
-
                     }
                 });
                 no.setOnAction(new EventHandler<ActionEvent>() {
-
                     @Override
                     public void handle(ActionEvent event) {
                         dialog.close();
-
                     }
                 });
 
@@ -269,7 +265,7 @@ public class ViewJouer extends View {
 	            jeu.pieceCourant.retationGauche();
 	            miseAJour();
         	}catch(NullPointerException e) {
-        		System.out.println("Select une piece!");
+        		System.out.println("Select une piece pour tourner!");
         	}
         });
 
@@ -351,7 +347,7 @@ public class ViewJouer extends View {
 
         gPlateau.getChildren().add(panePlateau);
         gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recomSauveBtn,annulrefaire,pageBtn);
+        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,annulrefaire,recomSauveBtn,pageBtn);
         gAffiche.setSpacing(20);
         gAffiche.setAlignment(Pos.CENTER);
 
@@ -361,7 +357,7 @@ public class ViewJouer extends View {
         Pane.setBottom(gPiece);
         getPane().setLeft(Pane);
         getPane().setRight(gAffiche);
-        
+
         jeu.ajouteObservateur(this);
         miseAJour();
 
@@ -372,9 +368,10 @@ public class ViewJouer extends View {
                 try {
                     c.initAffiche();
                     c.clicSouris(e.getX(), e.getY());
-                    jeu.pieceCourant = null;
+                    modify(c.jeu);
+                    //jeu.pieceCourant = null;
                 }catch(ArrayIndexOutOfBoundsException exception) {
-                    System.out.println("select une piece!");
+                    System.out.println("Plateau select une piece!");
                 }catch(NullPointerException exception) {
                     System.out.println("null pointer!");
                 }
@@ -382,11 +379,13 @@ public class ViewJouer extends View {
         });
 
         canPiece.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
             @Override
             public void handle(MouseEvent e) {
-                c.selectPiece(e.getX(), e.getY());
-                
+            	try {
+            		c.selectPiece(e.getX(), e.getY());   
+            	}catch(NullPointerException event) {
+            		System.out.println("Select une piece!");
+            	}
             }
         });
 
@@ -435,9 +434,6 @@ public class ViewJouer extends View {
 						break;
 					
 				}
-				if(event.getCode().getName().equals(KeyCode.W.getName())) {
-					
-				}
 			}
 			
 		});
@@ -467,21 +463,16 @@ public class ViewJouer extends View {
 			public void handle(MouseEvent event) {
 				//reset Color
 				miseAJour();
-				
+				modify(c.jeu);
 				//Render l'indicateur
 				double x = event.getX();
 				double y = event.getY();
-				System.out.println(event.getX());
-				System.out.println(event.getY());
 				GraphicsContext gPlateau = canPlateau.getGraphicsContext2D();
 				int l = (int) (y / hauteurCase);
 			    int c = (int) (x / largeurCase);
 
-			    System.out.println("lPlateau = " + l);
-			    System.out.println("cPlateau = " + c);
 			    Position posPlateau = new Position(l,c);
 			    Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
-			    System.out.println("CourantPicce" + jeu.pieceCourant.getNum());
 			    
 			    //Create a list to save the places where we should render
 		    	LinkedList<Point> list = new LinkedList<>();
@@ -493,7 +484,6 @@ public class ViewJouer extends View {
 		    			if(jeu.pieceCourant.carres[i][j]) {
 		    				Point p = new Point(i-posPiece.l,j-posPiece.c);
 		    				list.push(p);
-		    				
 		    			}
 		    		}
 		    	}
@@ -529,11 +519,12 @@ public class ViewJouer extends View {
                 try {                   
                     c.initAffiche();
                     c.clicSouris(e.getX(), e.getY());
+                    modify(c.jeu);
                     jeu.pieceCourant = null;
                 }catch(ArrayIndexOutOfBoundsException exception) {
                     System.out.println("select une piece!");
                 }catch(NullPointerException exception) {
-                    System.out.println("select une piece!");
+                    System.out.println("drag null pointer!");
                 }
             }
         });
@@ -632,13 +623,37 @@ public class ViewJouer extends View {
     }
 
     void bouton(int jc) {
-    	System.out.println("bouton joueurcourant " + jc);
-    	 BackgroundFill bgf = new BackgroundFill(Paint.valueOf("#8FBC8F"), new CornerRadii(20), new Insets(10));
+    	Color color = null;
+    	BorderStroke[] bos;
+    	bos = new BorderStroke[4];
+        Border[] bo;
+        bo = new Border[4];
+    	switch (joueurCourant) {
+        case 0:
+            color = Color.DARKOLIVEGREEN;
+            break;
+        case 1:
+            color = Color.DARKSLATEBLUE;
+            break;
+        case 2:
+            color = Color.YELLOW;
+            break;
+        case 3:
+            color = Color.INDIANRED;
+            break;
+    	}
+    	 BackgroundFill bgf = new BackgroundFill(color, new CornerRadii(20), new Insets(10));
          Background bg = new Background(bgf);
-         BorderStroke bos = new BorderStroke(Paint.valueOf("#8FBC8F"), BorderStrokeStyle.SOLID,null,new BorderWidths(5),new Insets(10));
-         Border bo = new Border(bos);
+         bos[0] = new BorderStroke(Color.DARKOLIVEGREEN, BorderStrokeStyle.SOLID,null,new BorderWidths(5),new Insets(10));
+         bo[0] = new Border(bos);
+         bos[1] = new BorderStroke(Color.DARKSLATEBLUE, BorderStrokeStyle.SOLID,null,new BorderWidths(5),new Insets(10));
+         bo[1] = new Border(bos);
+         bos[2] = new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID,null,new BorderWidths(5),new Insets(10));
+         bo[2] = new Border(bos);
+         bos[3] = new BorderStroke(Color.INDIANRED, BorderStrokeStyle.SOLID,null,new BorderWidths(5),new Insets(10));
+         bo[3] = new Border(bos);
          for(int i = 0;i<4;i++) {
-        	 joueur[i].setBorder(bo);
+        	 joueur[i].setBorder(bo[i]);
         	 joueur[i].setBackground(null);
          }
          joueur[jc].setBackground(bg);
@@ -740,7 +755,7 @@ public class ViewJouer extends View {
 
                 }
                 if(p==plateauAffiche && p.valeurB(i, j)) {
-                    switch (jeu.joueurCourant) {
+                    switch (joueurCourant) {
                         case 0:
                             color = Color.DARKOLIVEGREEN;
                             break;
