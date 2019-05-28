@@ -1,8 +1,9 @@
 package Modele;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Plateau implements PlateauInterface {
+public class Plateau implements PlateauInterface, Serializable  {
     public int[][] p;
     public boolean[][]pB;
     private Jeu jeu;
