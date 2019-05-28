@@ -14,15 +14,14 @@ public class Historique implements HistoriqueInterface, Serializable{
     
     public Stack<Jeu> futur;
     public Stack<Jeu> passe;
-	public Jeu mem;
     public Jeu ancien;
+    int countAnler = 0;
     String rep="historique/";
     String fichier;
 	
-	public Historique(Jeu j) {
+	public Historique() {
             futur = new Stack<>();
             passe = new Stack<>();
-            ancien = j;
 	}
         
         
@@ -39,35 +38,35 @@ public class Historique implements HistoriqueInterface, Serializable{
         
 	@Override
 	public Jeu annuler() {
-         if (peutAnnuler()) {
-            System.out.println("Je peux annuler");
-            transfert(passe, futur);
-            System.out.println("passe taille " +passe.size());
+            if (peutAnnuler()) {
+               countAnler++; 
+               System.out.println("Je peux annuler");
+               transfert(passe, futur);
+               return passe.peek();
+            }
             return passe.peek();
-          }
-         System.out.println("Je ne peux pas annuler");
-          return ancien;
 	}
 
 
 	@Override
 	public Jeu refaire() {
-            if (peutRefaire()) {
+            if (peutRefaire()&&countAnler>=0) {
+                countAnler--;
             	System.out.println("Je peux Refaire ");
                 transfert(futur, passe);
-                System.out.println("passe taille " +passe.size());
                 return passe.peek();
             }
-            System.out.println("Je ne peux pas refaire");
-            return ancien;		
+                return passe.peek();	
+            
+           	
 	}
 
-
-    public void transfert(Stack<Jeu> source, Stack<Jeu> destination) {
+        void transfert(Stack<Jeu> source, Stack<Jeu> destination) {
 	    Jeu resultat = source.pop();
-	    destination.push(resultat);
-		
-	}
+            if(resultat!=null){
+                destination.push((Jeu)copyObject(resultat));	
+            }   
+        }
         
         Object copyObject(Object src) {
                 Object dest = null;
@@ -92,35 +91,33 @@ public class Historique implements HistoriqueInterface, Serializable{
         }
         
        
-     public void affiche_passe(){
-         System.out.println("******* Historique**********");
+    public void affiche_passe(){
+         System.out.println("\t\tHistorique Passe\t\t");
          for (Jeu jeu : passe) {
             jeu.affiche();
-         }
-        
-     }
+         } 
+    }
 
      public void affiche_futur(){
-         System.out.println("******* Historique Futur**********");
+          System.out.println("\t\tHistorique Futur\t\t");
          for (Jeu jeu : futur) {
              jeu.affiche();
           }
      }
-	@Override
-	public void add(Jeu jeu) {
+     
+     
+    @Override
+    public void add(Jeu jeu) {
 		passe.push((Jeu)copyObject(jeu));
-		
-	}
+                futur.clear();	
+                countAnler=0;
+    }
 	
-	public void modify(Jeu j) {
-		ancien = j;
-	}
-
-	 @Override
-     public  void save(Jeu j){
+   @Override
+     public  void save(Jeu j,String fichier){
              FileOutputStream fileOut;
              try {
-                   fileOut = new FileOutputStream(fichier);
+                   fileOut = new FileOutputStream(rep+fichier);
                    ObjectOutputStream out = new ObjectOutputStream(fileOut);
                    out.writeObject(j);
                    out.close();
@@ -142,7 +139,8 @@ public class Historique implements HistoriqueInterface, Serializable{
                      FileInputStream fileIn = new FileInputStream(fichier);
                      ObjectInputStream in = new ObjectInputStream(fileIn);
                      obj = (Jeu) in.readObject();
-                     System.out.println("Charger les parties du fichier "+ fichier);
+                     if(obj!=null)
+                    	 System.out.println("Charger les parties du fichier "+ fichier);
 
              } catch (FileNotFoundException e) {
                      System.err.println("Le fichier "+fichier+"n'existe pas");
