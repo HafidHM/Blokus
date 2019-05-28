@@ -1,5 +1,11 @@
 package Controleur;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import Modele.Historique;
 import Modele.Jeu;
 import Modele.Position;
@@ -22,8 +28,11 @@ public class ControleurMediateur {
         jeu = j;
         vjouer = vj;
         vpara = vp;
-        h = new Historique(jeu);
+        h = new Historique();
         h.add(jeu);
+        h.affiche_passe();
+        h.affiche_futur();
+
     }
 
     public void setDimension(int n) {
@@ -43,40 +52,66 @@ public class ControleurMediateur {
     
     public void load() {
     	jeu = h.load("0");
-    	h.modify(jeu);
+    	joueurCourant = jeu.joueurCourant;
 		vjouer.modify(jeu);
 		vpara.modify(jeu);
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
-		vjouer.joueurCourant = jeu.joueurCourant;
 		vjouer.miseAJour();
     }
     
     public void annuler() {
-		jeu = h.annuler();
-		h.modify(jeu);
+    	jeu = h.annuler();
+        joueurCourant = jeu.joueurCourant;
 		vjouer.modify(jeu);
 		vpara.modify(jeu);
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
-		joueurCourant = (joueurCourant - 1) % vpara.joueurs.length;
+		h.affiche_passe();
+		h.affiche_futur();
+		vjouer.joueurCourant = jeu.joueurCourant;
 		vjouer.miseAJour();
 	}
     
     public void refaire() {
-		jeu = h.refaire();
-		h.modify(jeu);
+    	jeu = (Jeu) copyObject(h.refaire());
+        joueurCourant = jeu.joueurCourant;
+		//h.modify(jeu);
 		vjouer.modify(jeu);
 		vpara.modify(jeu);
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
-		joueurCourant = (joueurCourant + 1) % vpara.joueurs.length;
+		h.affiche_passe();
+		h.affiche_futur();
+		vjouer.joueurCourant = jeu.joueurCourant;
 		vjouer.miseAJour();
-		this.refaire = true;
 	}
+    
+    Object copyObject(Object src) {
+        Object dest = null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(src);
+            oos.flush();
+            oos.close();
+            bos.close();
+            byte[] byteData = bos.toByteArray();
+            ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+            try {
+                dest = new ObjectInputStream(bais).readObject();
+            } catch (ClassNotFoundException e) {
+                System.err.println("Class non trouvee");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    return dest;
+}
+
     
     public void modifScore(int nb) {
         vjouer.Score.getChildren().clear();
