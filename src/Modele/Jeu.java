@@ -19,7 +19,6 @@ public class Jeu extends Observable implements Serializable {
 	public int PosPieceL;
 	public int PosPieceC;
 	public int [] Score;
-	public int ScoreT;
 	public boolean[] enCoursJ;
 
 	String fichierPieces = "resources/Pieces/pieces.txt";
@@ -36,6 +35,7 @@ public class Jeu extends Observable implements Serializable {
 		for (int i = 0; i < plateau.p.length; i++)
 			for (int j = 0; j < plateau.p[0].length; j++)
 				plateau.newVal(i, j, -1);
+		
 		plateau.newVal(plateau.taille() - 1, 0, 8);
 		joueurCourant = 0;
 		pieces = new ArrayList<>();
@@ -49,6 +49,55 @@ public class Jeu extends Observable implements Serializable {
 		plateauAffiche.initPlateauAffiche();
 		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
 	}
+	
+	public void recommencer() {
+		plateau.p = new int[plateau.taille()][plateau.taille()];
+		for (int i = 0; i < 4; i++) {
+			plateauPiece[i] = new Plateau(12, 23, this);
+			plateauPiece[i].initPlateauPiece();
+		}
+		plateauAffiche = new Plateau(5,5, this);
+		enCours = false;
+		for (int i = 0; i < plateau.p.length; i++)
+			for (int j = 0; j < plateau.p[0].length; j++)
+				plateau.newVal(i, j, -1);
+
+		plateau.newVal(plateau.taille()-1,0, 8);
+		joueurCourant = 0;
+		pieces = new ArrayList<>();
+		piecesJ = new ArrayList[4];
+		coord = new ArrayList<>();
+		initialiserPieces();
+		initPiecesJoueurs();
+		initEnCoursJ();
+		initScores_Joueurs_Jeu();
+
+		plateauAffiche.initPlateauAffiche();
+		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
+		metAJour();
+	}
+
+	public void load(Jeu j) {
+		plateau = j.plateau;
+		for (int i = 0; i < 4; i++) {
+			plateauPiece[i] = j.plateauPiece[i];
+		}
+		plateauAffiche = j.plateauAffiche;
+		enCours = false;
+		
+		joueurCourant = j.joueurCourant;
+		pieces = j.pieces;
+		piecesJ = j.piecesJ;
+		coord = j.coord;
+		for(int i=0;i<4;i++) {
+			enCoursJ[i] = j.enCoursJ[i];
+			Score[i] = j.Score[i];
+		}
+
+		plateauAffiche.initPlateauAffiche();
+		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
+		metAJour();
+	}
 	public void jouer(Position posPlateau, Position posPiece, Piece p){
 		int debutI = posPlateau.l-posPiece.l;
 		int debutJ = posPlateau.c-posPiece.c;
@@ -58,7 +107,6 @@ public class Jeu extends Observable implements Serializable {
 					plateau.p[debutI + i][debutJ + j] = joueurCourant;
 			}
 		}
-		ScoreT += pieceCourant.getNbCarres();
 		Score[joueurCourant]+= pieceCourant.getNbCarres();
 
 		setupNextJoueur();
@@ -79,34 +127,12 @@ public class Jeu extends Observable implements Serializable {
 		}
 		pieceCourant.num = pieces.get(num).num;
 	}
+	
 	public boolean enCours() {
 		return enCours;
 	}
-	public void refaire() {
-		plateau.p = new int[plateau.taille()][plateau.taille()];
-		for (int i = 0; i < 4; i++) {
-			plateauPiece[i].initPlateauPiece();
-		}
-		enCours = false;
-		for (int i = 0; i < plateau.p.length; i++)
-			for (int j = 0; j < plateau.p[0].length; j++)
-				plateau.newVal(i, j, -1);
-
-		plateau.newVal(plateau.taille()-1,0, 8);
-
-		joueurCourant = 0;
-
-		coord = new ArrayList<>();
-		initialiserPieces();
-		initPiecesJoueurs();
-		initEnCoursJ();
-		initScores_Joueurs_Jeu();
-
-		plateauAffiche.initPlateauAffiche();
-		plateau.availableCases(joueurCourant, coord, noPiecesPosées());
-		metAJour();
-	}
-
+	
+	
 	public void updateJoueurCour(){
 		joueurCourant = ((joueurCourant+1) %4);
 	}
@@ -182,7 +208,6 @@ public class Jeu extends Observable implements Serializable {
 		Score = new int[4];
 		for (int i = 0; i < 4; i++)
 			Score[i] = 0;
-		ScoreT = 0;
 	}
 
 
@@ -195,14 +220,25 @@ public class Jeu extends Observable implements Serializable {
 	}
 
 	public void updateEncours(){
-		int compte=0;
-	    for(int i=0;i<4;i++){
-	        if(enCoursJ[i])
-	            compte++;
+	    if(!jouable()){
+	        enCoursJ[joueurCourant]=false;
+	        int j=joueurCourant+1;
+	        System.out.println("Joueur "+j +" ne peut plus jouer------pass!");
         }
-	    enCours = (compte>=2);
-
-	}
+	    int compte = 0;int gagne=0;
+	    for(int i=0;i<4;i++){
+	        if(enCoursJ[i]) {
+	        	gagne=i+1;
+				compte++;
+			}
+        }
+	    if(compte==1)
+	    	System.out.println("joueur "+gagne+" est le dernier!!!!!!!!!!!");
+	    else if(compte==0) {
+			System.out.println("fin du jeu");
+			enCours = false;
+		}
+    }
 
 	public void initEnCoursJ(){
 		enCoursJ = new boolean[4];
@@ -216,4 +252,10 @@ public class Jeu extends Observable implements Serializable {
 		res = res && (coord.size()>0) && (piecesJ[joueurCourant].size()>0);
 		return res;
 	}
+	
+	public void affiche(){
+        System.out.println("le joueur:  "+joueurCourant);
+        plateau.AffichePlateauP();
+    }
+
 }
