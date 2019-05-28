@@ -119,7 +119,7 @@ public class ViewJouer extends View {
 					
 					in.setTitle("Sauvegarde");
 					in.setContentText("Saisir le nom de fichier : ");
-					
+					in.setHeaderText("Confirmez votre sauvegarde !");
 					Button ok = (Button)in.getDialogPane().lookupButton(ButtonType.OK);
 					ok.setText("OK");
 					ok.setOnAction(new EventHandler<ActionEvent>(){
