@@ -52,6 +52,7 @@ public class ViewJouer extends View {
     private Button tourneBtn;
     private Button annulBtn;
     private Button refaireBtn;
+    private Button sauvegardeBtn;
     public Button[] joueur;
     public HBox JoueurBtn ;
     public Label[] joueur_score;
@@ -96,9 +97,53 @@ public class ViewJouer extends View {
             miseAJour();
         });
 
+        sauvegardeBtn = new Button("Sauvegarder");
+        sauvegardeBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.NO);
+                Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
+                yes.setText("Oui");
+                Button no = (Button)dialog.getDialogPane().lookupButton(ButtonType.NO);
+                no.setText("Non");
+
+                yes.setOnAction(new EventHandler<ActionEvent>() {
+
+                    @Override
+                    public void handle(ActionEvent event) {
+                        jeu.recommencer();
+                        vp.miseAJour();
+                        modify(jeu);
+                        jouerBtn.setText("Jouer");
+                        joueurCourant = jeu.joueurCourant;
+                        c.joueurCourant = jeu.joueurCourant;
+                        app.gotoView("Parametre");
+                        miseAJour();
+                    }
+                });
+                no.setOnAction(new EventHandler<ActionEvent>() {
+
+                    @Override
+                    public void handle(ActionEvent event) {
+                        dialog.close();
+
+                    }
+                });
+
+                dialog.setContentText("Voulez vous aller à la page Paramètre ?");
+                dialog.show();
+
+            }
+        });
+        
         recommencerBtn = new Button("Recommencer");
         recommencerBtn.setOnAction((event)->{
             jeu.recommencer();
+            vp.miseAJour();
+            this.modify(jeu);
             jouerBtn.setText("Jouer");
             jeu.enCours = false ;
             joueurCourant = jeu.joueurCourant;
@@ -137,6 +182,8 @@ public class ViewJouer extends View {
                     @Override
                     public void handle(ActionEvent event) {
                         jeu.recommencer();
+                        vp.miseAJour();
+                        modify(jeu);
                         jouerBtn.setText("Jouer");
                         joueurCourant = jeu.joueurCourant;
                         c.joueurCourant = jeu.joueurCourant;
@@ -195,18 +242,31 @@ public class ViewJouer extends View {
         });
         miroirBtn = new Button("Miroir");
         miroirBtn.setOnAction((event)->{
-            jeu.plateauAffiche.Miroir();
-            jeu.pieceCourant.Miroir();
-            miseAJour();
+            try {
+	            jeu.plateauAffiche.Miroir();
+	            jeu.pieceCourant.Miroir();
+	            miseAJour();
+        	}catch(NullPointerException e) {
+        		System.out.println("Select une piece!");
+        	}
         });
 
         tourneBtn = new Button("Tourner");
         tourneBtn.setOnAction((event)->{
-            jeu.plateauAffiche.retationGauche();
-            jeu.pieceCourant.retationGauche();
-            miseAJour();
+            try {
+	            jeu.plateauAffiche.retationGauche();
+	            jeu.pieceCourant.retationGauche();
+	            miseAJour();
+        	}catch(NullPointerException e) {
+        		System.out.println("Select une piece!");
+        	}
         });
 
+        HBox recomSauveBtn = new HBox();
+        recomSauveBtn.getChildren().addAll(recommencerBtn,sauvegardeBtn);
+        recomSauveBtn.setSpacing(20);
+        recomSauveBtn.setAlignment(Pos.CENTER);
+        
         HBox actionBtn = new HBox();
         actionBtn.getChildren().addAll(miroirBtn,tourneBtn);
         actionBtn.setSpacing(20);
@@ -255,10 +315,9 @@ public class ViewJouer extends View {
         Score.setSpacing(10.0);
         score.setAlignment(Pos.TOP_CENTER);
 
-        joueur_score[0] = new Label();
-        joueur_score[1] = new Label();
-        joueur_score[2] = new Label();
-        joueur_score[3] = new Label();
+         for(int i=0;i<4;i++) {
+        	joueur_score[i] = new Label();
+        }
         Score.getChildren().addAll(joueur_score[0],joueur_score[1],joueur_score[2],joueur_score[3]);
 
         canPiece = new Canvas(450, 200);
@@ -281,7 +340,7 @@ public class ViewJouer extends View {
 
         gPlateau.getChildren().add(panePlateau);
         gPiece.getChildren().addAll(JoueurBtn,panePiece);
-        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recommencerBtn,annulrefaire,pageBtn);
+        gAffiche.getChildren().addAll(jouerBtn,paneScore,actionBtn,paneAffiche,recomSauveBtn,annulrefaire,pageBtn);
         gAffiche.setSpacing(20);
         gAffiche.setAlignment(Pos.CENTER);
 
@@ -652,6 +711,14 @@ public class ViewJouer extends View {
                             g.strokeLine(j*largeur, (i+1)*hauteur, (j+1)*largeur, (i+1)*hauteur);
                             g.strokeLine((j+1)*largeur, i*hauteur, (j+1)*largeur, (i+1)*hauteur);
                             break;
+                        case -3:
+                            g.setFill(Color.ANTIQUEWHITE);
+                            g.fillRect(j*largeur, i*hauteur, largeur, hauteur);
+                            g.strokeLine(j*largeur, i*hauteur, (j+1)*largeur, i*hauteur);
+                            g.strokeLine(j*largeur, i*hauteur, j*largeur, (i+1)*hauteur);
+                            g.strokeLine(j*largeur, (i+1)*hauteur, (j+1)*largeur, (i+1)*hauteur);
+                            g.strokeLine((j+1)*largeur, i*hauteur, (j+1)*largeur, (i+1)*hauteur);
+                            break; 
                         default:
                             g.setFill(color);
                             g.fillRect(j*largeur, i*hauteur, largeur, hauteur);
