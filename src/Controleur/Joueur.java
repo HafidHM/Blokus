@@ -29,7 +29,7 @@ public abstract class Joueur {
 	}
 	boolean tempsEcouleMinimax() {return false;}
 
-	boolean jeu(Position posPlateau, Position posPiece, Piece p) {
+	public boolean jeu(Position posPlateau, Position posPiece, Piece p) {
 		return false;
 	}
 
