@@ -334,9 +334,7 @@ public class ViewJouer extends View {
 
 			@Override
 			public void handle(KeyEvent event) {
-					System.out.println("press W");
 					canAffiche.requestFocus();
-				
 			}			
 		});
 		
@@ -379,31 +377,19 @@ public class ViewJouer extends View {
             @Override
             public void handle(MouseEvent e) {
                 canAffiche.startFullDrag();
-                System.out.println("detect");
-
             }
         });
+        
 
         canAffiche.setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
 
             @Override
             public void handle(MouseDragEvent e) {            	
-            	System.out.println("drag");
             	c.PieceAffiche(e.getX(), e.getY());           
-                
+                canAffiche.setDisable(true);
             }
         });
        
-       /* canAffiche.setOnMouseDragOver(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent e) {
-				System.out.println("e.isDragDetect()?" + e.isDragDetect() + " e.ge  "+ (e.getSource()!=e.getTarget()));
-            	if(e.isDragDetect()&&(e.getSource()==e.getTarget())){
-            		miseAJour();
-            	}
-			}
-        });*/
         
         canPlateau.setOnMouseDragOver(new EventHandler<MouseEvent>() {
 
@@ -413,7 +399,6 @@ public class ViewJouer extends View {
 				miseAJour();
 				
 				//Render l'indicateur
-				System.out.println("Drag in Plateau");
 				double x = event.getX();
 				double y = event.getY();
 				System.out.println(event.getX());
@@ -443,8 +428,7 @@ public class ViewJouer extends View {
 		    		}
 		    	}
 			    if (jeu.placerPossible(posPlateau, posPiece, jeu.pieceCourant)) {
-			    	 
-			         System.out.println("ok");
+
 			         while(!list.isEmpty()){
 			        	 Point p = list.pop();
 			        	 gPlateau.setFill(Color.BLACK);
@@ -455,68 +439,45 @@ public class ViewJouer extends View {
 					    
 			    }
 			    else {
-			    	 System.out.println("ko");
+
 			    	 while(!list.isEmpty()){
 			        	 Point p = list.pop();
 			        	 gPlateau.setFill(Color.RED);				       
 			        	 c = posPlateau.c + p.getY();
 			        	 l = posPlateau.l + p.getX();
 			        	 gPlateau.fillRect(c*largeurCase, l*hauteurCase, largeurCase, hauteurCase);
-			         }
-			    	
-					 
-			    }
-			    
-			    
-			    
+			         }	    	 
+			    }  
 			}
-			
 		});
         
-        canPlateau.setOnMouseDragEntered(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent e) {
-				System.out.println("DragEnterPlateau");
-				
-			}
-			
-		});
         
         canPlateau.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
 
             @Override
             public void handle(MouseDragEvent e) {
-                try {
-                    System.out.println("released");
-                    double x = e.getX();
+                try {                   
+                    /*double x = e.getX();
     				double y = e.getY();
                     int l = (int) (y / hauteurCase);
     			    int col = (int) (x / largeurCase);
                     Position posPlateau = new Position(l,col);
     			    Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
                     c.initAffiche();
-                    if (vp.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
+                    if (vp.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {                	
                     	
-                    	System.out.println("可以放");
                     	jeu.plateauPiece[joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
                         joueurCourant = jeu.joueurCourant;
                         miseAJour();
                         c.changeJoueur();
                         
-                    }
-                    else {
-                    	System.out.println("不行");
-                    	
-                    }
-                    
+                    }*/
+                    c.clicSouris(e.getX(), e.getY());
                 }catch(ArrayIndexOutOfBoundsException exception) {
                     System.out.println("select une piece!");
                 }catch(NullPointerException exception) {
                     System.out.println("select une piece!");
                 }
-
-
             }
         });
         canPlateau.setOnMouseDragExited(new EventHandler<MouseEvent>() {
@@ -531,6 +492,15 @@ public class ViewJouer extends View {
 			
 		});
         
+        getPane().setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+
+			@Override
+			public void handle(MouseDragEvent event) {
+				 canAffiche.setDisable(false);
+				
+			}
+        		
+        });
        
         
         new AnimationTimer() {
