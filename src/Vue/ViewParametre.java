@@ -38,6 +38,7 @@ public class ViewParametre extends View{
 	VBox dimension;
 	private Button retourBtn;
 	private Button commencerBtn;
+	private Button loadBtn;
 	private Button Jeu4Btn;
 	private Button Jeu2Btn;
 	public ChoiceBox<String>[] Joueur;
@@ -110,6 +111,12 @@ public class ViewParametre extends View{
 			}
 			app.gotoView("Jouer");
 		});
+		
+		loadBtn = new Button("Charger");
+        loadBtn.setOnAction(event->{
+        	c.load();
+        });
+        
 		Joueur = new ChoiceBox[4];
 		for(int i=0;i<4;i++) {
 			Joueur[i] = new ChoiceBox<String>(FXCollections.observableArrayList("Humain", "Robot simple", "Robot Intelligent","Robot Excellent"));
@@ -184,7 +191,7 @@ public class ViewParametre extends View{
 		dimension.getChildren().addAll(dim,d1,d2,d3,d4);
 		dimension.setSpacing(20);
 		
-		HBox box = new HBox(retourBtn,commencerBtn);
+		HBox box = new HBox(retourBtn,commencerBtn,loadBtn);
 		box.setAlignment(Pos.BOTTOM_CENTER);//居中对齐
 		box.setSpacing(100);
 		getPane().setBottom(box);
