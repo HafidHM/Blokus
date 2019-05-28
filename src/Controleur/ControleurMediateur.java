@@ -61,8 +61,6 @@ public class ControleurMediateur {
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
-		h.affiche_passe();
-		h.affiche_futur();
 		joueurCourant = (joueurCourant - 1) % vpara.joueurs.length;
 		vjouer.miseAJour();
 	}
@@ -75,10 +73,9 @@ public class ControleurMediateur {
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
-		h.affiche_passe();
-		h.affiche_futur();
 		joueurCourant = (joueurCourant + 1) % vpara.joueurs.length;
 		vjouer.miseAJour();
+		this.refaire = true;
 	}
     
     public void modifScore(int nb) {
@@ -118,20 +115,16 @@ public class ControleurMediateur {
         int c = (int) (x / vjouer.largeurCase());
 
         Jeu j = jeu;
-        System.out.println("lPlateau = " + l);
-        System.out.println("cPlateau = " + c);
         Position posPlateau = new Position(l,c);
         Position posPiece = new Position(jeu.PosPieceL,jeu.PosPieceC);
         System.out.println("pieceCorant " + jeu.pieceCourant.getNum());
         if (vpara.joueurs[joueurCourant].jeu(posPlateau,posPiece,jeu.pieceCourant)) {
             jeu.plateauPiece[vjouer.joueurCourant].enlevePiece(jeu.pieceCourant.getNum());
             vjouer.joueurCourant = jeu.joueurCourant;
+            if(refaire == false)
             	h.add(j);
-            h.affiche_passe();
-            h.affiche_futur();
             vjouer.miseAJour();
-            changeJoueur();
-            
+            changeJoueur(); 
         }
         refaire = false;
     }
@@ -141,19 +134,19 @@ public class ControleurMediateur {
         int c = (int) (x / vjouer.largeurCasePiece());
         if(jeu.plateauPiece[jeu.joueurCourant].valeur(l,c)>=0 && vjouer.joueurCourant==jeu.joueurCourant) {
             jeu.setSelected(jeu.plateauPiece[jeu.joueurCourant].valeur(l,c));
+            System.out.println("recommence piece " + jeu.pieceCourant.getNum());
             jeu.plateauPiece[jeu.joueurCourant].select(jeu.pieceCourant.getNum());
             jeu.plateauAffiche.PlacerPiece(jeu.pieceCourant);
             vjouer.miseAJour();
         }
         jeu.plateauPiece[jeu.joueurCourant].unselect(jeu.pieceCourant.getNum());
+        
     }
 
     public void PieceAffiche(double x, double y) {
         int l = (int) (y / vjouer.hauteurCaseAffiche());
         int c = (int) (x / vjouer.largeurCaseAffiche());
 
-        System.out.println("lAffiche = " + l);
-        System.out.println("cAffiche = " + c);
         jeu.setPieceL(l);
         jeu.setPieceC(c);
     }
