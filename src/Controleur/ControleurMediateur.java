@@ -51,11 +51,10 @@ public class ControleurMediateur {
     
     public void load(String fichier) {
     	this.jeu = h.load(fichier);
+    	System.out.println("joueurcourant " + jeu.joueurCourant);
 		vjouer.modify(jeu);
 		joueurCourant = jeu.joueurCourant;
-		for(int i=0;i<4;i++) {
-			vpara.joueurs[i].modify(jeu);
-		}
+		//vpara.modify(jeu);
 		vjouer.joueurCourant = jeu.joueurCourant;
 		vjouer.miseAJour();
 		vjouer.load = true;
@@ -69,8 +68,6 @@ public class ControleurMediateur {
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
-		h.affiche_passe();
-		h.affiche_futur();
 		vjouer.joueurCourant = jeu.joueurCourant;
 		vjouer.miseAJour();
 	}
@@ -83,8 +80,6 @@ public class ControleurMediateur {
 		for(int i=0;i<4;i++) {
 			vpara.joueurs[i].modify(jeu);
 		}
-		h.affiche_passe();
-		h.affiche_futur();
 		vjouer.joueurCourant = jeu.joueurCourant;
 		vjouer.miseAJour();
 	}
@@ -168,7 +163,14 @@ public class ControleurMediateur {
             h.add(j);
             vjouer.miseAJour();
             changeJoueur(); 
+            vjouer.jeu.pieceCourant = null;
         }
+        else {
+        	jeu.setSelected(piece.getNum());
+        	jeu.plateauAffiche.PlacerPiece(jeu.pieceCourant);
+            vjouer.miseAJour();
+        }
+  
     }
 
     public void selectPiece(double x, double y) {
