@@ -2,6 +2,7 @@ package Vue;
 
 
 import Modele.Jeu;
+import Modele.Piece;
 import Modele.Plateau;
 import Patterns.Observateur;
 import javafx.collections.ObservableList;
@@ -13,18 +14,16 @@ public abstract class View implements Observateur {
 	
 	
 	private final BorderPane pane;
-	//private final StackPane pane;
-	Jeu jeu;
+	public Jeu jeu;
 	public Plateau plateau;
 	Plateau[] plateauPiece;
-	Plateau plateauAffiche;
+	public Plateau plateauAffiche;
 	public View(Jeu j) {
 		jeu = j;
 		plateau = jeu.plateau;
 		plateauPiece = jeu.plateauPiece;
 		plateauAffiche = jeu.plateauAffiche;
 		pane = new BorderPane();
-		//pane = new StackPane();
 	}
 	
 	public BorderPane getPane() {
