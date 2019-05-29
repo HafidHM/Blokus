@@ -135,7 +135,7 @@ public class ViewJouer extends View {
 					});
 					
 					Button cancel = (Button)in.getDialogPane().lookupButton(ButtonType.CANCEL);
-					cancel.setText("Cancel");
+					cancel.setText("Annuler");
 					cancel.setOnAction(new EventHandler<ActionEvent>() {
 
 						@Override
@@ -596,7 +596,7 @@ public class ViewJouer extends View {
     		 Dialog<ButtonType> dialog = new Dialog<ButtonType>();
              dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
              Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
-             yes.setText("Oui");
+             yes.setText("OK");
             
              yes.setOnAction(new EventHandler<ActionEvent>() {
 
