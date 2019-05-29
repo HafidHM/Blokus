@@ -5,6 +5,8 @@ import java.util.EmptyStackException;
 import java.util.LinkedList;
 
 import Controleur.ControleurMediateur;
+import Controleur.JoueurHumain;
+import Controleur.JoueurIA;
 import Modele.Jeu;
 import Modele.Plateau;
 import Modele.Position;
@@ -92,22 +94,25 @@ public class ViewJouer extends View {
         jouerBtn = new Button("Jouer");
         jouerBtn.setOnAction((event)->{
         	if(load==true) {
-        		//jeu.load(c.h.load("0"));
-        		c.jeu.load(jeu);
-        		//vp.miseAJour();
                 this.modify(jeu);
-        		System.out.println("viewjouer jeu joueur " + jeu.joueurCourant);
+                c.jeu.load(jeu);
+                
         	}
             if(jouerBtn.getText().equalsIgnoreCase("Jouer")) {
                 jouerBtn.setText("Pause");
                 jeu.enCours = true;
+                
             }
             else if(jouerBtn.getText().equalsIgnoreCase("Pause")) {
                 jouerBtn.setText("Jouer");
                 jeu.enCours=false;
             }
+            System.out.println("joueur " + jeu.enCours());
+            System.out.println("joueur " + c.jeu.enCours());
+            System.out.println("joueur " + vp.jeu.enCours());
             load = false;
             miseAJour();
+            
         });
 
         sauvegardeBtn = new Button("Sauvegarder");
@@ -128,8 +133,7 @@ public class ViewJouer extends View {
 						public void handle(ActionEvent event) {
 							System.out.println(in.getEditor().getText());
 							c.h.save(jeu, in.getEditor().getText());						
-							c.h.futur.clear();
-							c.h.passe.clear();
+							c.h.initHistorique();
 						}
 						
 					});
@@ -142,8 +146,7 @@ public class ViewJouer extends View {
 						public void handle(ActionEvent event) {
 							System.out.println("Cancel");
 							
-						}
-						
+						}	
 					});
 					in.show();
 					
@@ -155,7 +158,6 @@ public class ViewJouer extends View {
         recommencerBtn = new Button("Recommencer");
         recommencerBtn.setOnAction((event)->{
             jeu.recommencer();
-            //vp.miseAJour();
             this.modify(jeu);
             jouerBtn.setText("Jouer");
             jeu.enCours = false ;
@@ -209,8 +211,7 @@ public class ViewJouer extends View {
                         jouerBtn.setText("Jouer");
                         joueurCourant = jeu.joueurCourant;
                         c.joueurCourant = jeu.joueurCourant;
-                        c.h.futur.clear();
-						c.h.passe.clear();
+                        c.h.initHistorique();
                         app.gotoView("Parametre");
                         miseAJour();
                     }
@@ -534,7 +535,6 @@ public class ViewJouer extends View {
                     c.initAffiche();
                     c.clicSouris(e.getX(), e.getY());
                     modify(c.jeu);
-                    jeu.pieceCourant = null;
                 }catch(ArrayIndexOutOfBoundsException exception) {
                     System.out.println("select une piece!");
                 }catch(NullPointerException exception) {
