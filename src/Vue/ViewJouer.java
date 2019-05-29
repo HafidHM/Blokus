@@ -607,7 +607,7 @@ public class ViewJouer extends View {
              });
             
 
-             dialog.setContentText("Fin du Jeu!  " + vp.nom[i_max] + "  Gagné!");
+             dialog.setContentText("Fin du Jeu!  " + vp.nom[i_max] + "  a Gagné!");
              dialog.show();
 
     	}
