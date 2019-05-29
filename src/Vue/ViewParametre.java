@@ -113,8 +113,48 @@ public class ViewParametre extends View{
 		});
 		
 		loadBtn = new Button("Charger");
-        loadBtn.setOnAction(event->{
-        	c.load(c.fichier);
+        loadBtn.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent event) {
+			
+				try {
+					c.load(c.fichier);
+					Dialog<ButtonType> dia = new Dialog<ButtonType>();
+					dia.setContentText("Chargé réussi ");
+					dia.getDialogPane().getButtonTypes().add(ButtonType.YES);
+	             
+	                Button yes = (Button)dia.getDialogPane().lookupButton(ButtonType.YES);
+	                yes.setOnAction(new EventHandler<ActionEvent>() {
+
+	                    @Override
+	                    public void handle(ActionEvent event) {
+	                    	 dia.close();
+	                    }
+	                });
+	                yes.setText("Oui");
+	                dia.show();
+				}catch(NullPointerException e) {
+					Dialog<ButtonType> dia = new Dialog<ButtonType>();
+					dia.setContentText("Chargé non réussi ");
+					dia.getDialogPane().getButtonTypes().add(ButtonType.YES);
+		             
+	                Button yes = (Button)dia.getDialogPane().lookupButton(ButtonType.YES);
+	                yes.setOnAction(new EventHandler<ActionEvent>() {
+
+	                    @Override
+	                    public void handle(ActionEvent event) {
+	                    	 dia.close();
+	                    }
+	                });
+	                yes.setText("Oui");
+	                dia.show();
+	        	}
+				
+				
+			}
+        	
+        	
         });
         
 		Joueur = new ChoiceBox[4];
