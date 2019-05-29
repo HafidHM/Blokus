@@ -96,20 +96,15 @@ public class ViewJouer extends View {
         	if(load==true) {
                 this.modify(jeu);
                 c.jeu.load(jeu);
-                
         	}
             if(jouerBtn.getText().equalsIgnoreCase("Jouer")) {
                 jouerBtn.setText("Pause");
                 jeu.enCours = true;
-                
             }
             else if(jouerBtn.getText().equalsIgnoreCase("Pause")) {
                 jouerBtn.setText("Jouer");
                 jeu.enCours=false;
             }
-            System.out.println("joueur " + jeu.enCours());
-            System.out.println("joueur " + c.jeu.enCours());
-            System.out.println("joueur " + vp.jeu.enCours());
             load = false;
             miseAJour();
             
@@ -133,7 +128,8 @@ public class ViewJouer extends View {
 						public void handle(ActionEvent event) {
 							System.out.println(in.getEditor().getText());
 							c.h.save(jeu, in.getEditor().getText());						
-							c.h.initHistorique();
+							c.h.futur.clear();
+							c.h.passe.clear();
 						}
 						
 					});
@@ -146,7 +142,8 @@ public class ViewJouer extends View {
 						public void handle(ActionEvent event) {
 							System.out.println("Cancel");
 							
-						}	
+						}
+						
 					});
 					in.show();
 					
@@ -211,7 +208,8 @@ public class ViewJouer extends View {
                         jouerBtn.setText("Jouer");
                         joueurCourant = jeu.joueurCourant;
                         c.joueurCourant = jeu.joueurCourant;
-                        c.h.initHistorique();
+                        c.h.futur.clear();
+						c.h.passe.clear();
                         app.gotoView("Parametre");
                         miseAJour();
                     }
