@@ -27,7 +27,7 @@ public class ViewMenu extends View{
 			app.gotoView("Aide");
 		});
 		aideBtn.setPrefSize(100,30);
-		quitBtn = new Button("Quit");
+		quitBtn = new Button("Quitter");
 		quitBtn.setOnAction((event)->{
 			app.exit();
 		});
