@@ -21,15 +21,17 @@ public class ViewMenu extends View{
 		jouerBtn.setOnAction((event)->{
 			app.gotoView("Parametre");
 		});
+		jouerBtn.setPrefSize(100,30);
 		aideBtn = new Button("Aide");
 		aideBtn.setOnAction((event)->{
 			app.gotoView("Aide");
 		});
+		aideBtn.setPrefSize(100,30);
 		quitBtn = new Button("Quit");
 		quitBtn.setOnAction((event)->{
 			app.exit();
 		});
-		
+		quitBtn.setPrefSize(100,30);
 		VBox box = new VBox(jouerBtn,aideBtn,quitBtn);
 		box.setAlignment(Pos.CENTER);//居中对齐
 		box.setSpacing(20);
