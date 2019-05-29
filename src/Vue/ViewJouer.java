@@ -118,7 +118,7 @@ public class ViewJouer extends View {
 					TextInputDialog in = new TextInputDialog("default");
 					
 					in.setTitle("Sauvegarde");
-					in.setContentText("Saisir le nom de fichier : ");
+					in.setContentText("Saisir le nom du fichier : ");
 					in.setHeaderText("Confirmez votre sauvegarde !");
 					Button ok = (Button)in.getDialogPane().lookupButton(ButtonType.OK);
 					ok.setText("OK");
@@ -593,22 +593,19 @@ public class ViewJouer extends View {
     	            }
 
     	        }
-    		 Dialog<ButtonType> dialog = new Dialog<ButtonType>();
-             dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
-             Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
+    		 Dialog<ButtonType> dia = new Dialog<ButtonType>();
+             dia.getDialogPane().getButtonTypes().add(ButtonType.YES);
+             Button yes = (Button)dia.getDialogPane().lookupButton(ButtonType.YES);
              yes.setText("OK");
             
              yes.setOnAction(new EventHandler<ActionEvent>() {
-
                  @Override
                  public void handle(ActionEvent event) {
-                	 dialog.close();
+                	 dia.close();
                  }
              });
-            
-
-             dialog.setContentText("Fin du jeu!  " + vp.nom[i_max] + "  a gagné!");
-             dialog.show();
+             dia.setContentText("Fin du jeu!  " + vp.nom[i_max] + "  a gagné!");
+             dia.show();
 
     	}
         double lignes = plateau.taille();
