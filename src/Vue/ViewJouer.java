@@ -573,7 +573,44 @@ public class ViewJouer extends View {
 
     @Override
     public void miseAJour() {
+    	if(!jeu.enCoursJ[0]&&!jeu.enCoursJ[1]&&!jeu.enCoursJ[2]&&!jeu.enCoursJ[3]) {
+    		 int max = 0;
+    		 int i_max = 0;
+    		 if(vp.nbJoueur==4) {
+    	            for(int i=0;i<4;i++) {
+    	            	if(jeu.Score[i]>=max) {
+    	            		max = jeu.Score[i];
+    	            		i_max = i;
+    	            	}
+    	            }
+    	        }
+    	        if(vp.nbJoueur==2) {
+    	        	for(int i=0;i<2;i++) {
+    	            	if((jeu.Score[i]+jeu.Score[i+2])>=max) {
+    	            		max = jeu.Score[i];
+    	            		i_max = i;
+    	            	}
+    	            }
 
+    	        }
+    		 Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+             dialog.getDialogPane().getButtonTypes().add(ButtonType.YES);
+             Button yes = (Button)dialog.getDialogPane().lookupButton(ButtonType.YES);
+             yes.setText("Oui");
+            
+             yes.setOnAction(new EventHandler<ActionEvent>() {
+
+                 @Override
+                 public void handle(ActionEvent event) {
+                	 dialog.close();
+                 }
+             });
+            
+
+             dialog.setContentText("Fin du Jeu!  " + vp.nom[i_max] + "  Gagné!");
+             dialog.show();
+
+    	}
         double lignes = plateau.taille();
         double colonnes = plateau.taille();
         largeurCase = largeurPlateau() / colonnes;
