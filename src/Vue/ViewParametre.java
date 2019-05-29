@@ -127,7 +127,7 @@ public class ViewParametre extends View{
 		if(nbJoueur == 2)
 			j0.setText("Joueur 1 (vert et jaune) :   ");
 		text0 = new TextField();
-		text0.setPromptText("Entrez le nom de joueur :");
+		text0.setPromptText("Entrez le nom du joueur :");
 		text0.setFocusTraversable(false);
 		HBox J0 = new HBox(j0,Joueur[0],text0);
 		J0.setSpacing(10);
@@ -136,21 +136,21 @@ public class ViewParametre extends View{
 		if(nbJoueur == 2)
 			j1.setText("Joueur 2 (bleu et rouge) :   ");
 		text1 = new TextField();
-		text1.setPromptText("Entrez le nom de joueur :");
+		text1.setPromptText("Entrez le nom du joueur :");
 		text1.setFocusTraversable(false);
 		HBox J1 = new HBox(j1,Joueur[1],text1);
 		J1.setSpacing(10);
 		
 		Label j2 = new Label("Joueur 3 (jaune) : ");
 		text2 = new TextField();
-		text2.setPromptText("Entrez le nom de joueur :");
+		text2.setPromptText("Entrez le nom du joueur :");
 		text2.setFocusTraversable(false);
 		HBox J2 = new HBox(j2,Joueur[2],text2);
 		J2.setSpacing(10);
 		
 		Label j3 = new Label("Joueur 4 (rouge) : ");
 		text3 = new TextField();
-		text3.setPromptText("Entrez le nom de joueur :");
+		text3.setPromptText("Entrez le nom du joueur :");
 		text3.setFocusTraversable(false);
 		HBox J3 = new HBox(j3,Joueur[3],text3);
 		J3.setSpacing(10);
