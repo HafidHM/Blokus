@@ -75,6 +75,7 @@ public class ViewJouer extends View {
     private AnchorPane paneAffiche;
     private AnchorPane paneScore;
 
+    private int affiche = 0;
     VBox gPlateau ;
     VBox gAffiche ;
     VBox gPiece;
@@ -203,7 +204,6 @@ public class ViewJouer extends View {
                     @Override
                     public void handle(ActionEvent event) {
                         jeu.recommencer();
-                        vp.miseAJour();
                         modify(jeu);
                         jouerBtn.setText("Jouer");
                         joueurCourant = jeu.joueurCourant;
@@ -573,7 +573,7 @@ public class ViewJouer extends View {
 
     @Override
     public void miseAJour() {
-    	if(!jeu.enCoursJ[0]&&!jeu.enCoursJ[1]&&!jeu.enCoursJ[2]&&!jeu.enCoursJ[3]) {
+    	if(!jeu.enCoursJ[0]&&!jeu.enCoursJ[1]&&!jeu.enCoursJ[2]&&!jeu.enCoursJ[3]&& affiche ==0) {
     		 int max = 0;
     		 int i_max = 0;
     		 if(vp.nbJoueur==4) {
@@ -606,7 +606,7 @@ public class ViewJouer extends View {
              });
              dia.setContentText("Fin du jeu!  " + vp.nom[i_max] + "  a gagné!");
              dia.show();
-
+             affiche =1;
     	}
         double lignes = plateau.taille();
         double colonnes = plateau.taille();
