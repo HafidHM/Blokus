@@ -79,13 +79,13 @@ public class ViewParametre extends View{
 		joueurs[3] = new JoueurHumain(3, jeu);
 		
 		HBox JeuBtn = new HBox();
-		Jeu4Btn = new Button("Jeu A 4");
+		Jeu4Btn = new Button("Jeu à 4");
 		Jeu4Btn.setOnAction((event)->{
 			nbJoueur = 4;
 			c.modifScore(4);
 			miseAJour();
 		});
-		Jeu2Btn = new Button("Jeu A 2");
+		Jeu2Btn = new Button("Jeu à 2");
 		Jeu2Btn.setOnAction((event)->{
 			nbJoueur = 2;
 			c.modifScore(2);
@@ -93,7 +93,6 @@ public class ViewParametre extends View{
 		});
 		JeuBtn.getChildren().addAll(Jeu4Btn,Jeu2Btn);
 		
-		joueurs[0] = new JoueurHumain(0, jeu);
 		retourBtn = new Button("Retour");
 		retourBtn.setOnAction((event)->{
 			app.gotoView("Menu");
@@ -173,7 +172,7 @@ public class ViewParametre extends View{
 		boiteJeu.setAlignment(Pos.CENTER);
 		
 		dimension = new VBox();
-		Label dim = new Label("Veuillez choisir un dimension : ");
+		Label dim = new Label("Veuillez choisir une dimension : ");
 		group = new ToggleGroup();
 		RadioButton d1 = new RadioButton("11 * 11");
 		d1.setUserData(11);;
@@ -193,9 +192,9 @@ public class ViewParametre extends View{
 		dimension.setSpacing(20);
 		
 		charge = new VBox();
-		Label charger = new Label("Si vous voulez charger une partie  ");
+		Label charger = new Label("Si vous voulez charger une partie :  ");
 		TextField text = new TextField();
-		text.setPromptText("Entrez le nom de fichier");
+		text.setPromptText("Entrez le nom d'un fichier");
 		text.setFocusTraversable(false);
 		charge.getChildren().addAll(charger,text,loadBtn);
 		charge.setSpacing(20);
@@ -224,7 +223,7 @@ public class ViewParametre extends View{
 			else if(nbJoueur==2 && i>=2) {
 			}
 		}
-	
+		jeu.dif = dif;
 		login(c);
 		c.setNomCharge(text);
 		selectDimension();
