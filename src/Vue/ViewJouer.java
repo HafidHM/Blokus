@@ -161,6 +161,7 @@ public class ViewJouer extends View {
             jeu.enCours = false ;
             joueurCourant = jeu.joueurCourant;
             c.joueurCourant = jeu.joueurCourant;
+            affiche=0;
             miseAJour();
         });
         
@@ -211,6 +212,7 @@ public class ViewJouer extends View {
                         c.h.futur.clear();
 						c.h.passe.clear();
                         app.gotoView("Parametre");
+                        affiche = 0;
                         miseAJour();
                     }
                 });
